@@ -1,0 +1,212 @@
+<mat-toolbar>SETTINGS</mat-toolbar>
+<mat-tab-group>
+
+  <mat-tab *ngIf="isAllowed('restaurant')">
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">account_balance_wallet</mat-icon>
+      PRODUCT SETTINGS
+    </ng-template>
+    <div fxLayout="column" class="dialogspacing">
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+        <!-- </button> -->
+
+      <div fxFlex >
+      <app-settings-product></app-settings-product>
+
+      </div>
+
+
+    </div>
+
+    <div>
+      <br>
+
+
+    </div>
+
+
+      </div>
+
+  </mat-tab>
+
+  <!-- users -->
+  <mat-tab *ngIf="isAllowed('user')">
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">group</mat-icon>
+        USERS
+      </ng-template>
+      <div fxLayout="column" class="dialogspacing">
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+          <div fxFlex>
+            <!-- <mat-card fxFlex> -->
+              <app-settings-user ></app-settings-user>
+            <!-- </mat-card> -->
+            </div>
+
+
+
+
+      <!-- <mat-card matRipple fxFlex (click) = "onChangeUserClick()">
+        Edit User Info
+
+      </mat-card>
+
+      <mat-card matRipple fxFlex (click) = "onChangeUserSettingsClick()"
+      class="card-container">
+        Change User Settings
+
+      </mat-card> -->
+
+
+      <br>
+      </div>
+      <div>
+        <br>
+
+
+      </div>
+
+        <div>
+          <mat-card *ngIf="userSettingState[0]">
+            <!-- <app-add-user></app-add-user> -->
+            <app-settings-user></app-settings-user>
+          </mat-card>
+        </div>
+      </div>
+
+  </mat-tab>
+
+<mat-tab >
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">school</mat-icon>
+        FACULTY/PROGRAMMES
+      </ng-template>
+      <div fxLayout="column" class="dialogspacing">
+        <!-- <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
+
+          <!-- <div > -->
+
+              <app-settings-faculty fxFlex ></app-settings-faculty>
+
+          <!-- </div> -->
+
+        <!-- <div fxFlex> -->
+
+            <app-settings-programme fxFlex></app-settings-programme>
+
+          <!-- </div> -->
+
+</div>
+
+
+
+
+
+
+
+  </mat-tab>
+
+
+      <!-- general -->
+    <mat-tab *ngIf="isAllowed('general')">
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">settings</mat-icon>
+          GENERAL
+        </ng-template>
+    <!-- <app-login></app-login> -->
+<!-- New -->
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <div fxFlex="10"></div>
+        <div fxFlex fxLayout="column">
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <div fxFlex="30">
+              <h3>Move Students up a Level.
+                <span style="color:red;">Please select next session and next session date first!</span></h3>
+            </div>
+            <div fxFlex="50">
+              <button  mat-raised-button  class="typicalbutton"
+              [disabled]="!enablePromote()"
+              (click)= "promoteStudents()">
+                <p>MOVE TO NEXT SESSION & PROMOTE</p>
+                <p >CURRENT SESSION: <span style="color:red;">{{currentSession}}</span></p>
+              </button>
+            </div>
+            <div fxFlex>
+              <div fxFlex fxLayout="column">
+
+              <mat-form-field appearance="outline" fxFlex>
+                <mat-label>NEXT SESSION</mat-label>
+                <mat-select [(ngModel)]= "selectedSession" name = "session"
+
+                >
+                    <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
+                        {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Session Required!</mat-error>
+
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex (click)="picker.open()" >
+                <mat-label>NEXT SESSION DATE</mat-label>
+                <input matInput  [matDatepicker]="picker"
+                [min]="minDate" [max]="maxDate"
+                [(ngModel)]= "nextResumptionDate"
+                name="nextSessionDate" disabled>
+                <mat-datepicker-toggle
+                matSuffix [for]="picker" ></mat-datepicker-toggle>
+                <mat-datepicker color="primary" #picker disabled = "false"></mat-datepicker>
+                <mat-hint>e.g. 22-06-2000</mat-hint>
+
+            </mat-form-field>
+            </div>
+
+            </div>
+          </div>
+          <div class="input-row my-top-spacing " fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+  <div fxFlex="30">
+    <h3>Matriculate Students. Any new student after this point will be enrolled for the next session. This will mean Student No Year will change.
+
+      <span style="color:red;">Please select only after a matriculation!</span></h3>
+  </div>
+  <div fxFlex="50">
+    <button mat-raised-button class="typicalbutton"
+    [disabled]="!enableMatric()"
+    (click)="mariculateStudents()">
+      <p>MATRICULATE STUDENT</p>
+      <p>SESSION MATRIC STATUS: <span style="color:red;">{{matricStatus}}</span> </p>
+    </button>
+  </div>
+
+  <div fxFlex>
+    <mat-form-field appearance="outline" fxFlex (click)="picker2.open()" >
+      <mat-label>MATRICULATION DATE</mat-label>
+      <input matInput  [matDatepicker]="picker2" [min]="minDate" [max]="maxDate"
+      [(ngModel)]= "matricDate"
+      name="matricDate" disabled>
+      <mat-datepicker-toggle
+      matSuffix [for]="picker2" ></mat-datepicker-toggle>
+      <mat-datepicker color="primary" #picker2 disabled = "false"></mat-datepicker>
+      <mat-hint>e.g. 22-06-2000</mat-hint>
+
+  </mat-form-field>
+  </div>
+
+
+          </div>
+<!--
+          <p>Approved Bank list with account number</p>
+          <p> Approved Concession list</p> -->
+        </div>
+        <div fxFlex="25"></div>
+      </div>
+
+
+
+
+    <!-- New -->
+
+    </mat-tab>
+  </mat-tab-group>

@@ -1,0 +1,478 @@
+<div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+    <mat-card fxFlex="20" fxLayout="column">
+        <!-- <div fxLayout="column" fxFlex> -->
+
+            <mat-toolbar>BILLS</mat-toolbar>
+
+
+
+
+
+<br>
+<!-- <div fxFlex>
+    <mat-checkbox (change)= "checkStat('session')" class="example-margin" [(ngModel)]= "sessionMarker">
+
+    </mat-checkbox>
+    <mat-form-field >
+        <mat-label>SESSION</mat-label>
+        <mat-select [(ngModel)]= "selectedLedgerInfo.session" name = "session"
+        required="sessionMarker"
+        [disabled]= "!sessionMarker"
+        >
+            <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
+                {{stat}}
+            </mat-option>
+        </mat-select>
+        <mat-error>Session Required!</mat-error>
+
+    </mat-form-field>
+</div> -->
+
+<div class="postingdetail">
+  <!-- <mat-checkbox (change)= "checkStat('session')" class="example-margin" [(ngModel)]= "sessionMarker">
+
+  </mat-checkbox> -->
+  <mat-form-field fxFlex>
+      <mat-label>SESSION</mat-label>
+      <mat-select [(ngModel)]= "selectedLedgerInfo.session" name = "session"
+      required="sessionMarker"
+
+      >
+          <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
+              {{stat}}
+          </mat-option>
+      </mat-select>
+      <mat-error>Session Required!</mat-error>
+
+  </mat-form-field>
+</div>
+
+            <!-- <div fxFlex>
+                <label id="example-radio-group-label">Session Info</label>
+                <mat-radio-group
+                aria-labelledby="example-radio-group-label"
+                class="example-radio-group"
+                [appDisable]= "!transacTypeMarker"
+                [(ngModel)]="selectedLedgerInfo.session">
+                <mat-radio-button class="example-radio-button" value= 'Ongoing'>New Session</mat-radio-button>
+                <mat-radio-button class="example-radio-button" value= 'Applicant'>Current Session</mat-radio-button>
+                </mat-radio-group>
+                </div> -->
+<br>
+
+
+
+<div class="postingdetail" fxFlex>
+            <!-- <mat-checkbox class="example-margin"
+            [(ngModel)]= "dateMarker"
+            (change)= "checkStat('date')">
+
+            </mat-checkbox> -->
+
+
+
+              <mat-form-field (click)="picker.open()" fxFlex>
+                <mat-label>DATE CUT-OFF</mat-label>
+                <input matInput  [matDatepicker]="picker"
+                [(ngModel)]= "selectedLedgerInfo.dateToLookAt" required="dateMarker"
+                name="dateToLookAt" disabled>
+                <mat-datepicker-toggle
+                matSuffix [for]="picker" ></mat-datepicker-toggle>
+                <mat-datepicker color="primary" #picker disabled = "false"></mat-datepicker>
+                <mat-hint>e.g. 22-06-2000</mat-hint>
+
+            </mat-form-field>
+            </div>
+
+<br>
+
+<div class="postingdetail" fxFlex>
+    <mat-checkbox  (change)= "checkStat('department')" class="example-margin" [(ngModel)]= "departmentMarker">
+
+    </mat-checkbox>
+    <mat-form-field fxFlex>
+        <mat-label>DEPARTMENT</mat-label>
+        <mat-select [(ngModel)]= "selectedLedgerInfo.department" name = "department"
+        required = "departmentMarker"
+        [disabled]= "!departmentMarker"
+
+        >
+            <mat-option *ngFor= "let stat of departmentList" [value]= "stat">
+                {{stat}}
+            </mat-option>
+        </mat-select>
+        <mat-error>Department Required!</mat-error>
+
+    </mat-form-field>
+</div>
+
+<div class="postingdetail" fxFlex>
+  <mat-checkbox  (change)= "checkStat('faculty')" class="example-margin" [(ngModel)]= "facultyMarker">
+
+  </mat-checkbox>
+  <mat-form-field fxFlex>
+      <mat-label>FACULTY</mat-label>
+      <mat-select [(ngModel)]= "selectedLedgerInfo.faculty" name = "faculty"
+      required = "facultyMarker"
+      [disabled]= "!facultyMarker"
+
+      >
+          <mat-option *ngFor= "let stat of facultyList" [value]= "stat">
+              {{stat}}
+          </mat-option>
+      </mat-select>
+      <mat-error>Faculty Required!</mat-error>
+
+  </mat-form-field>
+</div>
+
+<div class="postingdetail" fxFlex>
+  <mat-checkbox  (change)= "checkStat('studentNo')" class="example-margin" [(ngModel)]= "studentMarker">
+
+  </mat-checkbox>
+<mat-form-field  [appDisable]= "!studentMarker" fxFlex>
+
+  <input matInput  type="text" placeholder="STUDENT NO" #filterValue
+  [(ngModel)]=  "selectedStudent" [matAutocomplete]="auto12"
+  [formControl]="stateCtrl2"
+  name = "studentNo"
+  required= "studentMarker"
+  >
+  <button matSuffix mat-button mat-icon-button>
+
+      <mat-icon *ngIf =  "selectedStudent.studentNo" (click)="clearFilter()">close</mat-icon>
+      <mat-icon *ngIf = "!selectedStudent.studentNo" >search</mat-icon>
+    </button>
+
+    <mat-hint >Search for student </mat-hint>
+
+
+  <mat-autocomplete #auto12="matAutocomplete" [displayWith]="displayFn2"
+  (optionSelected)= "setStudentNo()"
+  >
+      <mat-option
+      *ngFor= "let state of filteredStates2 | async"
+      [value]="state"
+
+      >
+
+        {{state.studentNo}} | {{state.lastName}} | {{state.department}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</div>
+
+
+
+
+
+
+        <div class="postingdetail" fxFlex>
+            <mat-checkbox (change)= "checkStat('level')" class="example-margin" [(ngModel)]= "levelMarker">
+
+            </mat-checkbox>
+            <mat-form-field fxFlex>
+                <mat-label>LEVEL</mat-label>
+                <mat-select [(ngModel)]="selectedLedgerInfo.level"
+                required= "levelMarker"
+                [disabled]= "!levelMarker"
+                name = "level" >
+                    <mat-option *ngFor="let stat of Levels" [value]= "stat">
+                        {{stat}} LEVEL
+                        </mat-option>
+                    </mat-select>
+
+            </mat-form-field>
+        </div>
+        <br>
+
+        <div class="postingdetail" fxFlex>
+
+            <mat-checkbox  (change)= "checkStat('transacType')" class="example-margin" [(ngModel)]= "transacTypeMarker">
+
+            </mat-checkbox>
+
+            <label id="example-radio-group-label">Student Status</label>
+        <mat-radio-group
+        aria-labelledby="example-radio-group-label"
+        class="example-radio-group"
+        [appDisable]= "!transacTypeMarker"
+        [(ngModel)]="selectedLedgerInfo.status">
+        <mat-radio-button class="example-radio-button" value= 'Ongoing'>Ongoing</mat-radio-button>
+        <mat-radio-button class="example-radio-button" value= 'Applicant'>Applicant</mat-radio-button>
+        <mat-radio-button class="example-radio-button" value= 'All'>All</mat-radio-button>
+
+    </mat-radio-group>
+        </div>
+<br>
+
+        <div class="postingdetail" fxFlex>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+            <mat-checkbox fxFlex="5" (change)= "checkStat('paid')" class="example-margin" [(ngModel)]= "paidMarker">
+            </mat-checkbox>
+
+            <div fxFlex class="postingdetail balancedetail">Balance  <span class="signSpacing balancedetail"> < </span>
+
+            </div>
+
+
+
+            <mat-form-field  fxFlex="30">
+                <input  matInput type="number"    [disabled]= "!paidMarker"
+                placeholder="CUT-OFF" [(ngModel)]=  "selectedLedgerInfo.balance "
+                name = "balance" >
+
+
+            </mat-form-field>
+            </div>
+        </div>
+
+        <div class="postingdetail" fxFlex>
+            <mat-checkbox (change)= "checkStat('gender')" class="example-margin" [(ngModel)]= "genderMarker">
+
+            </mat-checkbox>
+
+
+
+
+        <mat-form-field fxFlex>
+            <mat-label>GENDER</mat-label>
+            <mat-select [(ngModel)]="selectedLedgerInfo.gender"
+
+            required="genderMarker"
+            [disabled]= "!genderMarker"
+            name = "gender" >
+                <mat-option *ngFor="let stat of Genders" [value]= "stat">
+                    {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Gender Required!</mat-error>
+
+            </mat-form-field>
+        </div>
+
+
+    </mat-card>
+    <div fxFlex="75">
+      <div fxFlex="95" fxLayout="column">
+
+        <mat-checkbox   class="example-margin" [(ngModel)]= "rearrangePostings">
+            Show advanced Options
+        </mat-checkbox>
+        <br/>
+
+        <mat-card class="mat-elevation-z8" *ngIf = 'rearrangePostings'>
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+          <h3 fxFlex="45" *ngIf = 'rearrangePostings'>Only use if a rearrange of the bills order is required. Use before generating bills.</h3>
+
+        <button mat-raised-button fxFlex="35" *ngIf = 'rearrangePostings' [disabled]="true"
+            (click)="PostingsReOrderForBill()"
+              class="typicalbutton"
+              ><mat-icon class="matIconSpacing" color="warn">view_column</mat-icon>
+              REARRANGE BILL POSTINGS
+        </button>
+        </div>
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+          <h3 fxFlex="45" *ngIf = 'rearrangePostings'>
+            Email the bills generated to the student profile emails. Only click this button after clicking "GENERATE BILL".</h3>
+
+            <button mat-raised-button fxFlex="35" *ngIf = 'rearrangePostings'
+            (click)="sendBills_Email()"
+              class="typicalbutton"
+              ><mat-icon class="matIconSpacing" color="primary">send</mat-icon>
+              EMAIL BILL
+            </button>
+
+            <div fxFlex >
+              <div class="container_row" *ngIf= "totalNumberProcessedEmailSent !==0">
+                <div class="layer1">
+                  <button
+                        matTooltip="successful email sent"
+                        color ="primary"
+
+                        mat-icon-button>
+                    <mat-icon>check_circle_outline</mat-icon>
+                  </button>
+
+
+
+                </div>
+                <div class="layer2">
+                  <!-- <div *ngIf= "totalNumberProcessed !== 0" > -->
+
+                  <div>
+                    <mat-progress-spinner
+                    mode="determinate"
+                    [color]="color"
+
+                    [value]="valueEmailSent"
+                    diameter="45"></mat-progress-spinner>
+                </div>
+                </div>
+
+              </div>
+              <span *ngIf= "totalNumberProcessedEmailSent !== 0" fxFlex  class="container-shift"> {{totalNumberProcessedEmailSent}} successful email sent</span>
+            </div>
+        </div>
+        </mat-card>
+
+        <br/>
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+          <h3 fxFlex="45">Generate one pdf document that contains all the bills. PDF is stored in the default
+            download folder location. Make sure to delete old bill downloads before you begin.
+            <span style="color:red;">To Generate Bill, Please set session and Date cut-off!</span></h3>
+
+          <button fxFlex="35" mat-raised-button color="primary" class="typicalbutton2"
+          (click)="getBills_Print()"
+          [disabled]="!canGenBill()"
+
+            ><mat-icon class="matIconSpacing">download_for_offline</mat-icon>
+            GENERATE BILL FOR PRINTING
+          </button>
+          <div fxFlex >
+            <div class="container_row" *ngIf= "totalNumberProcessedPrint !==0">
+              <div class="layer1">
+                <button
+                      matTooltip="successful bill generated"
+                      color ="primary"
+
+                      mat-icon-button>
+                  <mat-icon>check_circle_outline</mat-icon>
+                </button>
+
+
+
+              </div>
+              <div class="layer2">
+                <!-- <div *ngIf= "totalNumberProcessed !== 0" > -->
+
+                <div>
+                  <mat-progress-spinner
+                  mode="determinate"
+                  [color]="color"
+
+                  [value]="valuePrint"
+                  diameter="45"></mat-progress-spinner>
+              </div>
+              </div>
+
+            </div>
+            <span *ngIf= "totalNumberProcessedPrint !== 0" fxFlex  class="container-shift"> {{totalNumberProcessedPrint}} successful bill generated</span>
+          </div>
+        </div>
+        <br/>
+          <mat-card class="mat-elevation-z8">
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+              <h3 fxFlex="45">Generate one pdf document per student for seperate Print or Email. PDF(s) are stored in the default
+                download folder location. Make sure to delete old bill downloads before you begin.
+                <span style="color:red;">To Generate Bill, Please set session and Date cut-off!</span>
+              </h3>
+
+            <button mat-raised-button fxFlex="35" color="primary"
+            (click)="getBills_saveforemail()"
+              class="typicalbutton2"
+              [disabled]="!canGenBill()"
+              ><mat-icon class="matIconSpacing" >view_column</mat-icon>
+              GENERATE BILL
+            </button>
+            <div fxFlex >
+              <div class="container_row" *ngIf= "totalNumberProcessedEmail !==0">
+                <div class="layer1">
+                  <button
+                        matTooltip="successful bill generated"
+                        color ="primary"
+
+                        mat-icon-button>
+                    <mat-icon>check_circle_outline</mat-icon>
+                  </button>
+
+
+
+                </div>
+                <div class="layer2">
+                  <!-- <div *ngIf= "totalNumberProcessed !== 0" > -->
+
+                  <div>
+                    <mat-progress-spinner
+                    mode="determinate"
+                    [color]="color"
+
+                    [value]="valueEmail"
+                    diameter="45"></mat-progress-spinner>
+                </div>
+                </div>
+
+              </div>
+              <span *ngIf= "totalNumberProcessedEmail !== 0" fxFlex  class="container-shift"> {{totalNumberProcessedEmail}} successful bill generated</span>
+            </div>
+        </div>
+
+          </mat-card>
+          <br/>
+        <!-- <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+              <h3 fxFlex="45">Generate one pdf document per student for seperate Print or Email. PDF(s) are stored in the default
+                download folder location. Make sure to delete old bill downloads before you begin.
+                <span style="color:red;">To Generate Bill, Please set session and Date cut-off!</span>
+              </h3>
+
+            <button mat-raised-button fxFlex color="primary"
+            (click)="getBills_saveforemail()"
+              class="typicalbutton2"
+              [disabled]="!canGenBill()"
+              ><mat-icon class="matIconSpacing" >view_column</mat-icon>
+              GENERATE BILL
+            </button>
+        </div> -->
+      </div>
+
+
+
+        <!-- <app-studentledger fxFlex></app-studentledger> -->
+         <!-- <app-balance-shared [DCol]="DCol" fxFlex></app-balance-shared> -->
+
+    </div>
+    <!-- <div fxFlex>
+        <mat-card [appDisable]= "true">
+            <mat-form-field class="example-chip-list" appearance="fill">
+                <mat-label>Approved Banks</mat-label>
+                <mat-chip-list #chipList aria-label="Bank selection"
+                class="mat-chip-list-stacked">
+                  <mat-chip
+                    *ngFor="let fruit of bankList"
+                    (removed)="remove(fruit)"
+                    [removable]="true">
+                    {{fruit?.longName  }}
+                    {{fruit?.accountNo}}
+                      <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input
+                    placeholder="New bank..."
+                    #bankInput
+                    [formControl]="fruitCtrl"
+                    [matAutocomplete]="auto"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="add($event)">
+                </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                  <mat-option *ngFor="let bank of filteredBank | async" [value]="bank">
+                    {{bank.longName}}
+                  </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <p>Payment Message</p>
+            <p>Bursar Name</p>
+            <p>Bursar Signature</p>
+        </mat-card>
+
+    </div> -->
+
+</div>

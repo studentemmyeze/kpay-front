@@ -1,0 +1,383 @@
+<div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+    <mat-card fxFlex="20" fxLayout="column">
+        <!-- <div fxLayout="column" fxFlex> -->
+
+            <mat-toolbar>VIEW PAYMENTS / DEBITS</mat-toolbar>
+
+            <button mat-raised-button
+            (click)= "postingsTest()"
+              class="typicalbutton"
+              ><mat-icon class="matIconSpacing" color="primary">view_column</mat-icon>
+              VIEW PAYMENT/DEBIT
+            </button>
+
+
+
+
+
+            <div fxFlex>
+                <mat-checkbox (change)= "checkStat('bank')" class="example-margin" [(ngModel)]= "bankMarker">
+                </mat-checkbox>
+                <mat-form-field  fxFlex>
+                    <mat-label>BANK</mat-label>
+                    <mat-select
+                    [(ngModel)]= "selectedLedgerInfo.bank"
+                    required = "bankMarker"
+                    [disabled] = "!bankMarker"
+                    name = "bank" >
+                    <mat-select-trigger>{{selectedLedgerInfo.bank}}</mat-select-trigger>
+
+                        <mat-option *ngFor="let stat of bankList" [value]= "stat.properties.shortName">
+                            <span class="make-bold">{{stat.properties.shortName}}</span>
+                            |
+                            <span class="filter-container">{{stat.properties.longName}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>Bank Required!</mat-error>
+
+                </mat-form-field>
+
+
+            </div>
+
+        <div fxFlex>
+            <mat-checkbox (change)= "checkStat('session')" class="example-margin" [(ngModel)]= "sessionMarker">
+
+            </mat-checkbox>
+            <mat-form-field fxFlex>
+                <mat-label>SESSION</mat-label>
+                <mat-select [(ngModel)]= "selectedLedgerInfo.session" name = "session"
+                required="sessionMarker"
+                [disabled]= "!sessionMarker"
+                >
+                    <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
+                        {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Session Required!</mat-error>
+
+            </mat-form-field>
+        </div>
+
+        <div fxFlex>
+            <mat-checkbox (change)= "checkStat('semester')" class="example-margin" [(ngModel)]= "semesterMarker">
+            </mat-checkbox>
+
+            <mat-form-field fxFlex>
+                <mat-label>SEMESTER</mat-label>
+                <mat-select [(ngModel)]= "selectedLedgerInfo.semester" name = "semester"
+                required = "semesterMarker"
+                [disabled]= "!semesterMarker"
+                >
+                    <mat-option *ngFor= "let stat of semesterList" [value]= "stat">
+                        {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Semester Required!</mat-error>
+
+            </mat-form-field>
+        </div>
+
+
+
+        <div fxFlex>
+            <mat-checkbox class="example-margin"
+            [(ngModel)]= "dateMarker"
+            (change)= "checkStat('date')">
+
+            </mat-checkbox>
+            <mat-form-field  appearance="fill" (click)="picker.open()" fxFlex>
+                <mat-label>DATE POSTED RANGE</mat-label>
+                <mat-date-range-input [formGroup]="range" [rangePicker]="picker"
+                required="dateMarker" fxFlex
+
+                >
+                  <input matStartDate formControlName="start" placeholder="Start date" [disabled] = "true"
+                  >
+                  <input matEndDate formControlName="end" placeholder="End date" [disabled] = "true" >
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker" [disabled]= "!dateMarker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker [disabled]= "!dateMarker"></mat-date-range-picker>
+
+                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+              </mat-form-field>
+        </div>
+        <br>
+        <div fxFlex>
+          <mat-checkbox class="example-margin"
+          [(ngModel)]= "tellerDateMarker"
+          (change)= "checkStat('tellerdate')">
+
+          </mat-checkbox>
+          <mat-form-field  appearance="fill" (click)="picker2.open()" fxFlex>
+              <mat-label>TELLER DATE RANGE</mat-label>
+              <mat-date-range-input [formGroup]="range2" [rangePicker]="picker2"
+              required="tellerDateMarker" fxFlex
+
+              >
+                <input matStartDate formControlName="start2" placeholder="Start date" [disabled] = "true"
+                >
+                <input matEndDate formControlName="end2" placeholder="End date" [disabled] = "true" >
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="picker2" [disabled]= "!tellerDateMarker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker2 [disabled]= "!tellerDateMarker"></mat-date-range-picker>
+
+              <mat-error *ngIf="range2.controls.start2.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+              <mat-error *ngIf="range2.controls.end2.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+            </mat-form-field>
+      </div>
+        <!-- <p fxFlex>
+            <mat-checkbox  fxFlex="10" class="example-margin" [(ngModel)]= "dateMarker">
+
+            </mat-checkbox>
+            <mat-form-field appearance="fill" (click)="picker2.open()">
+                <mat-label>Select a Date Range</mat-label>
+                <mat-date-range-input [rangePicker]="picker2">
+                  <input matStartDate placeholder="Start date" [disabled] = "true" >
+                  <input matEndDate placeholder="End date" [disabled] = "true">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker2" [disabled] = "!dateMarker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker2 [disabled] = "!dateMarker"></mat-date-range-picker>
+              </mat-form-field>
+        </p> -->
+
+
+        <div fxFlex>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+            <mat-checkbox fxFlex (change)= "checkStat('paid')" class="example-margin" [(ngModel)]= "paidMarker">
+            </mat-checkbox>
+
+            <div fxFlex="15">Amount</div>
+
+            <mat-form-field fxFlex="20">
+                <!-- <mat-label>PAID</mat-label> -->
+                <mat-select [(ngModel)]= "selectedLedgerInfo.paidSign" name = "paidSign"
+                required = "paidMarker"
+                [disabled]= "!paidMarker"
+                >
+                    <mat-option *ngFor= "let stat of paidList" [value]= "stat">
+                        {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Paid Sign Required!</mat-error>
+
+            </mat-form-field>
+
+            <mat-form-field fxFlex="35">
+                <input  matInput type="number"
+                placeholder="AMOUNT" [(ngModel)]=  "selectedLedgerInfo.amount"
+                name = "amount" >
+
+
+            </mat-form-field>
+            </div>
+        </div>
+        <div fxFlex>
+            <mat-checkbox  (change)= "checkStat('paymentMode')" class="example-margin" [(ngModel)]= "paymentModeMarker">
+
+            </mat-checkbox>
+            <mat-form-field fxFlex>
+                <mat-label>PAYMENT MODE</mat-label>
+                <mat-select [(ngModel)]= "selectedLedgerInfo.paymentMode" name = "paymentMode"
+                required = "paymentModeMarker"
+                [disabled]= "!paymentModeMarker"
+
+                >
+                    <mat-option *ngFor= "let stat of paymentModeList" [value]= "stat">
+                        {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Payment Mode Required!</mat-error>
+
+            </mat-form-field>
+        </div>
+
+        <div fxFlex>
+            <mat-checkbox (change)= "checkStat('receiptNo')" class="example-margin" [(ngModel)]= "receiptNoMarker">
+            </mat-checkbox>
+
+
+
+
+            <mat-form-field fxFlex>
+                <input  matInput type="text"
+                placeholder="RECEIPT NUMBER" [(ngModel)]=  "selectedLedgerInfo.receiptNo"
+                name = "receiptNo"
+                required = "receiptNoMarker"
+                [disabled]= "!receiptNoMarker">
+
+
+            </mat-form-field>
+        </div>
+
+        <div fxFlex>
+            <mat-checkbox  (change)= "checkStat('product')" class="example-margin" [(ngModel)]= "productMarker">
+
+            </mat-checkbox>
+        <mat-form-field [appDisable]="!productMarker" fxFlex>
+            <input matInput  type="text" placeholder="PRODUCT"
+            [(ngModel)]=  "selectedProduct"
+            required= "productMarker"
+            [disabled]= "!productMarker"
+            [matAutocomplete]="auto11"
+            [formControl]="stateCtrl"
+            name = "product"
+
+
+            >
+            <mat-hint>e.g. School Fees etc</mat-hint>
+            <mat-error>Insert Product!</mat-error>
+
+            <mat-autocomplete #auto11="matAutocomplete"
+            [displayWith]="displayFn" [panelWidth]="800"
+            (optionSelected)= "calcTotal()"
+
+            >
+                <mat-option
+                *ngFor= "let state of filteredStates | async"
+                [value]="state"
+
+
+                >
+
+                <span class="make-bold">
+
+                  {{state.prodCode}}  </span>
+                  | {{state.description}} |
+
+
+                  <span class="filter-container">&#8358;{{state.price | number: '1.2-2'}}  </span>
+
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+        </div>
+<br>
+        <div fxFlex>
+
+          <mat-checkbox  (change)= "checkStat('studyStatus')" class="example-margin" [(ngModel)]= "studyStatusMarker">
+
+          </mat-checkbox>
+
+          <label id="example-radio-group-label">Study Status</label>
+      <mat-radio-group
+      aria-labelledby="example-radio-group-label"
+      class="example-radio-group"
+      [appDisable]= "!studyStatusMarker"
+      [(ngModel)]="selectedLedgerInfo.studyStatus">
+      <mat-radio-button class="example-radio-button" value= 'Ongoing'>Ongoing</mat-radio-button>
+      <mat-radio-button class="example-radio-button" value= 'Applicant'>Applicant</mat-radio-button>
+      <mat-radio-button class="example-radio-button" value= 'Deferred'>Deferred</mat-radio-button>
+      </mat-radio-group>
+      </div>
+
+
+        <div fxFlex>
+            <mat-checkbox (change)= "checkStat('level')" class="example-margin" [(ngModel)]= "levelMarker">
+
+            </mat-checkbox>
+            <mat-form-field fxFlex>
+                <mat-label>LEVEL</mat-label>
+                <mat-select [(ngModel)]="selectedLedgerInfo.level"
+                required= "levelMarker"
+                [disabled]= "!levelMarker"
+                name = "level" >
+                    <mat-option *ngFor="let stat of Levels" [value]= "stat">
+                        {{stat}} LEVEL
+                        </mat-option>
+                    </mat-select>
+
+            </mat-form-field>
+        </div>
+        <br>
+        <mat-divider></mat-divider>
+        <br>
+
+        <div fxFlex>
+
+            <mat-checkbox  (change)= "checkStat('transacType')" class="example-margin" [(ngModel)]= "transacTypeMarker">
+
+            </mat-checkbox>
+
+            <label id="example-radio-group-label">Transaction Type</label>
+        <mat-radio-group
+        aria-labelledby="example-radio-group-label"
+        class="example-radio-group"
+        [appDisable]= "!transacTypeMarker"
+        [(ngModel)]="selectedLedgerInfo.transacType">
+        <mat-radio-button class="example-radio-button" value= 1>Charges (Debit)</mat-radio-button>
+        <mat-radio-button class="example-radio-button" value= 2>Payment (Credit)</mat-radio-button>
+        </mat-radio-group>
+        </div>
+
+        <div fxFlex>
+            <mat-checkbox (change)= "checkStat('gender')" class="example-margin" [(ngModel)]= "genderMarker">
+
+            </mat-checkbox>
+
+
+
+
+        <mat-form-field fxFlex>
+            <mat-label>GENDER</mat-label>
+            <mat-select [(ngModel)]="selectedLedgerInfo.gender"
+
+            required="genderMarker"
+            [disabled]= "!genderMarker"
+            name = "gender" >
+                <mat-option *ngFor="let stat of Genders" [value]= "stat">
+                    {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Gender Required!</mat-error>
+
+            </mat-form-field>
+        </div>
+        <div fxFlex>
+            <mat-checkbox  (change)= "checkStat('studentNo')" class="example-margin" [(ngModel)]= "studentMarker">
+
+            </mat-checkbox>
+        <mat-form-field  [appDisable]= "!studentMarker" fxFlex>
+
+            <input matInput  type="text" placeholder="STUDENT NO" #filterValue
+            [(ngModel)]=  "selectedStudent" [matAutocomplete]="auto12"
+            [formControl]="stateCtrl2"
+            name = "studentNo"
+            required= "studentMarker"
+            >
+            <button matSuffix mat-button mat-icon-button>
+
+                <mat-icon *ngIf =  "selectedStudent.studentNo" (click)="clearFilter()">close</mat-icon>
+                <mat-icon *ngIf = "!selectedStudent.studentNo" >search</mat-icon>
+              </button>
+
+              <mat-hint >Search for student </mat-hint>
+
+
+            <mat-autocomplete #auto12="matAutocomplete" [displayWith]="displayFn2"
+            (optionSelected)= "setStudentNo()"
+            >
+                <mat-option
+                *ngFor= "let state of filteredStates2 | async"
+                [value]="state"
+
+                >
+
+                  {{state.studentNo}} | {{state.lastName}} | {{state.department}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+        </div>
+        <br>
+    <!-- </div> -->
+
+    </mat-card>
+    <mat-card fxFlex="80">
+        <!-- <app-studentledger fxFlex></app-studentledger> -->
+        <app-ledger-shared [DCol]="displayedColumns" fxFlex></app-ledger-shared>
+
+    </mat-card>
+
+</div>

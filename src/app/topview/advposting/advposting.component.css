@@ -1,0 +1,61 @@
+.example-margin {
+  margin: 0 12px;
+}
+
+.typicalbutton {
+  border-block-color: black;
+  background-color: #e7e7e7;
+  min-height: 80px;
+  text-transform: uppercase;
+  margin: 10px;
+}
+
+.layer1, .layer2 {grid-column: 1; grid-row: 1}
+
+.container_row {
+  display: grid;
+  height: 50px;
+  margin-top: 20px;
+  position: relative;
+  margin-left: 20px;
+
+}
+
+.container-shift {
+  margin-top: 35px;
+  margin-left:10px;
+}
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+.matIconSpacing {
+  margin-right: 18px;
+  }
+
+  .example-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+  }
+
+  .example-radio-button {
+    margin: 10px 25px;
+    line-height: 2px;
+  }
+
+  .postingdetail {
+    padding-top:3px
+  }
+mat-checkbox {
+  padding-top:10px
+}

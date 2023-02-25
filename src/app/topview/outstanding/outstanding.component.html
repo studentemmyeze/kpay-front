@@ -1,0 +1,198 @@
+<div class="pay-container2 ">
+    <mat-card class="container-c1 ">
+        <!-- <div fxLayout="column" fxFlex> -->
+
+            <mat-toolbar>VIEW OUTSTANDINGS</mat-toolbar>
+
+            <button mat-raised-button
+            (click)= "postingsTest()"
+              class="typicalbutton mat-elevation-z8"
+              ><mat-icon class="matIconSpacing" color="primary">view_column</mat-icon>
+              VIEW OUTSTANDINGS
+            </button>
+
+
+
+
+
+
+
+
+
+
+
+        <div>
+            <mat-checkbox class="example-margin"
+            [(ngModel)]= "dateMarker"
+            (change)= "checkStat('date')">
+
+            </mat-checkbox>
+
+
+
+              <mat-form-field (click)="picker.open()">
+                <mat-label>DATE CUT-OFF</mat-label>
+                <input matInput  [matDatepicker]="picker"
+                [(ngModel)]= "selectedLedgerInfo.dateToLookAt" required="dateMarker"
+                name="dateToLookAt" disabled>
+                <mat-datepicker-toggle
+                matSuffix [for]="picker" ></mat-datepicker-toggle>
+                <mat-datepicker color="primary" #picker disabled = "false"></mat-datepicker>
+                <mat-hint>e.g. 22-06-2000</mat-hint>
+
+            </mat-form-field>
+            </div>
+
+<br>
+
+        <div>
+
+
+
+            <mat-checkbox (change)= "checkStat('paid')" class="example-margin" [(ngModel)]= "paidMarker">
+            </mat-checkbox>
+
+            <span class="postingdetail balancedetail">Outstanding<span class="signSpacing balancedetail"> > </span>
+              <mat-form-field class="control-balance">
+                <input  matInput type="number"    [disabled]= "!paidMarker"
+                placeholder="AMOUNT" [(ngModel)]=  "selectedLedgerInfo.amount "
+                name = "amount" >
+
+
+            </mat-form-field>
+          </span>
+
+            <!-- <mat-form-field fxFlex="20">
+                <mat-select [(ngModel)]= "selectedLedgerInfo.paidSign" name = "paidSign"
+                required = "paidMarker"
+                [disabled]= "!paidMarker"
+                >
+                    <mat-option *ngFor= "let stat of paidList" [value]= "stat">
+                        {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Paid Sign Required!</mat-error>
+
+            </mat-form-field> -->
+
+
+
+        </div>
+
+
+
+
+
+
+        <div>
+            <mat-checkbox (change)= "checkStat('level')" class="example-margin" [(ngModel)]= "levelMarker">
+
+            </mat-checkbox>
+            <mat-form-field>
+                <mat-label>LEVEL</mat-label>
+                <mat-select [(ngModel)]="selectedLedgerInfo.level"
+                required= "levelMarker"
+                [disabled]= "!levelMarker"
+                name = "level" >
+                    <mat-option *ngFor="let stat of Levels" [value]= "stat">
+                        {{stat}} LEVEL
+                        </mat-option>
+                    </mat-select>
+
+            </mat-form-field>
+        </div>
+        <br>
+
+        <div>
+
+            <mat-checkbox  (change)= "checkStat('transacType')" class="example-margin" [(ngModel)]= "transacTypeMarker">
+
+            </mat-checkbox>
+
+            <label id="example-radio-group-label">Study Status</label>
+        <mat-radio-group
+        aria-labelledby="example-radio-group-label"
+        class="example-radio-group"
+        [appDisable]= "!transacTypeMarker"
+        [(ngModel)]="selectedLedgerInfo.status">
+        <mat-radio-button class="example-radio-button" value= 'Ongoing'>Ongoing</mat-radio-button>
+        <mat-radio-button class="example-radio-button" value= 'Applicant'>Applicant</mat-radio-button>
+        </mat-radio-group>
+        </div>
+
+        <div class="postingdetail">
+          <mat-checkbox name="departmentMarker"  (change)= "checkStat('department')" class="example-margin" [(ngModel)]= "departmentMarker">
+
+          </mat-checkbox>
+        <mat-form-field>
+          <mat-label>DEPARTMENT</mat-label>
+          <mat-select [(ngModel)]= "selectedLedgerInfo.department" name = "department"
+          required = "departmentMarker"
+          [disabled]= "!departmentMarker"
+
+          >
+              <mat-option *ngFor= "let stat of departmentList" [value]= "stat">
+                  {{stat}}
+              </mat-option>
+          </mat-select>
+          <mat-error>Department Required!</mat-error>
+
+      </mat-form-field>
+  </div>
+
+  <div class="postingdetail">
+    <mat-checkbox  name="facultyMarker" (change)= "checkStat('faculty')" class="example-margin" [(ngModel)]= "facultyMarker">
+
+    </mat-checkbox>
+    <mat-form-field>
+        <mat-label>FACULTY</mat-label>
+        <mat-select [(ngModel)]= "selectedLedgerInfo.faculty" name = "faculty"
+        required = "facultyMarker"
+        [disabled]= "!facultyMarker"
+
+        >
+            <mat-option *ngFor= "let stat of facultyList" [value]= "stat">
+                {{stat}}
+            </mat-option>
+        </mat-select>
+        <mat-error>Faculty Required!</mat-error>
+
+    </mat-form-field>
+  </div>
+
+
+        <div>
+            <mat-checkbox (change)= "checkStat('gender')" class="example-margin" [(ngModel)]= "genderMarker">
+
+            </mat-checkbox>
+
+
+
+
+        <mat-form-field>
+            <mat-label>GENDER</mat-label>
+            <mat-select [(ngModel)]="selectedLedgerInfo.gender"
+
+            required="genderMarker"
+            [disabled]= "!genderMarker"
+            name = "gender" >
+                <mat-option *ngFor="let stat of Genders" [value]= "stat">
+                    {{stat}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>Gender Required!</mat-error>
+
+            </mat-form-field>
+        </div>
+        <br>
+
+
+    </mat-card>
+    <mat-card>
+        <!-- <app-studentledger fxFlex></app-studentledger> -->
+        <app-balance-shared [DCol]="DCol"></app-balance-shared>
+
+    </mat-card>
+
+</div>
+<br>

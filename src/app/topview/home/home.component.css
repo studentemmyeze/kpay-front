@@ -1,0 +1,19 @@
+.dialogspacing {
+    padding: 100px;
+    /* margin-bottom: 50px; */
+    /* margin-top: 50px; */
+    /* font-size: 20px; */
+    width:100%;
+    min-height: 50%;
+
+
+  }
+
+  .wrapper {
+    min-height: 60vh;
+    position: relative;
+    background: url("https://www.dropbox.com/s/79m8urandvxmdqs/34.JPG?dl=1") no-repeat right center;
+    background-size: cover;
+  
+  }
+  

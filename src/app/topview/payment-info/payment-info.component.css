@@ -1,0 +1,32 @@
+.example-margin {
+    margin: 0 12px;
+  }
+
+  .typicalbutton {
+    border-block-color: black;
+    background-color: #e7e7e7;
+    min-height: 42px;
+    text-transform: uppercase;
+    margin: 10px;
+  }
+
+  .matIconSpacing {
+    margin-right: 18px;
+    }
+
+    .example-radio-group {
+      display: flex;
+      flex-direction: column;
+      margin: 10px 0;
+    }
+
+    .example-radio-button {
+      margin: 10px 25px;
+      line-height: 2px;
+    }
+
+    mat-checkbox {
+      padding-top:10px
+    }
+
+

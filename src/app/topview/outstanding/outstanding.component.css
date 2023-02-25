@@ -1,0 +1,88 @@
+.example-margin {
+    margin: 0 12px;
+  }
+
+  .typicalbutton {
+    border-block-color: black;
+    background-color: #e7e7e7;
+    min-height: 42px;
+    text-transform: uppercase;
+    margin: 10px;
+  }
+
+  .container-c1 {
+    flex-direction: column ;
+    display: inline-flex ;
+    /* min-width: 25%; */
+    flex-flow: column wrap;
+    flex-wrap: wrap;
+
+    margin-right: 5px;
+    /* justify-content: space-between; */
+    /* min-height: 300px; */
+  }
+
+  .pay-container2 {
+    display:  inline-flex ;
+    /* height: 300px; */
+    flex-flow: row wrap;
+    /* justify-content: space-between; */
+    padding-bottom: 5px;
+    align-items:flex-start;
+  }
+
+  /* Medium screens */
+@media all and (max-width: 800px) {
+  .pay-container2 {
+    /* When on medium sized screens, we center it by evenly distributing empty space around items */
+    justify-content: space-around;
+  }
+}
+
+/* Small screens */
+@media all and (max-width: 500px) {
+  .pay-container2 {
+    /* On small screens, we are no longer using row direction but column */
+    flex-direction: column;
+  }
+}
+
+  .matIconSpacing {
+    margin-right: 18px;
+    }
+
+    .example-radio-group {
+      display: flex;
+      flex-direction: column;
+      margin: 10px 0;
+    }
+
+    .example-radio-button {
+      margin: 10px 25px;
+      line-height: 2px;
+    }
+
+    .signSpacing {
+        padding-left: 3px;
+        padding-right: 3px;
+        font-weight: bold;
+    }
+    mat-checkbox {
+      padding-top:10px
+    }
+
+    .control-balance {max-width: 40%;}
+
+    .postingdetail {
+      padding-top:3px
+    }
+
+  /* mat-checkbox {
+    padding-top:10px
+  } */
+
+  .balancedetail {
+    /* padding-top:13px; */
+    font-size:18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }

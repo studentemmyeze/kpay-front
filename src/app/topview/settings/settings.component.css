@@ -1,0 +1,108 @@
+.dialogspacing {
+    padding: 30px;
+  }
+
+  .mat-card-clicks {
+    margin: 10px;
+    min-height: 100px;
+
+    /* padding: 2px; */
+    font-size: 20px;
+    cursor: pointer;
+    user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
+
+  /* text-align: center; */
+
+  }
+
+  .card-container {
+    justify-content: center;
+
+
+  }
+
+  .card { cursor: pointer; }
+
+
+  .mat-stepper-horizontal {
+    margin-top: 8px;
+  }
+
+  .mat-form-field {
+    margin-top: 16px;
+  }
+
+
+
+
+
+
+  .example-margin {
+    margin: 0 12px;
+  }
+
+  .typicalbutton {
+    border-block-color: black;
+    background-color: #e7e7e7;
+    min-height: 42px;
+    text-transform: uppercase;
+    margin: 10px;
+    min-width: 300px;
+  }
+
+  .typicalbutton2 {
+    border-block-color: black;
+    /* background-color: #e7e7e7; */
+    min-height: 42px;
+    text-transform: uppercase;
+    margin: 10px;
+  }
+
+  .matIconSpacing {
+    margin-right: 18px;
+    }
+
+    .example-radio-group {
+      display: flex;
+      flex-direction: column;
+      margin: 10px 0;
+    }
+
+    .example-radio-button {
+      margin: 10px 25px;
+      line-height: 2px;
+    }
+
+    .signSpacing {
+        margin-left: 10px;
+        font-weight: bold;
+    }
+    .example-chip-list {
+        width: 100%;
+      }
+
+      mat-chip {
+        max-width: 230px;
+      }
+
+      .my-align {
+        align-content:left;
+      }
+
+      .my-align {
+        align-content:center;
+      }
+
+      .my-top-spacing {
+        margin-top:50px;
+      }
+
+      .example-tab-icon {
+        margin-right: 8px;
+      }

@@ -1,0 +1,130 @@
+<mat-toolbar>TOPFAITH UNIVERSITY PAYMENTS / DEBITS</mat-toolbar>
+<div fxLayout="column" class="dialogspacing">
+
+<div class="tools-container">
+  <!-- <div class="search-student"> -->
+    <!-- <h3 > -->
+      <mat-form-field class="search-student" >
+
+        <input matInput  type="text" placeholder="STUDENT NO" #filterValue
+        [(ngModel)]=  "selectedStudent" [matAutocomplete]="auto11"
+        [formControl]="stateCtrl"
+        name = "studentNo"
+        >
+        <button matSuffix mat-button mat-icon-button>
+
+            <mat-icon *ngIf =  "selectedStudent.studentNo" (click)="clearFilter()">close</mat-icon>
+            <mat-icon *ngIf = "!selectedStudent.studentNo" >search</mat-icon>
+          </button>
+
+          <mat-hint >Search for student </mat-hint>
+
+
+        <mat-autocomplete #auto11="matAutocomplete" [displayWith]="displayFn"
+        (optionSelected)= "setStudentNo()"
+        >
+            <mat-option
+            *ngFor= "let state of filteredStates | async"
+            [value]="state"
+
+            >
+
+              {{state.studentNo}} | {{state.lastName}} | {{state.department}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+    <!-- </h3> -->
+
+  <!-- </div> -->
+  <mat-card class="paystack">
+    <div class="paySbutton">
+
+          <button mat-raised-button class="typicalbutton"  (click)= "doAutoPaystackPosting()">
+              <mat-icon
+        class="matIconSpacing mat-elevation-z8" color="primary">download</mat-icon> GET PAYMENTS FROM PAYSTACK</button>
+
+      <div *ngIf= "progressMessage" class="progress-spinner">
+          <mat-progress-spinner mode="determinate" [value]= "progressMessage" diameter="45"></mat-progress-spinner>
+      </div>
+    </div>
+    <div>
+      <p class="lastCheck">Last Checked: <a  href="#">{{lastCheckedDate| date:'medium' }}</a></p>
+      <p class="lastCheck">New payment records found: <a  href="#">{{lastCheckedCount}}</a> </p>
+    </div>
+  </mat-card>
+</div>
+
+
+<div fxFlex *ngIf= "selectedStudent.studentNo" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
+[appDisable]="true">
+    <div fxLayout="column" class="dialogspacing" fxFlex="50">
+        <div fxFlex class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+                <mat-form-field fxFlex class="name-details">
+                    <input  matInput type="text" class="displayName"
+                    placeholder="LASTNAME" [(ngModel)]=  "selectedStudent.lastName"
+                    name = "lastName" >
+
+
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                    <input  matInput type="text" class="displayName"
+                    placeholder="FIRSTNAME" [(ngModel)]=  "selectedStudent.firstName"
+                    name = "firstName" >
+
+
+                </mat-form-field>
+        </div>
+        <div fxFlex class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+            <mat-form-field fxFlex>
+                <input  matInput type="text" class="displayName"
+                placeholder="MIDDLENAME" [(ngModel)]=  "selectedStudent.middleName"
+                name = "middleName" >
+
+
+            </mat-form-field>
+
+            <mat-form-field fxFlex>
+                <input  matInput type="text" class="displayName"
+                placeholder="GENDER" [(ngModel)]=  "selectedStudent.gender"
+                name = "gender" >
+
+
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div fxFlex="20"></div>
+
+    <div fxLayout="column" class="dialogspacing" fxFlex>
+        <mat-form-field fxFlex>
+            <input  matInput type="text" class="displayName"
+            placeholder= "DEPARTMENT" [(ngModel)]=  "selectedStudent.department"
+            name = "department" >
+
+
+        </mat-form-field>
+
+        <mat-form-field fxFlex>
+            <input  matInput type="number" class="displayName"
+            placeholder="LEVEL" [(ngModel)]=  "selectedStudent.level"
+            name = "level" >
+
+
+        </mat-form-field>
+    </div>
+
+</div>
+<!-- <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
+
+<!-- Ledger -->
+<app-studentledger fxFlex></app-studentledger>
+<!-- </div> -->
+
+<!-- Posting -->
+<!-- <div  class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
+
+<app-studentposting fxFlex></app-studentposting>
+<!-- </div> -->
+</div>

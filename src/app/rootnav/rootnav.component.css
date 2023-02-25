@@ -1,0 +1,99 @@
+.sidenav-container {
+    height: 100%;
+
+    /* padding: 20px; */
+  }
+
+  .sidenav {
+    width: 250px;
+  }
+
+  .card-menu {
+    padding-bottom: 5px;
+    min-width: 200px;
+    min-height:250px;
+  }
+
+
+  .sidenav .mat-toolbar {
+    background: inherit;
+  }
+
+  .mat-toolbar.mat-primary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .mat-toolbar a {
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 10px;
+  }
+
+  .profile-card {
+    /* text-align: center; */
+    padding: 20px;
+
+  }
+
+  img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+
+
+
+  }
+
+  .example-card {
+    min-width: 400px;
+  }
+
+  .example-header-image {
+    background-image: url("/src/assets/tu_logo.jpg");
+    /* background-image: url('https://www.dropbox.com/s/ll6g9p3s7f3bomb/Logo.png?dl=1'); */
+    background-size: cover;
+
+  }
+
+  .avatar {
+    margin-top: 16px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+}
+
+mat-divider {
+  margin-top: 7px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.name {
+  margin-top: 8px;
+  font-weight: normal;
+}
+
+.designation {
+  margin-top: 2px;
+  font-size: 0.8rem;
+}
+
+.spacer2 {
+  flex: 1 1 auto;
+  font-style: italic;
+  font-size: 0.8rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.spacer3 {
+  flex: 1 1 auto;
+  font-size: 11;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

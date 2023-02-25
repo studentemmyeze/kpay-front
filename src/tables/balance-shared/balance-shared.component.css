@@ -1,0 +1,75 @@
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .mat-column-gap {
+    padding: 0 20px;
+  }
+
+
+
+  tr.mat-footer-row {
+    font-weight: bold;
+  }
+/* .mat-column {padding-right: 20px;} */
+.mat-column-lastname, .mat-column-firstname {
+  width: 20%;
+}
+  .mat-table-sticky {
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .typicalbutton {
+    border-block-color: black;
+    background-color: #e7e7e7;
+    min-height: 42px;
+    font-size: small;
+    text-transform: uppercase;
+    margin: 2px;
+  }
+
+
+  .tools-container {
+    display: flex; /* or inline-flex */
+    /* height: 300px; */
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
+
+  .search-box{
+    min-width: 48%;
+    /* text-decoration: none;
+    display: block; */
+
+    /* padding: 1em; */
+  }
+
+  .other-tools {
+    flex-flow: row wrap;
+    /* justify-content: space-around; */
+    /* text-decoration: none; */
+    display: block;
+    min-width: 35%;
+  }
+
+  .filter-box{
+    min-width:15%
+    /* text-decoration: none; */
+    /* display: block; */
+  }
+
+  .select-all{
+    margin: 5px 17px;
+  }
+
+  .actions-box {
+    /* text-decoration: none; */
+    /* display: block; */
+  }
+
+  .excel {color: green;}
+.share-menu {
+  min-width: 40px;
+}

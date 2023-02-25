@@ -1,0 +1,31 @@
+table {
+  width: 100%;
+}
+
+tr.example-element-row:hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:active {
+  background: #efefef;
+}
+
+
+.typicalbutton {
+  padding: 20px;
+  margin: 20px;
+  /* margin-right: 20px; */
+  border-block-color: black;
+  background-color: #e7e7e7;
+  min-height: 100px;
+  text-transform: uppercase;
+  font-size: 18px;
+
+
+
+}
+
+.level2-bar {
+  /* min-width: 200px; */
+  font-size: 18px;
+}

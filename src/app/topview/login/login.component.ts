@@ -15,9 +15,10 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
 
   constructor(private userService: UserService,
-    private router: Router,
+              private router: Router,
     // private store: Store<{ui:fromApp.State}>
-    ) { }
+    ) { console.log('inside the cost of login!!');
+  }
 
   // createUser(): void {
 
@@ -33,7 +34,9 @@ export class LoginComponent implements OnInit {
 
 
 
+// tslint:disable-next-line:typedef
 public navigateTo(url?: string) {
+    console.log('in navigate to');
     url = url || 'nav';
     // this.store.dispatch({type: 'START_LOADING'});
     this.router.navigate([url], { replaceUrl: true });
@@ -49,8 +52,9 @@ public navigateTo(url?: string) {
 //   });
 // }
 
+// tslint:disable-next-line:typedef
 public login5(username: string, password: string) {
-  // console.log('AT LOGIN5::', this.email, this.password);
+  console.log('AT LOGIN5::', this.email, this.password);
   this.userService.signIn(username, password)
   .subscribe(data => {
     // console.log('THIS IS LOGIN RESULT', data);

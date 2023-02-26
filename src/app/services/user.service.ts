@@ -208,15 +208,25 @@ this.angularS1.queryDB(query,'2')
         query += ' return true';
         let answer = false;
         // console.log('MAKE LOGIN: ', query);
-        this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        // console.log('AT SIGNIN-R, ', r);
-        answer = r[0];
-      }
-      Answer.next(answer);
+    //     this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     // console.log('AT SIGNIN-R, ', r);
+    //     answer = r[0];
+    //   }
+    //   Answer.next(answer);
+    //   Answer.complete();
+
+    // });
+
+    this.angularS1.writeDB(query,'0')
+      .subscribe((data) => {
+        for (var i = 0; i < data.results.length; i++) {
+          answer = (data.results[i][0]);
+        }
+        Answer.next(answer);
       Answer.complete();
 
-    });
+      });
 
         return Answer;
 

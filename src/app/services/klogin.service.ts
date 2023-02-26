@@ -13,16 +13,16 @@ export class KLoginService {
   driverArray = [];
   constructor(public angularS: AngularNeo4jService, private http: HttpClient) {
     const url = environment.loginUrl;
-    fetch(url,{mode:'no-cors'})
-    .then(()=> {
-      this.loginSuccess = true
+    fetch(url || '', {mode: 'no-cors'})
+    .then(() => {
+      this.loginSuccess = true;
     })
-    .catch(()=> {this.loginSuccess = false})
+    .catch(() => {this.loginSuccess = false; });
 
   }
 
   doConnect(): void {
-    const url2 = environment.loginUrl2; //'http://192.168.0.169:7474';
+    const url2 = environment.loginUrl2;
     const url = environment.loginUrl;
     const username = 'neo4j';
     const password = 'etimbuk12';
@@ -54,7 +54,7 @@ export class KLoginService {
               if (driver2) {
                 console.log(`Successfully connected to ${url2}`);
               }
-            })
+            });
 
       }
 
@@ -66,13 +66,13 @@ export class KLoginService {
     this.angularS.disconnect();
   }
 
-  queryDB(query:string, option:string): Observable<any> {
+  queryDB(query: string, option: string): Observable<any> {
     let queryParams = new HttpParams();
 
-    queryParams = queryParams.append("queries", encodeURIComponent(query) );
-    queryParams = queryParams.append("option", option );
+    queryParams = queryParams.append('queries', encodeURIComponent(query) );
+    queryParams = queryParams.append('option', option );
 
-    return this.http.get<{results:any[],message:any, status:number}>(`${environment.neo4jAPI}/api/db-read`,{params:queryParams})
+    return this.http.get<{results: any[], message: any, status: number}>(`${environment.neo4jAPI}/api/db-read`, {params: queryParams})
     .pipe(
       tap(_ => console.log (`fetched the query:: ${query}`)),
       catchError(this.handleError<any>(`Issues with the query::${query}`, undefined)));

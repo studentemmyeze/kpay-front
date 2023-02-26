@@ -26,6 +26,7 @@
     "@types/chart.js": "^2.9.34",
     "angular-neo4j": "^0.8.0",
     "chart.js": "^3.6.0",
+    "dotenv": "^16.0.3",
     "downloads-folder": "^3.0.1",
     "express": "^4.17.2",
     "googleapis": "^92.0.0",

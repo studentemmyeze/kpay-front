@@ -44,10 +44,10 @@ export class ApplicationService {
       responseType: 'arraybuffer'
     })
 
-    .subscribe((data) =>{
+    .subscribe((data) => {
 
         if (this.readExcelFile(data.body)) {
-          answer.next(true)
+          answer.next(true);
           answer.complete();
         }
         else {
@@ -58,7 +58,7 @@ export class ApplicationService {
     }, (error: any) => {
       console.log(error);
       answer.next(false);
-          answer.complete();}
+      answer.complete(); }
 
     );
     return answer;

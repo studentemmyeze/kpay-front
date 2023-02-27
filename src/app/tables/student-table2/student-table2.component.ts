@@ -115,7 +115,7 @@ export class StudentTable2Component implements OnInit {
       if (studentAvailable === 2) {
         console.log("New student added  auto-SAVE TO DROPBOX!!!")
         this.studentAvailable = 2;
-        this.saveToDropbox();
+        // this.saveToDropbox();
         // this.utilityService.marker.next(1);
       }
     })
@@ -132,18 +132,18 @@ export class StudentTable2Component implements OnInit {
       this.utilityService.send2Regmarker = 2;
     }
 
-  this.dropboxToken = Utils.getAccessTokenFromUrl();
-      environment.dropboxToken =  this.dropboxToken
-      console.log('dropbox token constructor::', this.dropboxToken, environment.send2Reg, this.studentAvailable);
-      this.isAuthenticated = this.dropboxToken !== undefined;
-      if ((this.isAuthenticated) && (environment.send2Reg || this.studentAvailable === 2)) {
-        environment.dropboxToken = this.dropboxToken;
-        setTimeout(() => {
-          console.log('they are back settimeout')
-          this.saveToDropbox();
-
-        }, 5000);
-      }
+  // this.dropboxToken = Utils.getAccessTokenFromUrl();
+  //     environment.dropboxToken =  this.dropboxToken
+  //     console.log('dropbox token constructor::', this.dropboxToken, environment.send2Reg, this.studentAvailable);
+  //     this.isAuthenticated = this.dropboxToken !== undefined;
+  //     if ((this.isAuthenticated) && (environment.send2Reg || this.studentAvailable === 2)) {
+  //       environment.dropboxToken = this.dropboxToken;
+  //       setTimeout(() => {
+  //         console.log('they are back settimeout')
+  //         this.saveToDropbox();
+  //
+  //       }, 5000);
+  //     }
 
 
   }
@@ -511,108 +511,109 @@ getExcelWithGuardianInfo(): void {
     'sponsor_email',
     'sponsor_phone',
     'sponsor_relationship'
-  ]
-  others.forEach (e => {
+  ];
+    others.forEach (e => {
     tempColumnToDisplay.push(e)
-  })
+  });
     // console.log('here is sumofd2::', sumOfD2)
 
-  const answer=  RawUtil.exportToExcel(sumOfD2,'TU_Student_withSponsorInfo', tempColumnToDisplay)
+  const answer =  RawUtil.exportToExcel(sumOfD2, 'TU_Student_withSponsorInfo', tempColumnToDisplay)
 
 
-})
-
-}
-
-
-public saveToDropbox(option = 0) {
-  if (option === 1) {
-    environment.send2Reg = true;
-    this.utilityService.send2Regmarker = 2;
-    this.storage.save3(StorageKey3.DROPBOX_STATUS, "2");
-  }
-  this.isAuthenticated = false;
-
-  this.isAuthenticated = environment.dropboxToken !== undefined && environment.dropboxToken !== '';
-  var dbx = new Dropbox({ clientId: this.CLIENT_ID });
-    if (!this.isAuthenticated) {
-
-    this.authUrl = dbx.getAuthenticationUrl(environment.dropboxUrl);
-    // console.log('first dbx::', dbx)
-    environment.authSuccess = true;
-    this.document.location.href = this.authUrl;
-    // this.dropboxToken = Utils.getAccessTokenFromUrl();
-    // environment.dropboxToken = this.dropboxToken;
-    // console.log('after first_dbx-save2dropbox')
-    // setTimeout(() => {
-      console.log('!isauthenticatd-settimeout')
-    //   this.saveToDropbox2();
-
-    // }, 6000);
-
-
-
-  }
-
-else {
-  setTimeout(() => {
-      console.log('settimeout')
-      this.saveToDropbox2();
-
-    }, 1000);
-}
-
+});
 
 }
 
-saveToDropbox2() {
-  // console.log('inside_save_to_dropbox2',this.dropboxToken, environment.dropboxToken )
-  let sumOfD = []
-  this.studentService.getSponsorList().subscribe(data=> {
-    if (data.length > 0) {
-      // console.log('here is data::', data)
-    sumOfD = this.processGuardianInfo(data,this.dataSource.data)
-    // console.log('here is data::', sumOfD)
-    let sumOfDJSON = JSON.stringify(sumOfD)
-    // let idUser = environment.dropboxAccountID
-    // console.log('idUser::', idUser)
-    var dbx = new Dropbox({ accessToken: environment.dropboxToken});
-    console.log('here is dropbox::', dbx)
-    // console.log('accountID::', environment.dropboxAccountID)
-  // dbx.filesUpload({contents:JSON.stringify(StudentTable2Component.studentListForExport), path: this.FILE_NAME, mode: {".tag": 'overwrite'}, autorename: false, mute: true }).then(function(response: any) {
 
-      setTimeout(() => {
+// public saveToDropbox(option = 0) {
+//   if (option === 1) {
+//     environment.send2Reg = true;
+//     this.utilityService.send2Regmarker = 2;
+//     this.storage.save3(StorageKey3.DROPBOX_STATUS, "2");
+//   }
+//   this.isAuthenticated = false;
+//
+//   this.isAuthenticated = environment.dropboxToken !== undefined && environment.dropboxToken !== '';
+//   var dbx = new Dropbox({ clientId: this.CLIENT_ID });
+//     if (!this.isAuthenticated) {
+//
+//     this.authUrl = dbx.getAuthenticationUrl(environment.dropboxUrl);
+//     // console.log('first dbx::', dbx)
+//     environment.authSuccess = true;
+//     this.document.location.href = this.authUrl;
+//     // this.dropboxToken = Utils.getAccessTokenFromUrl();
+//     // environment.dropboxToken = this.dropboxToken;
+//     // console.log('after first_dbx-save2dropbox')
+//     // setTimeout(() => {
+//       console.log('!isauthenticatd-settimeout')
+//     //   this.saveToDropbox2();
+//
+//     // }, 6000);
+//
+//
+//
+//   }
+//
+// else {
+//   setTimeout(() => {
+//       console.log('settimeout')
+//       this.saveToDropbox2();
+//
+//     }, 1000);
+// }
+//
+//
+// }
+//
+// saveToDropbox2() {
+//   // console.log('inside_save_to_dropbox2',this.dropboxToken, environment.dropboxToken )
+//   let sumOfD = []
+//   this.studentService.getSponsorList().subscribe(data=> {
+//     if (data.length > 0) {
+//       // console.log('here is data::', data)
+//     sumOfD = this.processGuardianInfo(data,this.dataSource.data)
+//     // console.log('here is data::', sumOfD)
+//     let sumOfDJSON = JSON.stringify(sumOfD)
+//     // let idUser = environment.dropboxAccountID
+//     // console.log('idUser::', idUser)
+//     var dbx = new Dropbox({ accessToken: environment.dropboxToken});
+//     console.log('here is dropbox::', dbx)
+//     // console.log('accountID::', environment.dropboxAccountID)
+//   // dbx.filesUpload({contents:JSON.stringify(StudentTable2Component.studentListForExport), path: this.FILE_NAME, mode: {".tag": 'overwrite'}, autorename: false, mute: true }).then(function(response: any) {
+//
+//       setTimeout(() => {
+//
+//         dbx.filesUpload({contents:sumOfDJSON, path: this.FILE_NAME, mode: {".tag": 'overwrite'}, autorename: false, mute: true })
+//         .then((response: any) => {
+//           // console.log('here is dropbox::', dbx)
+//           if (this.studentAvailable === 2) {
+//             this.studentAvailable = 1
+//             this.utilityService.marker.next(1);
+//           }
+//           if (environment.send2Reg === true || this.utilityService.send2Regmarker === 2) {
+//             environment.send2Reg = false;
+//             this.utilityService.send2Regmarker = 1
+//             this.storage.remove3(DROPBOX_STATUS)
+//           }
+//           console.log('Saved to Dropbox successful')})
+//         .catch(function(error: any) {
+//         // If it errors because of a dropbox problem, reload the page so the user can re-connect to dropbox
+//         alert("Failed to save to dropbox");
+//         console.log(JSON.stringify(error));
+//         environment.dropboxToken = '';
+//         window.location.href = '/';
+//       });
+//
+//       }, 3000)
+//     }
+//
+//
+//
+//   })
+//
+// }
 
-        dbx.filesUpload({contents:sumOfDJSON, path: this.FILE_NAME, mode: {".tag": 'overwrite'}, autorename: false, mute: true })
-        .then((response: any) => {
-          // console.log('here is dropbox::', dbx)
-          if (this.studentAvailable === 2) {
-            this.studentAvailable = 1
-            this.utilityService.marker.next(1);
-          }
-          if (environment.send2Reg === true || this.utilityService.send2Regmarker === 2) {
-            environment.send2Reg = false;
-            this.utilityService.send2Regmarker = 1
-            this.storage.remove3(DROPBOX_STATUS)
-          }
-          console.log('Saved to Dropbox successful')})
-        .catch(function(error: any) {
-        // If it errors because of a dropbox problem, reload the page so the user can re-connect to dropbox
-        alert("Failed to save to dropbox");
-        console.log(JSON.stringify(error));
-        environment.dropboxToken = '';
-        window.location.href = '/';
-      });
-
-      }, 3000)
-    }
-
-
-
-  })
-
-}
-  deleteStudent(i: number, aQualif: Student): void {
+deleteStudent(i: number, aQualif: Student): void {
     this.studentService.deleteStudent(aQualif);
     const temp = this.dataSource.data;
 

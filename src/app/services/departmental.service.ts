@@ -13,7 +13,7 @@ export class DepartmentalService {
     ) { }
 
   getProgrammes(): AsyncSubject<Programme[]> {
-    let responseQuali2: AsyncSubject<Programme[]> = new AsyncSubject();
+    const responseQuali2: AsyncSubject<Programme[]> = new AsyncSubject();
 
     // this.angularS1.doConnect();
 
@@ -31,19 +31,19 @@ export class DepartmentalService {
 
     //   });
 
-      this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
 
           myNList.push({
             dName: data.results[i][0],
 
-            facultyDCode: data.results[i][1]} as ProgrammeFaculty)
+            facultyDCode: data.results[i][1]} as ProgrammeFaculty);
 
 
         }
         responseQuali2.next(myNList);
-        responseQuali2.complete()
+        responseQuali2.complete();
 
       });
     return responseQuali2;
@@ -53,8 +53,8 @@ export class DepartmentalService {
   setProgramme(
     aUser: ProgrammeFaculty): AsyncSubject<number> {
 
-    let responseQuali2: AsyncSubject<number> = new AsyncSubject();
-    let answer = 0
+    const responseQuali2: AsyncSubject<number> = new AsyncSubject();
+    let answer = 0;
     const query = `merge (n:Programme{dName: toUpper("${aUser.dName}")})
     with n
     MATCH (f:Faculty) where f.dCode = "${aUser.facultyDCode}" with f,n
@@ -62,34 +62,34 @@ export class DepartmentalService {
     return 1
     `;
 
-    this.angularS1.writeDB(query,'0')
+    this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           answer = parseFloat(data.results[i][0]);
         }
 
       });
 
 
-      responseQuali2.next(answer);
-      responseQuali2.complete()
+    responseQuali2.next(answer);
+    responseQuali2.complete();
 
-      return responseQuali2;
+    return responseQuali2;
     }
 
   getFaculties(): AsyncSubject<Faculty[]> {
-    this.angularS1.doConnect();
-    let responseQuali2: AsyncSubject<Faculty[]> = new AsyncSubject();
+    // this.angularS1.doConnect();
+    const responseQuali2: AsyncSubject<Faculty[]> = new AsyncSubject();
 
     const myNList: Faculty[] = [] ;
     const query = `MATCH (n:Faculty) return n order by n.dCode`;
-    this.angularS1.queryDB(query,'2')
+    this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
-          myNList.push(data.results[i])
+        for (let i = 0; i < data.results.length; i++) {
+          myNList.push(data.results[i]);
         }
         responseQuali2.next(myNList);
-        responseQuali2.complete()
+        responseQuali2.complete();
       });
 
     return responseQuali2;
@@ -99,8 +99,8 @@ export class DepartmentalService {
   setFaculties(
     aFaculty: Faculty): AsyncSubject<number> {
 
-    let responseQuali2: AsyncSubject<number> = new AsyncSubject();
-    let answer = 0
+    const responseQuali2: AsyncSubject<number> = new AsyncSubject();
+    let answer = 0;
     const query = `MERGE (n:Faculty{dCode:toUpper("${aFaculty.dCode}")})
     set n.dName = "${aFaculty.dName}"
 
@@ -117,19 +117,19 @@ export class DepartmentalService {
     //   }
     //   });
 
-      this.angularS1.writeDB(query,'0')
+    this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           answer = parseFloat(data.results[i][0]);
         }
 
       });
 
 
-      responseQuali2.next(answer);
-      responseQuali2.complete()
+    responseQuali2.next(answer);
+    responseQuali2.complete();
 
-      return responseQuali2;
+    return responseQuali2;
     }
 
 

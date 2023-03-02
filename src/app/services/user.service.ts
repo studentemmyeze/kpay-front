@@ -82,16 +82,27 @@ export class UserService {
     `;
 
     // console.log('CREATE USER: ', query);
-    this.angularS1.doConnect();
-    this.angularS1.angularS.run(query).then((res: any) => {
-      // console.log('CREATE USER: ', res);
-      this.answerCreateUser.next(true);
+    // this.angularS1.doConnect();
+
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   // console.log('CREATE USER: ', res);
+    //   this.answerCreateUser.next(true);
+    //   });
+
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          this.answerCreateUser.next(data.results[i][0] ? true : false);
+        }
+        // Answer.next(answer);
+        // Answer.complete();
+
       });
 
     // console.log('CREATE GUEST- Answer ASubject: ', this.answerCreateUser);
   }
 
-  editUser(aUser:User ): BehaviorSubject<boolean> {
+  editUser(aUser: User ): BehaviorSubject<boolean> {
     const answerEditUser: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     let query = `merge (n:User{staffID:"${aUser.staffID}"})`;
@@ -104,10 +115,21 @@ export class UserService {
     query += `return 1`;
 
     // console.log('EDIT USER: ', query);
-    this.angularS1.doConnect();
-    this.angularS1.angularS.run(query).then((res: any) => {
-      // console.log('EDIT USER: ', res);
-      answerEditUser.next(true);
+    // this.angularS1.doConnect();
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   // console.log('EDIT USER: ', res);
+    //   answerEditUser.next(true);
+    //   });
+
+
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          answerEditUser.next(data.results[i][0] ? true : false);
+        }
+        // Answer.next(answer);
+        // Answer.complete();
+
       });
 
     return answerEditUser;
@@ -135,10 +157,10 @@ export class UserService {
 // },
 // () => {});
 
-this.angularS1.queryDB(query,'2')
+    this.angularS1.queryDB(query, '2')
 .subscribe((data) => {
   if (data) {
-    for (var i = 0; i < data.results.length; i++) {
+    for (let i = 0; i < data.results.length; i++) {
       DishList.push(data.results[i] as User);
     }
     userList.next(DishList);
@@ -220,11 +242,11 @@ this.angularS1.queryDB(query,'2')
 
     this.angularS1.writeDB(query,'0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           answer = (data.results[i][0]);
         }
         Answer.next(answer);
-      Answer.complete();
+        Answer.complete();
 
       });
 
@@ -245,16 +267,27 @@ this.angularS1.queryDB(query,'2')
       `;
       let answer = false;
       // console.log('MAKE LOGOUT: ', query);
-      this.angularS1.doConnect();
+      // this.angularS1.doConnect();
 
-      this.angularS1.angularS.run(query).then((res: any) => {
-    for (const r of res) {
-      // console.log('AT SIGNIN-R, ', r);
-      answer = r[0];
-    }
-    Answer.next(answer);
-    Answer.complete();
-  });
+  //     this.angularS1.angularS.run(query).then((res: any) => {
+  //   for (const r of res) {
+  //     // console.log('AT SIGNIN-R, ', r);
+  //     answer = r[0];
+  //   }
+  //   Answer.next(answer);
+  //   Answer.complete();
+  // });
+
+      this.angularS1.queryDB(query, '0')
+        .subscribe((data) => {
+          for (let i = 0; i < data.results.length; i++) {
+            // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
+            answer = (data.results[i][0]);
+          }
+          // console.log('the balance adv:::', aList[0]);
+          Answer.next(answer);
+          Answer.complete();
+        });
 
       return Answer;
     }
@@ -283,8 +316,8 @@ this.angularS1.queryDB(query,'2')
     // this.http.get<{results:any[],message:any, status:number}>(`http://localhost:3000/api/db-read`,{params:queryParams})
     this.angularS1.queryDB(query,'0')
     .subscribe((data) => {
-      for (var i = 0; i < data.results.length; i++) {
-        console.log((data.results[i]))
+      for (let i = 0; i < data.results.length; i++) {
+        // console.log((data.results[i]));
         answer = data.results[i][0];
         answer2 = data.results[i][1];
         answer3 = data.results[i][2];
@@ -300,6 +333,7 @@ this.angularS1.queryDB(query,'2')
 
         this.makeLogin(username, handOffUser,
           handOffUserLoginID, handOffList)
+          // tslint:disable-next-line:no-shadowed-variable
           .subscribe((data) => {
             if (data) {
               const tempToSave  = this.token2 + '$$$' + this.nameToken
@@ -447,15 +481,25 @@ public isLogged(): boolean {
     const MaxRm: BehaviorSubject<string> = new BehaviorSubject<string>('');
     const query = 'match (a:User) return  max(a.staffID)';
     let answer = '';
-    this.angularS1.doConnect();
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        answer = r[0];
-      }
+    // // this.angularS1.doConnect();
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     answer = r[0];
+    //   }
+    //
+    //   MaxRm.next(answer);
+    //
+    //
+    //   });
 
-      MaxRm.next(answer);
-
-
+    this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
+          answer = (data.results[i][0]);
+        }
+        // console.log('the balance adv:::', aList[0]);
+        MaxRm.next(answer);
       });
     return MaxRm;
 
@@ -467,31 +511,51 @@ checkUserExists(aUserName: string): BehaviorSubject<boolean> {
   const MaxRm: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   const query = `match (a:User) where a.staffID = '${aUserName}' return true`;
   let answer = false;
-  this.angularS1.doConnect();
-  this.angularS1.angularS.run(query).then((res: any) => {
-    for (const r of res) {
-      answer = r[0];
-    }
+  // this.angularS1.doConnect();
+  // this.angularS1.angularS.run(query).then((res: any) => {
+  //   for (const r of res) {
+  //     answer = r[0];
+  //   }
+  //
+  //   MaxRm.next(answer);
+  //
+  //
+  //   });
 
-    MaxRm.next(answer);
-
-
+  this.angularS1.queryDB(query, '0')
+    .subscribe((data) => {
+      for (let i = 0; i < data.results.length; i++) {
+        // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
+        answer = (data.results[i][0]);
+      }
+      // console.log('the balance adv:::', aList[0]);
+      MaxRm.next(answer);
     });
   return MaxRm;
 }
 checkUserExists2(aUserName: string): boolean {
-  // const MaxRm: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  const MaxRm: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   const query = `match (a:User) where a.staffID = '${aUserName}' return true`;
   let answer = false;
-  this.angularS1.doConnect();
-  this.angularS1.angularS.run(query).then((res: any) => {
-    for (const r of res) {
-      answer = r[0];
-    }
+  // this.angularS1.doConnect();
+  // this.angularS1.angularS.run(query).then((res: any) => {
+  //   for (const r of res) {
+  //     answer = r[0];
+  //   }
+  //
+  //   // MaxRm.next(answer);
+  //
+  //
+  //   });
 
-    // MaxRm.next(answer);
-
-
+  this.angularS1.queryDB(query, '0')
+    .subscribe((data) => {
+      for (let i = 0; i < data.results.length; i++) {
+        // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
+        answer = (data.results[i][0]);
+      }
+      // console.log('the balance adv:::', aList[0]);
+      MaxRm.next(answer);
     });
   return answer;
 }
@@ -500,15 +564,24 @@ getPassword(aUserName: string): BehaviorSubject<string> {
   const MaxRm: BehaviorSubject<string> = new BehaviorSubject<string>('');
   const query = `match (a:User) where a.staffID = '${aUserName}' return a.password`;
   let answer = '';
-  this.angularS1.doConnect();
-  this.angularS1.angularS.run(query).then((res: any) => {
-    for (const r of res) {
-      answer = r[0];
-    }
+  // this.angularS1.doConnect();
+  // this.angularS1.angularS.run(query).then((res: any) => {
+  //   for (const r of res) {
+  //     answer = r[0];
+  //   }
+  //
+  //   MaxRm.next(answer);
+  //
+  //
+  //   });
 
-    MaxRm.next(answer);
-
-
+  this.angularS1.queryDB(query, '0')
+    .subscribe((data) => {
+      for (let i = 0; i < data.results.length; i++) {
+        // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
+        answer = data.results[i][0];
+      }
+      MaxRm.next(answer);
     });
   return MaxRm;
 }
@@ -517,16 +590,16 @@ getPassword2(aUserName: string): string {
   // const MaxRm: BehaviorSubject<string> = new BehaviorSubject<string>('');
   const query = `match (a:User) where a.staffID = '${aUserName}' return a.password`;
   let answer = '';
-  this.angularS1.doConnect();
-  this.angularS1.angularS.run(query).then((res: any) => {
-    for (const r of res) {
-      answer = r[0];
-    }
+  // this.angularS1.doConnect();
+  // this.angularS1.angularS.run(query).then((res: any) => {
+  //   for (const r of res) {
+  //     answer = r[0];
+  //   }
 
     // MaxRm.next(answer);
 
 
-    });
+    // });
   //console.log('AT GET PASSWORD: ', answer);
   return answer;
 }

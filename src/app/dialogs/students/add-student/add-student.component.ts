@@ -36,10 +36,10 @@ import { Neo4jdatePipe } from 'src/app/pipes/neo4jdate.pipe';
 ]
 })
 export class AddStudentComponent implements AfterViewInit {
-  subscriptionCreationStatus: Subscription
-  action:string = '';
-  local_data:any;
-  selectedFoundationNo = "";
+  subscriptionCreationStatus: Subscription;
+  action = '';
+  local_data: any;
+  selectedFoundationNo = '';
   selectedStudent: Partial <Student> = {};
   selectedTempStudent: Partial <TempStudent> = {};
   selectedApplication: Partial <Applications> = {};
@@ -58,13 +58,13 @@ export class AddStudentComponent implements AfterViewInit {
   isUpdates = false;
   isAnUpdates = false;
   progressMarker = false;
-  alphabet = "abcdefghijklmnopqrstuvwxyz"
+  alphabet = 'abcdefghijklmnopqrstuvwxyz';
 
 
 
   relationshipList = ['Father', 'Mother', 'Brother', 'Sister',
   'Son', 'Daughter', 'Husband', 'Wife',
-  'Uncle', 'Aunt','Brother-In-Law', 'Sister-In-Law',
+  'Uncle', 'Aunt', 'Brother-In-Law', 'Sister-In-Law',
   'Father-In-Law', 'Mother-In-Law', 'Son-In-Law', 'Daughter-In-Law',
   'Cousin', 'Neice',
   'Nephew'];
@@ -72,14 +72,14 @@ export class AddStudentComponent implements AfterViewInit {
   relationshipList2 = ['SELF', 'CORPORATE SPONSOR', 'FATHER',
   'MOTHER', 'BROTHER', 'SISTER',
   'SON', 'DAUGHTER', 'HUSBAND', 'WIFE',
-  'UNCLE', 'AUNT','BROTHER-IN-LAW', 'SISTER-IN-LAW',
+  'UNCLE', 'AUNT', 'BROTHER-IN-LAW', 'SISTER-IN-LAW',
   'FATHER-IN-LAW', 'MOTHER-IN-LAW', 'SON-IN-LAW', 'DAUGHTER-IN-LAW',
   'COUSIN', 'NEICE',
   'NEPHEW'];
   Genders = [ 'M', 'F' ];
   Titles = ['MR', 'MRS', 'MS', 'DR', 'ALH', 'PAST',
   'REV', 'ELDER' ];
-  ReligionList = ['CHRISTIANITY', 'ISLAM', 'TRADITIONAL']
+  ReligionList = ['CHRISTIANITY', 'ISLAM', 'TRADITIONAL'];
   MaritalStats = ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED' ];
   Levels = [100, 200, 300, 400, 500 ];
   buttonStatus = ['ADD', 'UPDATE', 'RESET', 'CANCEL'];
@@ -136,7 +136,7 @@ export class AddStudentComponent implements AfterViewInit {
     private payStackService: PaystackService,
     private emailService: EmailService,
 
-    //@Optional() is used to prevent error if no data is passed
+    // @Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: string) {
       this.applicationService.applicationList.subscribe(
         data => {
@@ -149,7 +149,7 @@ export class AddStudentComponent implements AfterViewInit {
           // console.log("APPLICATION:::", data);
         }
       );
-      this.selectedStudy.jambNo = (this.selectedStudy.jambNo ? this.selectedStudy.jambNo : "" );
+      this.selectedStudy.jambNo = (this.selectedStudy.jambNo ? this.selectedStudy.jambNo : '' );
       this.filteredStates = this.stateCtrl.valueChanges
       .pipe(
         startWith(''),
@@ -169,7 +169,7 @@ export class AddStudentComponent implements AfterViewInit {
     }
     ngOnDestroy(){
       if (this.emailService.subscriptionCheckStatus) {this.emailService.subscriptionCheckStatus.unsubscribe();
-        if (this.emailService.id) {
+                                                      if (this.emailService.id) {
           clearInterval(this.emailService.id);
         }
 
@@ -181,37 +181,37 @@ export class AddStudentComponent implements AfterViewInit {
     //   this.subscriptionCreationStatus.unsubscribe
     // }
 
-  filterListForUsed(avaiableStudy: Study[], fullList: Applications[]) : any[] {
+  filterListForUsed(avaiableStudy: Study[], fullList: Applications[]): any[] {
     const answer: Applications[] = [];
-    for (let i =0 ; i < fullList.length ; i++)
+    for (let i = 0 ; i < fullList.length ; i++)
     {
       const aCheck = this.studyPipe.transform(avaiableStudy, fullList[i]);
       if (!aCheck || aCheck.length === 0)
       {
-        answer.push(fullList[i])
+        answer.push(fullList[i]);
       }
 
     }
     return answer;
   }
 
-  showCreationStatus(save:boolean, email:boolean, group:boolean): boolean {
-    let answer = false
-    if (email && !this.emailCreated) {answer = true}
-    if (group && !this.groupJoined) {answer = true}
-    return answer
+  showCreationStatus(save: boolean, email: boolean, group: boolean): boolean {
+    let answer = false;
+    if (email && !this.emailCreated) {answer = true; }
+    if (group && !this.groupJoined) {answer = true; }
+    return answer;
   }
 
   ngOnInit(): void {
-    this.subscriptionCreationStatus= this.emailService.responseEmail
+    this.subscriptionCreationStatus = this.emailService.responseEmail
         // .pipe(takeUntil(value => value.emailDone && value.groupDone )
-        .subscribe((data)=> {
-          if(data && data.emailSentStatus[0]){
+        .subscribe((data) => {
+          if (data && data.emailSentStatus[0]){
             this.emailCreated[1] = true;
             this.groupJoined[0] = true;
 
           }
-          if(data && data.emailGroupStatus[0]){this.groupJoined[1] = true;}
+          if (data && data.emailGroupStatus[0]){this.groupJoined[1] = true; }
 
         });
 
@@ -224,7 +224,7 @@ export class AddStudentComponent implements AfterViewInit {
 
         }
       }
-    )
+    );
 
     this.dialogRef.beforeClosed().subscribe(
       () => {
@@ -237,7 +237,7 @@ export class AddStudentComponent implements AfterViewInit {
     this.NationalityList = this.applicationService.getNationalities();
     this.bankService.getAllBanks().subscribe(
       (data) => {
-        this.bankList = data
+        this.bankList = data;
 
       }
     );
@@ -257,7 +257,7 @@ export class AddStudentComponent implements AfterViewInit {
   }
 
   closeDialog(){
-    this.dialogRef.close({data:this.local_data});
+    this.dialogRef.close({data: this.local_data});
     console.log('CLOSE DIALOG TRIGGERED');
 
   }
@@ -286,18 +286,18 @@ export class AddStudentComponent implements AfterViewInit {
     this.selectedStudy.staffIn = this.userService.getUser();
 
 
-    //console.log("SEE STUDENT:::", this.selectedStudent);
-    //console.log("SEE STUDY:::", this.selectedStudy);
+    // console.log("SEE STUDENT:::", this.selectedStudent);
+    // console.log("SEE STUDY:::", this.selectedStudy);
     this.studentSaved[0] = true;
     this.studentService.setStudent(this.selectedStudent as Student, this.selectedStudy as Study, this.nextOfKinList,
       this.selectedSponsorDetail as SponsorDetails)
     .subscribe((data: number) => {
       if (data) {
-        this.studentService.newStudentMarker.next(2)
+        this.studentService.newStudentMarker.next(2);
         this.studentSaved[1] = true;
         this.emailCreated[0] = true;
         // create student email
-        this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); //forward to create
+        this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); // forward to create
 
         this.editingDoneMarker = true;
         const message = 'SUCCESS: STUDENT RECORD CREATED!';
@@ -317,19 +317,19 @@ export class AddStudentComponent implements AfterViewInit {
     this.selectedStudy.staffIn = this.userService.getUser();
 
 
-    console.log("SEE STUDENT:::", this.selectedStudent);
-    console.log("SEE STUDY:::", this.selectedStudy);
+    console.log('SEE STUDENT:::', this.selectedStudent);
+    console.log('SEE STUDY:::', this.selectedStudy);
     this.studentSaved[0] = true;
     // this.studentService.setStudent(this.selectedStudent as Student, this.selectedStudy as Study, this.nextOfKinList,
     //   this.selectedSponsorDetail as SponsorDetails)
     // .subscribe(async (data: number) => {
     const data = await this.studentService.setStudent2(this.selectedStudent as Student, this.selectedStudy as Study, this.nextOfKinList,
-                  this.selectedSponsorDetail as SponsorDetails)
+                  this.selectedSponsorDetail as SponsorDetails);
     if (data) {
         this.studentSaved[1] = true;
         this.emailCreated[0] = true;
         // create student email
-        await this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); //forward to create
+        await this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); // forward to create
 
         this.editingDoneMarker = true;
         const message = 'SUCCESS: STUDENT RECORD CREATED!';
@@ -342,7 +342,7 @@ export class AddStudentComponent implements AfterViewInit {
 
 
   setStudentInfo(): void {
-    this.selectedStudy.jambNo = "";
+    this.selectedStudy.jambNo = '';
   }
 
   setStudyInfoPrompt(): void {
@@ -383,7 +383,7 @@ export class AddStudentComponent implements AfterViewInit {
       this.selectedStudent.studentType = this.selectedStudy.studentType;
       this.selectedStudent.department = this.selectedStudy.department;
       this.selectedStudent.title =
-      this.selectedApplication.gender ? (this.selectedApplication.gender === 'M' ? "MR" : 'MS'): ''
+      this.selectedApplication.gender ? (this.selectedApplication.gender === 'M' ? 'MR' : 'MS') : '';
       this.selectedStudent.firstName = this.selectedApplication.firstName?.toString().toUpperCase();
       this.selectedStudent.lastName = this.selectedApplication.lastName?.toString().toUpperCase();
       this.selectedStudent.middleName = this.selectedApplication.middleName?.toString().toUpperCase();
@@ -394,8 +394,8 @@ export class AddStudentComponent implements AfterViewInit {
       this.selectedStudent.address = this.selectedApplication.address?.toString().toUpperCase() ;
       this.selectedStudent.activeStatus = true;
       this.korotePayService.getNextSessionResumptionDate()
-      .subscribe((data)=> {
-        if(data) {
+      .subscribe((data) => {
+        if (data) {
           this.selectedStudy.beginDate = data;
 
         }
@@ -405,10 +405,13 @@ export class AddStudentComponent implements AfterViewInit {
 
 
 
-      console.log("STUDY", this.selectedStudy);
-      console.log("APPLICATION", this.selectedApplication);
+      console.log('STUDY', this.selectedStudy);
+      console.log('APPLICATION', this.selectedApplication);
       if (!this.selectedStudent.studentNo || this.selectedStudent.studentNo === undefined || this.selectedStudent.studentNo === '' )
-        { this.aNewStudentRef(); }
+        {
+          console.log('Inside the aNewStudentRef');
+          this.aNewStudentRef();
+        }
 
       // get studentNo
       // set temp Student Node
@@ -425,7 +428,7 @@ export class AddStudentComponent implements AfterViewInit {
   }
 
   public viewIndex(anIndex: number): void {
-    console.log("THE INDEX::", anIndex);
+    console.log('THE INDEX::', anIndex);
   }
 
   getAPITUList(): void {
@@ -441,12 +444,12 @@ export class AddStudentComponent implements AfterViewInit {
         this.syncDone = true;
         this.syncClicked = false;
         this.mode = 'determinate';
-        this.value = 100
-        this.color = 'primary'
+        this.value = 100;
+        this.color = 'primary';
 
       }
       else {
-        console.log("APPLIATIONS API GRAB ERROR")
+        console.log('APPLIATIONS API GRAB ERROR');
         this.errorCount++;
         if (this.errorCount < 2) {
           this.applicationService
@@ -454,15 +457,15 @@ export class AddStudentComponent implements AfterViewInit {
         {
           if (data ) {this.color = 'primary'; }
           else {
-            console.log("ERROR WITH LOCAL GRABBNG APPLICATIONS");
+            console.log('ERROR WITH LOCAL GRABBNG APPLICATIONS');
             this.color = 'accent';
           }
           this.mode = 'determinate';
-          this.value = 100
+          this.value = 100;
           this.syncDone = true;
           this.syncClicked = false;
 
-        });}
+        }); }
 
 
 
@@ -486,10 +489,10 @@ export class AddStudentComponent implements AfterViewInit {
           {
 
             this.local_data = this.selectedStudent.studentNo ;
-            console.log("AUTO ADD NEXT OF KIN");
+            console.log('AUTO ADD NEXT OF KIN');
             // this.autoAddNextOfKin();
             // this.autoAddStudy();
-            console.log("STUDENT DATA:::", this.selectedStudent);
+            console.log('STUDENT DATA:::', this.selectedStudent);
 
           }
         });
@@ -509,38 +512,40 @@ export class AddStudentComponent implements AfterViewInit {
   // generate new student number
   aNewStudentRef(): void {
     setTimeout( () => {
-      this.studentService.getStudentNumber().subscribe((val) => {
-        if (val) {
-        this.selectedStudent.studentNo = this.utilityService.prepareNewID2(val, 9);
-        this.selectedTempStudent.studentNo = this.selectedStudent.studentNo;
-        this.studentService.setTempStudent(this.selectedTempStudent as TempStudent)
-        .subscribe((val: any) => {
-          if (val)
-          {
-
-            this.local_data = this.selectedStudent.studentNo ;
-            console.log("AUTO ADD NEXT OF KIN");
-            this.autoAddNextOfKin();
-            this.autoAddStudy();
-
-          }
-        });
-
-        }
-
-      });
 
 
     }, 200);
+    this.studentService.getStudentNumber().subscribe((val) => {
+      console.log('inside get student No::', val);
+      if (val) {
+        this.selectedStudent.studentNo = this.utilityService.prepareNewID2(val, 9);
+        this.selectedTempStudent.studentNo = this.selectedStudent.studentNo;
+        this.studentService.setTempStudent(this.selectedTempStudent as TempStudent)
+          .subscribe((val: any) => {
+            if (val)
+            {
+
+              this.local_data = this.selectedStudent.studentNo ;
+              console.log('AUTO ADD NEXT OF KIN');
+              this.autoAddNextOfKin();
+              this.autoAddStudy();
+
+            }
+          });
+
+      }
+
+    });
+
 
 
 
   }
 
   displayFn(applicant: Applications): string {
-    console.log("THE INDEX::", applicant);
+    console.log('THE INDEX::', applicant);
     // this.selectedApplication = applicant;
-    console.log("THE APP::", this.selectedApplication);
+    console.log('THE APP::', this.selectedApplication);
 
     return applicant && applicant.jambNo ? applicant.jambNo : '';
   }
@@ -561,23 +566,23 @@ export class AddStudentComponent implements AfterViewInit {
 
   checkIfStudyExists(): void {
     if (this.dataSource.data.length < 1) {
-      this.isUpdates22 = true
+      this.isUpdates22 = true;
 
     }
   }
 
   getCorporateStatus(): boolean {
-    return (this.selectedSponsorDetail.relationship as string === "Corporate Sponsor" ? false : true);
+    return (this.selectedSponsorDetail.relationship as string === 'Corporate Sponsor' ? false : true);
   }
 
   checkMarried(): boolean {
-    if (this.selectedStudent.maritalStatus !== 'SINGLE' && this.selectedStudent.gender === 'F') { return true;}
-    else {return false;}
+    if (this.selectedStudent.maritalStatus !== 'SINGLE' && this.selectedStudent.gender === 'F') { return true; }
+    else {return false; }
   }
   readyUpdates22(): void {
     // check to see if the number of next of kin is up to two
     if (this.checkNumberOfNOK() > 1) {
-      this.openSnackBar("Only 2 Next of Kin allowed! Please remove one Next of Kin", 'close' );
+      this.openSnackBar('Only 2 Next of Kin allowed! Please remove one Next of Kin', 'close' );
     }
 
     else{
@@ -626,7 +631,7 @@ export class AddStudentComponent implements AfterViewInit {
     this.isAnUpdates22 = true;
     this.isUpdates22 = true;
     this.globalIndex = i;
-    console.log("A ROW::::", aQualif)
+    console.log('A ROW::::', aQualif);
     this.selectedNextOfKin = aQualif;
     // this.clearNextOfKin();
     // this.selectedNextOfKin.email = aQualif.email;
@@ -639,7 +644,7 @@ export class AddStudentComponent implements AfterViewInit {
     // this.selectedNextOfKin.title = aQualif.title ;
     // this.selectedNextOfKin.creationStamp = aQualif.creationStamp;
 
-    console.log("A ROW SELECTNEXTKIN::::", this.selectedNextOfKin);
+    console.log('A ROW SELECTNEXTKIN::::', this.selectedNextOfKin);
 
 
   }
@@ -649,7 +654,7 @@ export class AddStudentComponent implements AfterViewInit {
     this.isAnUpdates = true;
     this.isUpdates = true;
     // this.globalIndex = i;
-    console.log("A ROW STUDY::::", aQualif)
+    console.log('A ROW STUDY::::', aQualif);
 
 
     this.selectedStudy.beginDate = aQualif.beginDate;
@@ -668,7 +673,7 @@ export class AddStudentComponent implements AfterViewInit {
 
 
 
-    console.log("A ROW SELECTSTUDY::::", this.selectedStudy);
+    console.log('A ROW SELECTSTUDY::::', this.selectedStudy);
 
 
   }
@@ -681,14 +686,14 @@ export class AddStudentComponent implements AfterViewInit {
     this.isUpdates22 = true;
 
     // this.clearNextOfKin();
-    this.selectedNextOfKin.email = aQualif.email ? aQualif.email: '';
+    this.selectedNextOfKin.email = aQualif.email ? aQualif.email : '';
     this.selectedNextOfKin.fullName = aQualif.fullName ? aQualif.fullName : '';
     this.selectedNextOfKin.address = aQualif.address ? aQualif.address : '';
 
-    this.selectedNextOfKin.occupation = aQualif.occupation ? aQualif.occupation: '';
-    this.selectedNextOfKin.phone = aQualif.phone ? aQualif.phone: '';
-    this.selectedNextOfKin.relationship = aQualif.relationship ? aQualif.relationship: '';
-    this.selectedNextOfKin.title = aQualif.title ? aQualif.title: '';
+    this.selectedNextOfKin.occupation = aQualif.occupation ? aQualif.occupation : '';
+    this.selectedNextOfKin.phone = aQualif.phone ? aQualif.phone : '';
+    this.selectedNextOfKin.relationship = aQualif.relationship ? aQualif.relationship : '';
+    this.selectedNextOfKin.title = aQualif.title ? aQualif.title : '';
     this.selectedNextOfKin.creationStamp = aQualif.creationStamp;
 
   }
@@ -711,12 +716,12 @@ export class AddStudentComponent implements AfterViewInit {
 
   addNextOfKin(): void {
     if (this.checkNumberOfNOK() > 1) {
-      this.openSnackBar("Only 2 Next of Kin allowed! Please remove one Next of Kin", 'close' );
+      this.openSnackBar('Only 2 Next of Kin allowed! Please remove one Next of Kin', 'close' );
     }
 
     else{
 
-      this.nextOfKinList.push(this.selectedNextOfKin as NextKin)
+      this.nextOfKinList.push(this.selectedNextOfKin as NextKin);
       this.loadNextOfKin();
     }
   }
@@ -724,23 +729,23 @@ export class AddStudentComponent implements AfterViewInit {
   autoAddStudy(): void {
 
 
-    this.studyList = []
-    this.studyList.push(this.selectedStudy as Study)
+    this.studyList = [];
+    this.studyList.push(this.selectedStudy as Study);
     this.loadStudy();
 
 
   }
 
   generateIUFStudyNo(): string {
-    let results = ""
+    let results = '';
     const dig3 = Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString();
     const dig2 = Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString();
     const dig1 = Math.floor(Math.random() * 10);
-    const randomCharacter1 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)]
-    const randomCharacter2 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)]
-    const randomCharacter3 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)]
+    const randomCharacter1 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
+    const randomCharacter2 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
+    const randomCharacter3 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
     // format 2 digits- 2 letters-3 digits-1 letter total of 8
-    results = dig2 + randomCharacter1.toUpperCase() + randomCharacter2.toUpperCase()+
+    results = dig2 + randomCharacter1.toUpperCase() + randomCharacter2.toUpperCase() +
                dig3 + randomCharacter3.toUpperCase();
     return results;
   }
@@ -748,29 +753,29 @@ export class AddStudentComponent implements AfterViewInit {
   isFoundation(): boolean {
     let answer = false;
     if (this.selectedStudy.studentType === 6 ) {
-      answer = true;}
+      answer = true; }
     return answer;
 
   }
   checkForFoundation(): boolean {
     let answer = false;
-    if (this.isFoundation() && (!this.isUpdates || this.selectedFoundationNo === "")) {
+    if (this.isFoundation() && (!this.isUpdates || this.selectedFoundationNo === '')) {
       this.selectedFoundationNo = this.generateIUFStudyNo();
       // console.log("foundation no::", this.selectedFoundationNo)
-      answer = true}
-    return answer
+      answer = true; }
+    return answer;
   }
 
   addStudy(): void {
     if (this.studyList.length > 0) {
-      //inform that old has to be deleted
-      this.openSnackBar("Only 1 Applicant Study allowed! Please remove existing study", 'close' );
+      // inform that old has to be deleted
+      this.openSnackBar('Only 1 Applicant Study allowed! Please remove existing study', 'close' );
 
     }
     else {
 
-      this.selectedStudy.jambNo = this.selectedStudy.studentType === 6  ? this.selectedFoundationNo : this.selectedApplication as string
-      this.studyList.push(this.selectedStudy as Study)
+      this.selectedStudy.jambNo = this.selectedStudy.studentType === 6  ? this.selectedFoundationNo : this.selectedApplication as string;
+      this.studyList.push(this.selectedStudy as Study);
       this.loadStudy();
       this.selectedStudent.level = 100;
       this.selectedStudent.studentType = this.selectedStudy.studentType;
@@ -778,8 +783,8 @@ export class AddStudentComponent implements AfterViewInit {
 
       this.selectedStudent.activeStatus = true;
       this.korotePayService.getNextSessionResumptionDate()
-      .subscribe((data)=> {
-        if(data) {
+      .subscribe((data) => {
+        if (data) {
           this.selectedStudy.beginDate = data;
 
         }
@@ -866,20 +871,20 @@ export class AddStudentComponent implements AfterViewInit {
 
   loadStudy(): void {
     this.dataSource.data = this.studyList;
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
 
   }
 
-  clearFilter(): void {this.selectedApplication = {};}
+  clearFilter(): void {this.selectedApplication = {}; }
 
   checkLoadedApplication(): boolean {
-    if (this.selectedApplication === undefined    ) {return false;}
-    else {return true;}
+    if (this.selectedApplication === undefined    ) {return false; }
+    else {return true; }
   }
 
   filterUsedJAMBNoApplication(originalApp: Applications[], usedJAMB: string[]): Applications[] {
-    return originalApp.filter(app => !(usedJAMB.includes(app.jambNo)))
+    return originalApp.filter(app => !(usedJAMB.includes(app.jambNo)));
 
   }
 
@@ -889,9 +894,9 @@ export class AddStudentComponent implements AfterViewInit {
       if (data) {
         data.forEach(e => {
           e.jambNo ? answer.push(e.jambNo) : '';
-        })
+        });
       }
-    this.appList = this.filterUsedJAMBNoApplication(this.appList2, answer);
+      this.appList = this.filterUsedJAMBNoApplication(this.appList2, answer);
 
 
     });
@@ -901,6 +906,6 @@ export class AddStudentComponent implements AfterViewInit {
 }
 
 export interface EmailStatusInfo
-{ emailSentStatus: number[], emailGroupStatus:number[],
-  emailDone: boolean, groupDone: boolean
+{ emailSentStatus: number[]; emailGroupStatus: number[];
+  emailDone: boolean; groupDone: boolean;
 }

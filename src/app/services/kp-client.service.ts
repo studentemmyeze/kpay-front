@@ -1,46 +1,55 @@
 import { Injectable } from '@angular/core';
 import { AsyncSubject } from 'rxjs/internal/AsyncSubject';
 import { KLoginService } from './klogin.service';
+import {Study} from '../interfaces/student';
+import {ApprovedBank} from '../interfaces/user';
+import {UtilityService} from './utility.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class KpClientService {
 
-  constructor(public angularS1: KLoginService) { }
+  constructor(public angularS1: KLoginService, private utils: UtilityService) { }
 
-  getEstablishDate(): Date {
-    this.angularS1.doConnect();
-    let myEstDate = new Date() ;
-    const query = 'MATCH (n:KorotePayClient) RETURN n.establishDate';
-    this.angularS1.angularS.run(query).then((res: Date[][]) => {
-
-      myEstDate = res[0][0];
-
-      });
-
-
-    // this.angularS1.doDisConnect();
-    return myEstDate;
-  }
+  // getEstablishDate(): Date {
+  //   // this.angularS1.doConnect();
+  //   let myEstDate = new Date() ;
+  //   const query = 'MATCH (n:KorotePayClient) RETURN n.establishDate';
+  //   // this.angularS1.angularS.run(query).then((res: Date[][]) => {
+  //   //
+  //   //   myEstDate = res[0][0];
+  //   //
+  //   //   });
+  //
+  //
+  //   this.angularS1.queryDB(query, '0')
+  //     .subscribe((data) => {
+  //       for (let i = 0; i < data.results.length; i++) {
+  //         myEstDate = data.results[i][0] ? new Date(this.utils.getStringDate(data.results[i][0])) : null;
+  //       }
+  //     });
+  //
+  //   return myEstDate;
+  // }
 
   getClient(): AsyncSubject<any[]> {
     const answer: AsyncSubject<any[]> = new AsyncSubject<any[]>();
 
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const myLevelList: any[] = [] ;
     // const query = 'MATCH (n:Bank) RETURN n.shortName';
     const query = 'MATCH (n:KorotePayClient) RETURN n';
 
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        myLevelList.push(r[0].properties);
-        // console.log(r[0]);
-      }
-      answer.next(myLevelList);
-      answer.complete();
+    this.angularS1.queryDB(query, '2')
+        .subscribe((data) => {
+          for (let i = 0; i < data.results.length; i++) {
+            myLevelList.push(data.results[i]);
+          }
+          answer.next(myLevelList);
+          answer.complete();
+        });
 
-      });
     // this.angularS1.doDisConnect();
     return answer;
   }
@@ -57,9 +66,9 @@ export class KpClientService {
     const myLevelList: any[] = [] ;
     // const query = 'MATCH (n:Bank) RETURN n.shortName';
     const query = 'MATCH (n:SessionInformation) where n.currentSession=true RETURN n.sName';
-    this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
     .subscribe((data) => {
-      for (var i = 0; i < data.results.length; i++) {
+      for (let i = 0; i < data.results.length; i++) {
         // console.log('current session::', data.results[i][0])
         answer.next(data.results[i][0]);
       }
@@ -74,7 +83,7 @@ export class KpClientService {
 
     const answer2: AsyncSubject<number> = new AsyncSubject<number>();
     // let answer = '';
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const myLevelList: any[] = [] ;
     // const query = 'MATCH (n:Bank) RETURN n.shortName';
     const query = `
@@ -98,11 +107,11 @@ export class KpClientService {
 
     //   });
 
-      this.angularS1.writeDB(query,'0')
+    this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           answer2.next(parseInt(data.results[i][0]));
-          console.log('current session StatAura_new::', data.status, parseInt(data.results[i][0]))
+          console.log('current session StatAura_new::', data.status, parseInt(data.results[i][0]));
 
           // answer = parseFloat(data.results[i][0]);
         }
@@ -112,7 +121,6 @@ export class KpClientService {
 
 
     return answer2;
-    //return answer;
   }
 
   setCurrentSessionMatricStatus(matricDate: Date): AsyncSubject<number> {
@@ -123,7 +131,7 @@ export class KpClientService {
     // this.angularS1.doConnect();
 
       // const query = 'MATCH (n:Bank) RETURN n.shortName';
-      const query = `MATCH (n:SessionInformation) where n.currentSession=true
+    const query = `MATCH (n:SessionInformation) where n.currentSession=true
       set n.matricStatus = 1
       set n.matricDate = Date({ year:${b![2]},
         month:${Number(b![1])}, day:${Number(b![0])}})
@@ -141,10 +149,10 @@ export class KpClientService {
 
       //   });
 
-        this.angularS1.writeDB(query,'0')
+    this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
-          console.log('current session MATStatAura::', data.results[i][0])
+        for (let i = 0; i < data.results.length; i++) {
+          console.log('current session MATStatAura::', data.results[i][0]);
           answer.next(data.results[i][0]);
           // answer = parseFloat(data.results[i][0]);
         }
@@ -155,7 +163,7 @@ export class KpClientService {
 
 
       // this.angularS1.doDisConnect();
-      return answer;
+    return answer;
 
       // return "2021/2022";
     }
@@ -167,7 +175,7 @@ export class KpClientService {
       // this.angularS1.doConnect();
 
         // const query = 'MATCH (n:Bank) RETURN n.shortName';
-        const query = 'MATCH (n:SessionInformation) where n.currentSession=true RETURN toString(n.matricStatus)';
+      const query = 'MATCH (n:SessionInformation) where n.currentSession=true RETURN toString(n.matricStatus)';
 
         // this.angularS1.angularS.run(query).then((res: any) => {
         //   for (const r of res) {
@@ -179,10 +187,10 @@ export class KpClientService {
         //   answer.complete();
 
         //   });
-          this.angularS1.queryDB(query,'0')
+      this.angularS1.queryDB(query, '0')
           .subscribe((data) => {
-            for (var i = 0; i < data.results.length; i++) {
-              console.log('current session matric status::', data.results[i][0],data.results[i], transform(data.results[i][0]) )
+            for (let i = 0; i < data.results.length; i++) {
+              console.log('current session matric status::', data.results[i][0], data.results[i], transform(data.results[i][0]) );
               answer.next(parseInt(data.results[i][0]));
             }
             answer.complete();
@@ -190,7 +198,7 @@ export class KpClientService {
 
 
         // this.angularS1.doDisConnect();
-        return answer;
+      return answer;
 
         // return "2021/2022";
       }
@@ -203,14 +211,14 @@ export class KpClientService {
 
   // }
 
-  getCurrentSemester(): number {return 1;}
+  getCurrentSemester(): number {return 1; }
 
   getNextSessionResumptionDate(): AsyncSubject<Date> {
 
-    let answer = new Date();
+    const answer = new Date();
     const answer2: AsyncSubject<Date> = new AsyncSubject<Date>();
 
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const myLevelList: any[] = [] ;
     // const query = 'MATCH (n:Bank) RETURN n.shortName';
     const query = 'MATCH (n:SessionInformation) where n.currentSession=true RETURN n.startDate';
@@ -228,9 +236,9 @@ export class KpClientService {
 
     //   });
 
-      this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
           .subscribe((data) => {
-            for (var i = 0; i < data.results.length; i++) {
+            for (let i = 0; i < data.results.length; i++) {
               // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
               answer2.next(new Date(isDate(data.results[i][0])));
             }
@@ -246,7 +254,7 @@ export class KpClientService {
 
   getMatriculationDate(): AsyncSubject<Date> {
 
-    let answer = new Date();
+    const answer = new Date();
     const answer2: AsyncSubject<Date> = new AsyncSubject<Date>();
 
     // this.angularS1.doConnect();
@@ -263,9 +271,9 @@ export class KpClientService {
 
     //   });
 
-      this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
           answer2.next(new Date(isDate(data.results[i][0])));
         }
@@ -299,7 +307,7 @@ export class KpClientService {
 }
 
 function transform(object: any) {
-  for (let property in object) {
+  for (const property in object) {
     if (object.hasOwnProperty(property)) {
       const propertyValue = object[property];
       if (isInteger(propertyValue)) {
@@ -311,6 +319,6 @@ function transform(object: any) {
   }
 }
 
-function isInteger(x: any) { return (x^0) === x; }
+function isInteger(x: any) { return (x ^ 0) === x; }
 
-function isDate(x:any) { return (`${x.year}-${x.month}-${x.day}`)}
+function isDate(x: any) { return (`${x.year}-${x.month}-${x.day}`); }

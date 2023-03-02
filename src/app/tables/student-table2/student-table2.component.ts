@@ -16,17 +16,17 @@ import { DOCUMENT } from '@angular/common';
 import { StorageKey3 } from 'src/app/interfaces/storage-key';
 import { resourceLimits } from 'worker_threads';
 import { TU_LOGO_IMAGE } from 'src/app/utilities/sharedFile';
-import jspdf from 'jspdf'
-import jsPDF from 'jspdf'
-
-import html2canvas from 'html2canvas'
-import autoTable from 'jspdf-autotable'// import JSPDF from 'jspdf';
+// import jspdf from 'jspdf';
+// import jsPDF from 'jspdf';
+//
+// import html2canvas from 'html2canvas'
+// import autoTable from 'jspdf-autotable'// import JSPDF from 'jspdf';
 import { EmailService } from 'src/app/services/email.service';
 import { StudyService } from 'src/app/services/study.service';
 import { environment } from 'src/environments/environment';
 import { Utils } from 'src/utils';
 import { StorageService } from 'src/app/services/storage.service';
-declare var Dropbox: any
+declare var Dropbox: any;
 // import * as Dropbox from 'dropbox';
 const { DROPBOX_STATUS } = StorageKey3;
 
@@ -160,7 +160,7 @@ loadData() {
     this.studentSubscription = this.studentService.getStudentsList()
     .subscribe((data) => {
       if (data !== undefined && data !== null) {
-        console.log("this is the student data", data);
+        // console.log("this is the student data", data);
         this.dataSource= new MatTableDataSource(data);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;

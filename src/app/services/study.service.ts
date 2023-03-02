@@ -12,7 +12,7 @@ export class StudyService {
   constructor(public angularS1: KLoginService, private utils: UtilityService) { }
 
   checkIfAStudyExists(ApplicationNo?: string, JambNo?: string): boolean {
-    //console.log("IN CHECK IF A STUDY EXISTS");
+    // console.log("IN CHECK IF A STUDY EXISTS");
     let answer = false;
     const answerList: Study[] = [];
     // if (ApplicationNo !== undefined || JambNo !== undefined||ApplicationNo !== null || JambNo !== null)
@@ -20,7 +20,7 @@ export class StudyService {
     {
 
       const query = (ApplicationNo ? `Match (n:Study) where n.applicationNo = "${ApplicationNo}" return n` : `Match (n:Study) where n.jambNo = "${JambNo}"  return n`);
-      //console.log("CHECK IF STUDY EXISTS:::", query);
+      // console.log("CHECK IF STUDY EXISTS:::", query);
       // this.angularS1.angularS.run(query).then((res: any) => {
       //   for (const r of res) {
       //     // console.log("CHECK IF STUDY EXISTS:::", r);
@@ -32,18 +32,18 @@ export class StudyService {
 
       //   });
 
-        this.angularS1.queryDB(query,'2')
+      this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
       if (data) {
-        for (var i = 0; i < data.results.length; i++) {
-          const aStudy = data.results[i]
-          aStudy.beginDate = aStudy.beginDate ? this.utils.getStringDate(aStudy.beginDate) : null
-          aStudy.finishDate = aStudy.finishDate ? this.utils.getStringDate(aStudy.finishDate) : null
+        for (let i = 0; i < data.results.length; i++) {
+          const aStudy = data.results[i];
+          aStudy.beginDate = aStudy.beginDate ? this.utils.getStringDate(aStudy.beginDate) : null;
+          aStudy.finishDate = aStudy.finishDate ? this.utils.getStringDate(aStudy.finishDate) : null;
           answerList.push(aStudy as Study);
 
         }
-        answer = (answerList ? true: answer);
-      }})
+        answer = (answerList ? true : answer);
+      }});
 
     }
 
@@ -68,14 +68,14 @@ export class StudyService {
 
     //   });
 
-      this.angularS1.queryDB(query,'2')
+    this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
       if (data) {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           // console.log('AURA_get study::', data.results[i])
-          const aStudy = data.results[i]
-          aStudy.beginDate = aStudy.beginDate ? this.utils.getStringDate(aStudy.beginDate) : null
-          aStudy.finishDate = aStudy.finishDate ? this.utils.getStringDate(aStudy.finishDate) : null
+          const aStudy = data.results[i];
+          aStudy.beginDate = aStudy.beginDate ? this.utils.getStringDate(aStudy.beginDate) : null;
+          aStudy.finishDate = aStudy.finishDate ? this.utils.getStringDate(aStudy.finishDate) : null;
           myQualificationList.push(aStudy as Study);
         }
         answer.next(myQualificationList);
@@ -102,13 +102,13 @@ export class StudyService {
 
     //   });
 
-      this.angularS1.queryDB(query,'2')
+    this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
       if (data) {
-        for (var i = 0; i < data.results.length; i++) {
-          const aStudy = data.results[i]
-          aStudy.beginDate = aStudy.beginDate ? this.utils.getStringDate(aStudy.beginDate) : null
-          aStudy.finishDate = aStudy.finishDate ? this.utils.getStringDate(aStudy.finishDate) : null
+        for (let i = 0; i < data.results.length; i++) {
+          const aStudy = data.results[i];
+          aStudy.beginDate = aStudy.beginDate ? this.utils.getStringDate(aStudy.beginDate) : null;
+          aStudy.finishDate = aStudy.finishDate ? this.utils.getStringDate(aStudy.finishDate) : null;
           myQualificationList.push(aStudy as Study);
           // myQualificationList.push(data.results[i] as Study);
         }
@@ -123,7 +123,7 @@ export class StudyService {
   }
 
   getStudyStatus(): AsyncSubject<string[]> {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const answer: AsyncSubject<string[]> = new AsyncSubject<string[]>();
 
     const myQualificationList: string[] = [] ;
@@ -139,10 +139,10 @@ export class StudyService {
     //   });
 
 
-      this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
           .subscribe((data) => {
-            for (var i = 0; i < data.results.length; i++) {
-              console.log('AURA_get study::', data.results[i][0])
+            for (let i = 0; i < data.results.length; i++) {
+              // console.log('AURA_get study::', data.results[i][0]);
               myQualificationList.push(data.results[i][0]);
             }
             answer.next(myQualificationList);
@@ -156,14 +156,14 @@ export class StudyService {
 
   setStudentStudy(studentNo: string, aStudy: Study): BehaviorSubject<number> {
     // this.angularS1.doConnect();
-    let responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     // const a = new Date(aQuali.sDate).toLocaleDateString('en-GB').split('/');
     const b = new Date(aStudy.beginDate).toLocaleDateString('en-GB').split('/');
 
     // const c = new Date(aQuali.dateIssued).toLocaleDateString('en-GB').split('/');
 
-    let response = false ;
+    const response = false ;
     let aAnswer: string;
 
     const query = `MATCH (n:Student{studentNo: "${studentNo}"})
@@ -197,9 +197,9 @@ export class StudyService {
     //   });
 
 
-      this.angularS1.writeDB(query,'0')
+    this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           aAnswer = (data.results[i][0]);
         }
         responseQuali.next(parseFloat(aAnswer));
@@ -218,7 +218,7 @@ export class StudyService {
 
   updateStudentStudy(studentNo: string, aStudy: Study): BehaviorSubject<number> {
     // this.angularS1.doConnect();
-    let responseQuali2: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    const responseQuali2: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     // const a = new Date(aQuali.sDate).toLocaleDateString('en-GB').split('/');
     const b = new Date(aStudy.beginDate).toLocaleDateString('en-GB').split('/');
@@ -226,7 +226,7 @@ export class StudyService {
     // const c = new Date(aQuali.dateIssued).toLocaleDateString('en-GB').split('/');
 
 
-    let response = false ;
+    const response = false ;
     let aAnswer: string ;
 
     let query = `MATCH (n:Student{studentNo: "${studentNo}"})-
@@ -245,7 +245,7 @@ export class StudyService {
         set q.jambNo= "${aStudy.jambNo ? aStudy.jambNo : ''}"
 
         `;
-query += aStudy.status ==="Ongoing" ? `
+    query += aStudy.status === 'Ongoing' ? `
 with n
 match (n)-[r:A_STUDENT_OF]-(p) where p.dName <> "${aStudy.department ? aStudy.department : ''}"
  delete r with n
@@ -254,7 +254,7 @@ match (n)-[r:A_STUDENT_OF]-(p) where p.dName <> "${aStudy.department ? aStudy.de
 
 
 ` : '';
-        query += ` return "1"`;
+    query += ` return "1"`;
 
     console.log('at edit student query: ', query);
     // this.angularS1.angularS.run(query).then((res: any) => {
@@ -268,9 +268,9 @@ match (n)-[r:A_STUDENT_OF]-(p) where p.dName <> "${aStudy.department ? aStudy.de
 
     //   });
 
-    this.angularS1.writeDB(query,'0')
+    this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           aAnswer = (data.results[i][0]);
         }
         responseQuali2.next(parseFloat(aAnswer));
@@ -286,9 +286,9 @@ match (n)-[r:A_STUDENT_OF]-(p) where p.dName <> "${aStudy.department ? aStudy.de
 
   deleteStudentStudy(studentNo: string, aStudy: Study): BehaviorSubject<number> {
     // this.angularS1.doConnect();
-    let responseQuali3: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    const responseQuali3: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-    let response = false ;
+    const response = false ;
     let aAnswer: string;
 
     const query = `MATCH (n:Student{studentNo: "${studentNo}"})
@@ -311,9 +311,9 @@ match (n)-[r:A_STUDENT_OF]-(p) where p.dName <> "${aStudy.department ? aStudy.de
 
     //   });
 
-    this.angularS1.writeDB(query,'0')
+    this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           aAnswer = (data.results[i][0]);
         }
         responseQuali3.next(parseFloat(aAnswer));

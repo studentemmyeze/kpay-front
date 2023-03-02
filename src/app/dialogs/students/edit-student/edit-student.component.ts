@@ -504,7 +504,8 @@ export class EditStudentComponent implements AfterViewInit {
   }
 
   autoAddStudy(): void {
-    this.studyList.push(this.selectedStudy as Study)
+    console.log('In autoadd  study ', this.selectedStudy);
+    this.studyList.push(this.selectedStudy as Study);
     this.loadStudy();
 
   }
@@ -543,7 +544,7 @@ export class EditStudentComponent implements AfterViewInit {
       this.selectedStudent.activeStatus = false;
     }
 
-    this.studyService.updateStudentStudy(this.selectedStudent.studentNo!,
+    this.studyService.updateStudentStudy(this.selectedStudent.studentNo as string,
       this.selectedStudy as Study).subscribe(
         (data) => {
           if (data) {
@@ -600,8 +601,8 @@ export class EditStudentComponent implements AfterViewInit {
 
   loadStudy(): void {
     this.dataSource.data = this.studyList;
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
 
   }
 

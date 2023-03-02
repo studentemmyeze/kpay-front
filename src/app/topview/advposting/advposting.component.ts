@@ -26,26 +26,26 @@ export class AdvpostingComponent implements OnInit {
   selectedLedgerInfo: Partial <AdvPostingInfo> = {};
   selectedLedgerEntry: Partial <StudentLedgerEntry> = {};
   selectedStudent: Partial <Student> = {};
-  totalNumberProcessed = 0
+  totalNumberProcessed = 0;
   productList: StudentProduct[] = [];
-  paymentModeList = ['Cash', 'Transfer' , 'Bank', 'PayStack', 'Concessions', 'Error Correct']
+  paymentModeList = ['Cash', 'Transfer' , 'Bank', 'PayStack', 'Concessions', 'Error Correct'];
   displayedColumns = ['datePosted', 'session', 'semester', 'product', 'qty',
-    'dr', 'cr' ,'balance', 'paymentMode', 'bank', 'receiptNo',
+    'dr', 'cr' , 'balance', 'paymentMode', 'bank', 'receiptNo',
   'details', 'studentNo', 'lastName', 'firstName', 'gender', 'level', 'department', 'actions'];
   paidList = ['>', '<', '=' ];
   Genders = [ 'M', 'F' ];
   color = 'primary';
-  value = 100
+  value = 100;
   Levels = [100, 200, 300, 400, 500 ];
-  transacType2 = "0"
+  transacType2 = '0';
   semesterList = [1, 2];
   sessionList: string[] = [];
   concessionList: Concession[] = [];
-  studentList: Student[] =[];
+  studentList: Student[] = [];
   departmentList: any[] = [];
   facultyList: any[] = [];
   bankList: any[] = [];
-  searchVariables = ['studentNo']
+  searchVariables = ['studentNo'];
   dateMarker = false;
   bankMarker = false;
   levelMarker = false;
@@ -63,6 +63,7 @@ export class AdvpostingComponent implements OnInit {
   genderMarker = false;
   studentMarker = false;
   departmentMarker = false;
+  advancedCommand = '';
   range = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
@@ -71,7 +72,7 @@ export class AdvpostingComponent implements OnInit {
   stateCtrl = new FormControl();
   filteredStates: Observable<StudentProduct[]>;
   filteredStates2: Observable<Student[]>;
-  stateCtrl2= new FormControl();
+  stateCtrl2 = new FormControl();
 
 
 
@@ -90,7 +91,7 @@ export class AdvpostingComponent implements OnInit {
         map(state => state ? this._filterStates(state) : this.productList.slice())
       );
 
-      this.filteredStates2 = this.stateCtrl2.valueChanges
+    this.filteredStates2 = this.stateCtrl2.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.studentNo),
@@ -99,6 +100,7 @@ export class AdvpostingComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.advancedCommand = 'DEBIT / CREDITS';
     this.sessionList = this.utilityService.generateSessionList();
     this.departmentList =  this.applicationService.getProgrammes();
     this.facultyList =  this.applicationService.getFaculties();
@@ -123,19 +125,21 @@ export class AdvpostingComponent implements OnInit {
 
   }
 
-
+transactChange(): void {
+    this.advancedCommand = this.selectedLedgerInfo.transacType === '1' ? 'DEBIT' : 'CREDIT';
+}
   public checkFeeType() {
     // let answer = false;
     // console.log(this.transacType2 )
-    if (this.transacType2 === "2" )
+    if (this.transacType2 === '2' )
     {
       this.paidMarker = false;
       this.productMarker = true;
-      this.selectedLedgerInfo.amount = undefined
+      this.selectedLedgerInfo.amount = undefined;
     }
 
     else  {
-      this.selectedProduct = {}
+      this.selectedProduct = {};
       this.paidMarker = true;
       this.productMarker = false;
     }
@@ -161,74 +165,89 @@ export class AdvpostingComponent implements OnInit {
   clearAdvancedVariables(): void {
     this.selectedProduct = {};
     this.selectedLedgerInfo = {};
-    this.transacType2 = "0";
+    this.transacType2 = '0';
 
   }
 
   advancedPost(): void {
-    this.value = 0
+    this.value = 0;
 
-    const feeCode = ['COMPASSFEES', 'MASSFEES', 'ENGINEERINGFEES', 'LAWFEES']
+    const feeCode = ['COMPASSFEES', 'MASSFEES', 'ENGINEERINGFEES', 'LAWFEES'];
 
     this.paymentsService.getBalanceAdvanced(this.selectedLedgerInfo as AdvPostingInfo)
-    .subscribe(data =>{
+    .subscribe(data => {
       if (data) {
         console.log('THis is what is contained::', this.selectedLedgerInfo);
         console.log(data);
         for (let i = 0; i < data.length; i++) {
 
-          this.selectedLedgerEntry = {}
-          //@ts-ignore
+          this.selectedLedgerEntry = {};
+          // @ts-ignore
           this.selectedLedgerEntry.balance = ((data[i][0] ? data[i][0] : 0.0) +
-          (this.selectedLedgerInfo.transacType === "1" ? -1 : 1) *
-          (this.selectedLedgerInfo.amount ? this.selectedLedgerInfo.amount : (this.selectedProduct.price ? this.selectedProduct.price : 0.0)))
-          this.selectedLedgerEntry.product = this.selectedLedgerInfo.product as string;
-          this.selectedLedgerEntry.dr = this.selectedLedgerInfo.transacType === "1" ?
-                                        ((this.selectedLedgerInfo.amount) ? this.selectedLedgerInfo.amount :
-                                          (this.selectedProduct.price ? this.selectedProduct.price : 0.0)) : undefined
-          this.selectedLedgerEntry.cr = this.selectedLedgerInfo.transacType === "2" ?
-                                        (this.selectedLedgerInfo.amount ? this.selectedLedgerInfo.amount :
-                                        (this.selectedProduct.price ? this.selectedProduct.price : 0.0)) : undefined
-
-          this.selectedLedgerEntry.semester = this.selectedLedgerInfo.semester
-          this.selectedLedgerEntry.session = this.selectedLedgerInfo.session
-          if (this.transacType2 === "1") { // amount
-            if (this.selectedLedgerInfo.transacType === "1"){ // debit
-              this.selectedLedgerEntry.details = `AUTO DEBITS: ${this.selectedLedgerInfo.details}`;
+          (this.selectedLedgerInfo.transacType === '1' ? -1 : 1) *
+          (this.selectedLedgerInfo.amount ? this.selectedLedgerInfo.amount : (this.selectedProduct.price ? this.selectedProduct.price : 0.0)));
+          this.selectedLedgerEntry.product = this.selectedLedgerInfo.product as string ?
+            this.selectedLedgerInfo.product as string : 'FEES';
+          if (this.selectedLedgerInfo.transacType === '1') {
+            this.selectedLedgerEntry.dr = this.selectedLedgerInfo.amount ? this.selectedLedgerInfo.amount :
+              (this.selectedProduct.price ? this.selectedProduct.price : 0.0);
+          }
+          else {
+            this.selectedLedgerEntry.cr = this.selectedLedgerInfo.amount ? this.selectedLedgerInfo.amount :
+                (this.selectedProduct.price ? this.selectedProduct.price : 0.0);
+            this.selectedLedgerEntry.paymentMode = 'Concessions';
+          }
+          // this.selectedLedgerEntry.dr = this.selectedLedgerInfo.transacType === '1' ?
+          //                               ((this.selectedLedgerInfo.amount) ? this.selectedLedgerInfo.amount :
+          //                                 (this.selectedProduct.price ? this.selectedProduct.price : 0.0)) : undefined;
+          // this.selectedLedgerEntry.cr = this.selectedLedgerInfo.transacType === '2' ?
+          //                               (this.selectedLedgerInfo.amount ? this.selectedLedgerInfo.amount :
+          //                               (this.selectedProduct.price ? this.selectedProduct.price : 0.0)) : undefined;
+          // console.log('DR - CR', this.selectedLedgerEntry.dr, this.selectedLedgerEntry.cr);
+          // if (this.selectedLedgerEntry.cr) {this.selectedLedgerEntry.paymentMode = 'Concessions'; }
+          this.selectedLedgerEntry.semester = this.selectedLedgerInfo.semester;
+          this.selectedLedgerEntry.session = this.selectedLedgerInfo.session;
+          if (this.transacType2 === '1') { // amount
+            if (this.selectedLedgerInfo.transacType === '1'){ // debit
+              this.selectedLedgerEntry.details =
+                `AUTO DEBITS: ${(this.selectedLedgerInfo.details as string).toUpperCase()}`;
             }
             else {
-              this.selectedLedgerEntry.details = `AUTO CREDITS: ${this.selectedLedgerInfo.details} PAYMENT`;
+              this.selectedLedgerEntry.details =
+                `AUTO CREDITS: ${(this.selectedLedgerInfo.details as string).toUpperCase()} PAYMENT`;
             }
           }
-          else if (this.transacType2 === "2"){// product
-            if (this.selectedLedgerInfo.transacType === "1"){ // debit
-              this.selectedLedgerEntry.details = feeCode.includes(this.selectedLedgerInfo.product as string) ? `AUTO DEBITS: ${this.selectedLedgerInfo.session} TUITION, ACCOMMODATION AND FEEDING FEES` :
-          `AUTO DEBITS: ${this.selectedProduct.description}`
+          else if (this.transacType2 === '2'){// product
+            if (this.selectedLedgerInfo.transacType === '1'){ // debit
+              this.selectedLedgerEntry.details = feeCode.includes(this.selectedLedgerInfo.product as string) ?
+                `AUTO DEBITS: ${this.selectedLedgerInfo.session} TUITION, ACCOMMODATION AND FEEDING FEES` :
+          `AUTO DEBITS: ${this.selectedProduct.description}`;
             }
             else {
-              this.selectedLedgerEntry.details = feeCode.includes(this.selectedLedgerInfo.product as string) ? `AUTO CREDITS: ${this.selectedLedgerInfo.session} TUITION, ACCOMMODATION AND FEEDING PAYMENT` :
-          `AUTO CREDITS: ${this.selectedProduct.description} PAYMENT`
+              this.selectedLedgerEntry.details = feeCode.includes(this.selectedLedgerInfo.product as string) ?
+                `AUTO CREDITS: ${this.selectedLedgerInfo.session} TUITION, ACCOMMODATION AND FEEDING PAYMENT` :
+          `AUTO CREDITS: ${this.selectedProduct.description} PAYMENT`;
             }
 
           }
           // this.selectedLedgerEntry.details = this.selectedLedgerInfo.transacType === "2" ? `AUTO CREDITS:` :
 
           this.selectedLedgerEntry.staffIn = this.userService.getUser();
-          this.selectedLedgerEntry.qty = 1
-          console.log("@ledgeer Entry", this.selectedLedgerEntry)
+          this.selectedLedgerEntry.qty = 1;
+          console.log('@ledgeer Entry', this.selectedLedgerEntry);
           this.paymentsService.makePosting(data[i][1], this.selectedLedgerEntry as StudentLedgerEntry)
-          .subscribe(postingstatus => {
+          .subscribe( postingstatus => {
             if (postingstatus) {
-              this.totalNumberProcessed += 1
-              this.value = Math.floor(this.totalNumberProcessed/data.length) * 100
-              if (this.value === 100) {this.clearAdvancedVariables();}
+              this.totalNumberProcessed += 1;
+              this.value = Math.floor(this.totalNumberProcessed / data.length) * 100;
+              if (this.value === 100) {this.clearAdvancedVariables(); }
             }
-          })
+          });
           // console.log('@selected product::', this.selectedProduct)
         }
 
       }
-    })
+    });
 
     // console.log("totalNumberProcessed::", totalNumberProcessed)
 
@@ -254,13 +273,13 @@ export class AdvpostingComponent implements OnInit {
   checkStat(aString: string): void {
 
 
-    if (aString === 'session' && !this.sessionMarker) {this.selectedLedgerInfo.session = undefined}
-    if (aString === 'faculty' && !this.facultyMarker) {this.selectedLedgerInfo.faculty = undefined}
-    if (aString === 'department' && !this.departmentMarker) {this.selectedLedgerInfo.department = undefined}
+    if (aString === 'session' && !this.sessionMarker) {this.selectedLedgerInfo.session = undefined; }
+    if (aString === 'faculty' && !this.facultyMarker) {this.selectedLedgerInfo.faculty = undefined; }
+    if (aString === 'department' && !this.departmentMarker) {this.selectedLedgerInfo.department = undefined; }
 
-    if (aString === 'semester' && !this.semesterMarker) {this.selectedLedgerInfo.semester = undefined}
+    if (aString === 'semester' && !this.semesterMarker) {this.selectedLedgerInfo.semester = undefined; }
     if (aString === 'paymentMode' && !this.paymentModeMarker) {
-      this.selectedLedgerInfo.paymentMode = undefined
+      this.selectedLedgerInfo.paymentMode = undefined;
     }
 
     if (aString === 'transacType' && !this.transacTypeMarker) {
@@ -277,7 +296,7 @@ export class AdvpostingComponent implements OnInit {
     }
 
 
-    if (aString === 'level' && !this.levelMarker) {this.selectedLedgerInfo.level = undefined}
+    if (aString === 'level' && !this.levelMarker) {this.selectedLedgerInfo.level = undefined; }
 
 
 
@@ -285,7 +304,7 @@ export class AdvpostingComponent implements OnInit {
   }
   calcTotal(): void {
     this.selectedLedgerInfo.product = this.selectedProduct.prodCode;
-    console.log("PRODUCT SELECTED::", this.selectedLedgerInfo.product);
+    console.log('PRODUCT SELECTED::', this.selectedLedgerInfo.product);
     // if (this.selectedProduct.price !== undefined && this.selectedLedgerEntry.qty !== undefined)
     //   this.tempTotal = this.selectedProduct.price * this.selectedLedgerEntry.qty;
   }

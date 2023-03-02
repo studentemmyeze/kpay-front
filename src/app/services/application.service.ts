@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { AsyncSubject } from 'rxjs/internal/AsyncSubject';
 import { NextKin, Applications } from '../interfaces/student';
 import { KLoginService } from './klogin.service';
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 // @ts-ignore
-import saveAs from 'save-as'
+import saveAs from 'save-as';
 import { SettingsService } from './settings.service';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -70,8 +70,8 @@ export class ApplicationService {
     .subscribe((data) =>{
 
       if (data) {
-        console.log('this is applicationData::::',data)
-      console.log('this is applicationDataBody::::',data.body)
+        console.log('this is applicationData::::', data);
+      console.log('this is applicationDataBody::::', data.body);
       // console.log('this is applicationDataBody::::',data.body)
 
 
@@ -92,7 +92,7 @@ export class ApplicationService {
       tap(_ => console.log ('fetched the applications')),
       catchError(this.handleError<any>('getApplications', undefined))
 
-    )
+    );
   }
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
@@ -204,7 +204,7 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
     this.http.get('/assets/admissions_update.csv', {responseType: 'text'})
     .subscribe(
         data => {
-            let csvToRowArray = data.split("\n");
+            let csvToRowArray = data.split('\n');
             let aa = data;
             let aString: string = "";
             this.userArray = [];
@@ -348,14 +348,14 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
   }
 
   getNationalities(): string[] {
-    this.angularS1.doConnect();
+    //this.angularS1.doConnect();
 
-    let myNList: string[] = [] ;
+    const myNList: string[] = [] ;
     const query = `MATCH (n:Nationality) return n.dName order by n.dName`;
-      this.angularS1.queryDB(query,'0')
+      this.angularS1.queryDB(query, '0')
     .subscribe((data) => {
       if (data) {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
           myNList.push(data.results[i][0]);
 
@@ -372,7 +372,7 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
   }
 
   getNigeriaStates(): string[] {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
 
     const myNList: string[] = [] ;
     const query = `MATCH (n:NigeriaStates) return n.dName order by n.dName`;
@@ -383,10 +383,10 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
 
     //   });
 
-    this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
     .subscribe((data) => {
       if (data) {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
           myNList.push(data.results[i][0]);
 
@@ -400,7 +400,7 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
   }
 
   getProgrammes(): string[] {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
 
     const myNList: string[] = [] ;
     const query = `MATCH (n:Programme)-[]-(f:Faculty) return n.dName order by n.dName`;
@@ -410,10 +410,10 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
     //   }
 
     //   });
-    this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
     .subscribe((data) => {
       if (data) {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
           myNList.push(data.results[i][0]);
 
@@ -427,7 +427,7 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
   }
 
   getFaculties(): string[] {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
 
     const myNList: string[] = [] ;
     const query = `MATCH (n:Faculty) return n.dCode order by n.dCode`;
@@ -437,10 +437,10 @@ loadProspectiveStudent(arrayFromApi: any[]): void {
     //   }
 
     //   });
-    this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
     .subscribe((data) => {
       if (data) {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
           myNList.push(data.results[i][0]);
 

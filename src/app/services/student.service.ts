@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AsyncSubject } from 'rxjs/internal/AsyncSubject';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { StringDecoder } from 'string_decoder';
 import { NextKin, SearchPara, SponsorDetails, Student, StudentType, Study, TempStudent } from '../interfaces/student';
-// import { Neo4jdatePipe } from '../pipes/neo4jdate.pipe';
 import { KLoginService } from './klogin.service';
 
 @Injectable({
@@ -15,45 +13,45 @@ export class StudentService {
 
   constructor(public angularS1: KLoginService) { }
 
-  getStudentsList_old(department?: string, level?: number): BehaviorSubject<Student[]> {
-    this.angularS1.doConnect();
-    const answer: BehaviorSubject<Student[]> = new BehaviorSubject <Student[]>([]);
-
-    const myQualificationList : Student[] = [] ;
-    let query = '';
-    if (!department && !level)
-    {
-      query = `MATCH (n:Student) `;
-    }
-    else {
-      if (department && level) {
-        query = `MATCH (n:Student) where n.department = '${department}' and n.level = '${level}' `;
-
-      }
-      else
-      {
-        if (department) {
-          query = `MATCH (n:Student) where n.department = '${department}' `;
-      }
-        else {
-          query = `MATCH (n:Student) where n.level = '${level}' `;
-
-        }
-      }
-
-    }
-
-    query += ` return n  order by n.studentNo`
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        myQualificationList.push(r[0].properties as Student);
-      }
-      answer.next(myQualificationList);
-
-      });
-
-    return answer;
-  }
+  // getStudentsList_old(department?: string, level?: number): BehaviorSubject<Student[]> {
+  //   // this.angularS1.doConnect();
+  //   const answer: BehaviorSubject<Student[]> = new BehaviorSubject <Student[]>([]);
+  //
+  //   const myQualificationList : Student[] = [] ;
+  //   let query = '';
+  //   if (!department && !level)
+  //   {
+  //     query = `MATCH (n:Student) `;
+  //   }
+  //   else {
+  //     if (department && level) {
+  //       query = `MATCH (n:Student) where n.department = '${department}' and n.level = '${level}' `;
+  //
+  //     }
+  //     else
+  //     {
+  //       if (department) {
+  //         query = `MATCH (n:Student) where n.department = '${department}' `;
+  //     }
+  //       else {
+  //         query = `MATCH (n:Student) where n.level = '${level}' `;
+  //
+  //       }
+  //     }
+  //
+  //   }
+  //
+  //   query += ` return n  order by n.studentNo`
+  //   this.angularS1.angularS.run(query).then((res: any) => {
+  //     for (const r of res) {
+  //       myQualificationList.push(r[0].properties as Student);
+  //     }
+  //     answer.next(myQualificationList);
+  //
+  //     });
+  //
+  //   return answer;
+  // }
 
 
   getStudentsList(searchPara?: SearchPara ): BehaviorSubject<Student[]> {
@@ -62,12 +60,12 @@ export class StudentService {
 
     const myQualificationList : Student[] = [] ;
     let query = `MATCH (f:Faculty)<-[:IN_FACULTY]-(p:Programme)<-[:A_STUDENT_OF]-(n:Student)-[:COMMENCED_STUDY]->(st:Study) `;
-    let tempquery = "" ;// `MATCH (f:Faculty)<-[:IN_FACULTY]-(p:Programme)<-[:A_STUDENT_OF]-(n:Student)-[:COMMENCED_STUDY]->(st:Study) `;
+    let tempquery = '' ; // `MATCH (f:Faculty)<-[:IN_FACULTY]-(p:Programme)<-[:A_STUDENT_OF]-(n:Student)-[:COMMENCED_STUDY]->(st:Study) `;
     // console.log("serch para::", searchPara)
 
     if(searchPara && (searchPara.fName || searchPara.lName || searchPara.programme || searchPara.level || searchPara.faculty || searchPara.gender || searchPara.studyStatus || (searchPara.status !== undefined)   )) {
-      query += ' where '
-      tempquery = query
+      query += ' where ';
+      tempquery = query;
 
       query += searchPara.programme ? `p.dName = '${searchPara.programme}' ` : ''
 
@@ -89,7 +87,7 @@ export class StudentService {
     }
 
 
-    query += ` return n  order by n.studentNo`
+    query += ` return n  order by n.studentNo`;
 
     console.log('QUERY get student::', query);
     // this.angularS1.angularS.run(query).then((res: any) => {
@@ -100,12 +98,12 @@ export class StudentService {
 
     //   });
 
-      this.angularS1.queryDB(query,'2')
+    this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
         if (data) {
-          let count = 0
-          for (var i = 0; i < data.results.length; i++) {
-            const tempStudent = data.results[i]
+          let count = 0;
+          for (let i = 0; i < data.results.length; i++) {
+            const tempStudent = data.results[i];
             // if (count === 0) {
             //   console.log('tempstudent::',this.getStringDate(tempStudent.dOB) )
 
@@ -117,9 +115,9 @@ export class StudentService {
 
             const dateObject = tempStudent.dOB ? this.getStringDate(tempStudent.dOB): null;
 
-            tempStudent.dOB = dateObject ? (dateObject) : null
+            tempStudent.dOB = dateObject ? (dateObject) : null;
             if (count === 0) {
-              console.log('tempstudent::',tempStudent )
+              console.log('tempstudent::', tempStudent);
 
             }
             // console.log('tempstudent::',tempStudent )
@@ -129,7 +127,7 @@ export class StudentService {
 
               );
 
-              count ++
+            count ++;
 
             // myNList.push(data.results[i])
           }
@@ -143,11 +141,11 @@ export class StudentService {
   }
 
   getStringDigits(aNo: number): string {
-    let answer = aNo.toString()
+    let answer = aNo.toString();
     if (answer.length < 2) {
-      answer = '0' + answer
+      answer = '0' + answer;
     }
-    return answer
+    return answer;
   }
 
   getStringDate(items: {year: number, month: number, day: number, hour: number, minute: number, second: number, nanosecond: number, timeZoneOffsetSeconds:number}): string{
@@ -168,7 +166,7 @@ export class StudentService {
     // this.angularS1.doConnect();
     const answer: AsyncSubject<SponsorDetails> = new AsyncSubject <SponsorDetails>();
 
-    let myQualificationList : SponsorDetails ;
+    let myQualificationList: SponsorDetails ;
     const query = `MATCH (n: Student{studentNo: "${aStudentNo}"})-[:HAS_SPONSOR]->(sp) return sp`;
     // console.log("AT GET SPONSOR::", query);
     // this.angularS1.angularS.run(query).then((res: any) => {
@@ -182,9 +180,9 @@ export class StudentService {
 
     //   });
 
-      this.angularS1.queryDB(query,'2')
+      this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
-        for (var i = 0; i < data.results.length; i++) {
+        for (let i = 0; i < data.results.length; i++) {
           myQualificationList = data.results[i] as SponsorDetails;
 
           // myNList.push(data.results[i])
@@ -199,7 +197,7 @@ export class StudentService {
   }
 
   getSponsorList(): AsyncSubject<any[]> {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const answer: AsyncSubject<any[]> = new AsyncSubject <any[]>();
 
     let myQualificationList : any[] = [];
@@ -225,7 +223,7 @@ export class StudentService {
           .subscribe((data) => {
             for (var i = 0; i < data.results.length; i++) {
               // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
-              myQualificationList.push(data.results[i])
+              myQualificationList.push(data.results[i]);
             }
             //answer.next(new Date(isDate(data.results[i][0])));
 
@@ -238,9 +236,9 @@ export class StudentService {
   }
 
   setStudent(aStudent: Student, aStudy: Study, aNOKList: NextKin[],
-    aSponsorDetail?: SponsorDetails): BehaviorSubject<number> {
-    this.angularS1.doConnect();
-    let responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+             aSponsorDetail?: SponsorDetails): BehaviorSubject<number> {
+    // this.angularS1.doConnect();
+    const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     let response = false ;
     let aAnswer: string;
@@ -457,7 +455,7 @@ export class StudentService {
 
   async setStudent2(aStudent: Student, aStudy: Study, aNOKList: NextKin[],
     aSponsorDetail?: SponsorDetails) {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     let responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     let response = false ;
@@ -648,22 +646,33 @@ export class StudentService {
 
 // console.log("THIS IS QUERY AT SETSTUDENT::", query);
 
-    await this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
+    // await this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //
+    //   }
+    //   aAnswer2 = parseFloat(aAnswer)
+    //   responseQuali.next(parseFloat(aAnswer));
+    //
+    //
+    //   });
 
-      }
-      aAnswer2 = parseFloat(aAnswer)
-      responseQuali.next(parseFloat(aAnswer));
-
+    await this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = (data.results[i][0]);
+        }
+        aAnswer2 = parseFloat(aAnswer);
+        responseQuali.next((aAnswer2));
 
       });
+
     return aAnswer2;
     // return responseQuali;
   }
 
   setTempStudent(aStudent: TempStudent): BehaviorSubject<number> {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     let aAnswer: string;
@@ -678,16 +687,27 @@ export class StudentService {
       }) return "1"`;
 
     // console.log('set TEMPSTUDENT query:: ', query);
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the set temp student:: ', r[0]);
-        // console.log('response at the set staff quali:: ', response);
-      }
-      // console.log('r at the set temp student:: ', aAnswer);
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the set temp student:: ', r[0]);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //   // console.log('r at the set temp student:: ', aAnswer);
+    //
+    //   responseQuali.next(parseFloat(aAnswer));
+    //
+    //
+    //   });
 
-      responseQuali.next(parseFloat(aAnswer));
 
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = (data.results[i][0]);
+        }
+        // aAnswer2 = parseFloat(aAnswer);
+        responseQuali.next(parseFloat(aAnswer));
 
       });
 
@@ -697,7 +717,7 @@ export class StudentService {
   }
 
   async setStudentGender(gender:string, studentNo:string) {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     // const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     let aAnswer: string = '0';
@@ -708,15 +728,26 @@ export class StudentService {
      return "1"`;
 
     // console.log('set GENDER query:: ', query);
-    await this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the set temp student:: ', r[0]);
-        // console.log('response at the set staff quali:: ', response);
-      }
-      // console.log('r at the set temp student:: ', aAnswer);
+    // await this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the set temp student:: ', r[0]);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //   // console.log('r at the set temp student:: ', aAnswer);
+    //
+    //
+    //
+    //   });
 
 
+    await this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = (data.results[i][0]);
+        }
+        // aAnswer2 = parseFloat(aAnswer);
+        // responseQuali.next(parseFloat(aAnswer));
 
       });
 
@@ -726,7 +757,7 @@ export class StudentService {
   }
 
   promoteStudent(): BehaviorSubject<number> {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     let aAnswer: string;
@@ -743,16 +774,27 @@ export class StudentService {
 
 
     // console.log('promote query:: ', query);
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the set temp student:: ', r[0]);
-        // console.log('response at the set staff quali:: ', response);
-      }
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the set temp student:: ', r[0]);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //
+    //
+    //   responseQuali.next(parseFloat(aAnswer));
+    //
+    //
+    //   });
 
 
-      responseQuali.next(parseFloat(aAnswer));
-
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = (data.results[i][0]);
+        }
+        // aAnswer2 = parseFloat(aAnswer);
+        responseQuali.next(parseFloat(aAnswer));
 
       });
 
@@ -762,8 +804,8 @@ export class StudentService {
 
 
   updateStudent(aStudent: Student, aSponsorDetail?: SponsorDetails): AsyncSubject<number> {
-    this.angularS1.doConnect();
-    let responseQuali2: AsyncSubject<number> = new AsyncSubject();
+    // this.angularS1.doConnect();
+    const responseQuali2: AsyncSubject<number> = new AsyncSubject();
 
     const a = new Date(aStudent.dOB).toLocaleDateString('en-GB').split('/');
     // const b =  new Date(aStudy.beginDate).toLocaleDateString('en-GB').split('/');
@@ -821,7 +863,7 @@ export class StudentService {
     `;
       }
 
-      if (aStudent.department)
+    if (aStudent.department)
       {
         query +=
           `
@@ -854,23 +896,35 @@ export class StudentService {
 
     // console.log("AT UPDATE STUDENT:::", query, aStudent,aSponsorDetail);
 
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //
+    //   }
+    //   responseQuali2.next(parseFloat(aAnswer));
+    //   responseQuali2.complete();
+    //
+    //
+    //   });
 
-      }
-      responseQuali2.next(parseFloat(aAnswer));
-      responseQuali2.complete();
 
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = (data.results[i][0]);
+        }
+        // aAnswer2 = parseFloat(aAnswer);
+        responseQuali2.next(parseFloat(aAnswer));
+        responseQuali2.complete();
 
       });
 
     return responseQuali2;
   }
 
-  checkIfStudentExists(jambNo:string): AsyncSubject<string> {
-    this.angularS1.doConnect();
-    let responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
+  checkIfStudentExists(jambNo: string): AsyncSubject<string> {
+    // this.angularS1.doConnect();
+    const responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
     let response = false ;
     let aAnswer: string ="";
@@ -879,15 +933,24 @@ export class StudentService {
       return n.studentNo`;
 
     // console.log('update query checkIfStudentExists:*', query);
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the check exsint:: ', r, r[0]);
-        // console.log('response at the set staff quali:: ', response);
-      }
-      responseQuali2.next(aAnswer);
-      responseQuali2.complete();
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the check exsint:: ', r, r[0]);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //   responseQuali2.next(aAnswer);
+    //   responseQuali2.complete();
+    //
+    //   });
 
+    this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+        }
+        responseQuali2.next(aAnswer);
+        responseQuali2.complete();
       });
 
 
@@ -895,7 +958,7 @@ export class StudentService {
   }
 
   async checkIfStudentExists2(jambNo:string) {
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     // let responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
     let response = false ;
@@ -905,23 +968,32 @@ export class StudentService {
       return n.studentNo`;
 
     // console.log('update query checkIfStudentExists:*', query);
-    await this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the check exsint:: ', r, r[0]);
-        // console.log('response at the set staff quali:: ', response);
-      }
-      // responseQuali2.next(aAnswer);
-      // responseQuali2.complete();
+    // await this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the check exsint:: ', r, r[0]);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //   // responseQuali2.next(aAnswer);
+    //   // responseQuali2.complete();
+    //
+    //   });
 
+    await this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+        }
+        // responseQuali2.next(aAnswer);
+        // responseQuali2.complete();
       });
 
 
     return aAnswer;
   }
 
-  checkIfStudentExistsRegNo(jambNo:string): AsyncSubject<string> {
-    this.angularS1.doConnect();
+  checkIfStudentExistsRegNo(jambNo: string): AsyncSubject<string> {
+    // this.angularS1.doConnect();
     let responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
     let response = false ;
@@ -931,24 +1003,34 @@ export class StudentService {
       return n.studentNo`;
 
     // console.log('update query checkIfStudentExists:*', query);
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the check exsint:: ', r, r[0]);
-        // console.log('response at the set staff quali:: ', response);
-      }
-      responseQuali2.next(aAnswer);
-      responseQuali2.complete();
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the check exsint:: ', r, r[0]);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //   responseQuali2.next(aAnswer);
+    //   responseQuali2.complete();
+    //
+    //   });
 
+
+    this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+        }
+        responseQuali2.next(aAnswer);
+        responseQuali2.complete();
       });
 
 
     return responseQuali2;
   }
 
-  async checkIfStudentExistsRegNo2(jambNo:string)  {
-    this.angularS1.doConnect();
-    let responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
+  async checkIfStudentExistsRegNo2(jambNo: string)  {
+    // this.angularS1.doConnect();
+    const responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
     let response = false ;
     let aAnswer: string = "" ;
@@ -957,24 +1039,33 @@ export class StudentService {
       return n.studentNo`;
 
     // console.log('update query checkIfStudentExists:*', query);
-    await this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the check exsint:: ', r, r[0]);
-        // console.log('response at the set staff quali:: ', response);
-      }
-      responseQuali2.next(aAnswer);
-      responseQuali2.complete();
+    // await this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the check exsint:: ', r, r[0]);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //   responseQuali2.next(aAnswer);
+    //   responseQuali2.complete();
+    //
+    //   });
 
+    await this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+        }
+        responseQuali2.next(aAnswer);
+        responseQuali2.complete();
       });
 
 
-    return aAnswer
+    return aAnswer;
   }
 
   deleteStudent(aStudent: Student): AsyncSubject<number> {
-    this.angularS1.doConnect();
-    let responseQuali3: AsyncSubject<number> = new AsyncSubject();
+    // this.angularS1.doConnect();
+    const responseQuali3: AsyncSubject<number> = new AsyncSubject();
 
 
     let response = false ;
@@ -984,23 +1075,31 @@ export class StudentService {
     set n.isDeleted = true
       return "1"`;
 
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //
+    //   }
+    //   responseQuali3.next(parseFloat(aAnswer));
+    //
+    //
+    //   });
 
-      }
-      responseQuali3.next(parseFloat(aAnswer));
-
-
+    this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+        }
+        responseQuali3.next(parseFloat(aAnswer));
       });
-      responseQuali3.complete();
+    responseQuali3.complete();
 
     return responseQuali3;
   }
 
   deleteTempStudent(aStudent: TempStudent): AsyncSubject<number> {
-    this.angularS1.doConnect();
-    let responseQuali3: AsyncSubject<number> = new AsyncSubject();
+    // this.angularS1.doConnect();
+    const responseQuali3: AsyncSubject<number> = new AsyncSubject();
 
 
     let response = false ;
@@ -1011,17 +1110,25 @@ export class StudentService {
       return "1"`;
 
     // console.log('delete query: ', query);
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
-        // console.log('r at the delete staff kin:: ', r);
-        // console.log('response at the set staff quali:: ', response);
-      }
-      responseQuali3.next(parseFloat(aAnswer));
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //     // console.log('r at the delete staff kin:: ', r);
+    //     // console.log('response at the set staff quali:: ', response);
+    //   }
+    //   responseQuali3.next(parseFloat(aAnswer));
+    //
+    //
+    //   });
 
-
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+        }
+        responseQuali3.next(parseFloat(aAnswer));
       });
-      responseQuali3.complete();
+    responseQuali3.complete();
 
     return responseQuali3;
   }
@@ -1040,10 +1147,10 @@ export class StudentService {
 
     //   });
 
-      this.angularS1.queryDB(query,'2')
+      this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
         if (data) {
-          for (var i = 0; i < data.results.length; i++) {
+          for (let i = 0; i < data.results.length; i++) {
             myQualificationList.push(data.results[i] as StudentType);
           }
           // answer.next(myQualificationList);
@@ -1055,25 +1162,37 @@ export class StudentService {
   }
 
   getStudentNumber(): AsyncSubject<string> {
-    this.angularS1.doConnect();
-    let responseQuali3: AsyncSubject<string> = new AsyncSubject();
+    // this.angularS1.doConnect();
+    const responseQuali3: AsyncSubject<string> = new AsyncSubject();
 
 
     let response = false ;
     let aAnswer: string = '';
 
-    const query = `MATCH (n) WHERE EXISTS(n.studentNo) RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
+    const query = `MATCH (n) WHERE (n.studentNo) is not null RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
     max(n.studentNo) END`;
+    console.log('query::', query);
 
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //
+    //   }
+    //   responseQuali3.next(aAnswer);
+    //   responseQuali3.complete();
+    //
+    //
+    //
+    //   });
 
-      }
-      responseQuali3.next(aAnswer);
-      responseQuali3.complete();
-
-
+    this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+          console.log('student number found::', data.results[i]);
+        }
+        responseQuali3.next((aAnswer));
+        responseQuali3.complete();
 
       });
 
@@ -1081,7 +1200,7 @@ export class StudentService {
   }
 
   async getStudentNumber2(): Promise<string> {
-    this.angularS1.doConnect();
+    //this.angularS1.doConnect();
     let responseQuali3: AsyncSubject<string> = new AsyncSubject();
 
 
@@ -1091,16 +1210,30 @@ export class StudentService {
     const query = `MATCH (n) WHERE EXISTS(n.studentNo) RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
     max(n.studentNo) END`;
 
-    await this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
+    // await this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //
+    //   }
+    //   // responseQuali3.next(aAnswer);
+    //   // responseQuali3.complete();
+    //
+    //
+    //   });
 
-      }
-      // responseQuali3.next(aAnswer);
-      // responseQuali3.complete();
-
+    await this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = data.results[i][0];
+        }
+        // responseQuali3.next((aAnswer));
+        // responseQuali3.complete();
 
       });
+
+
+
+
       return aAnswer;
 
 

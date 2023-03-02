@@ -4,18 +4,18 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { StudentLedgerEntry, StudentType } from 'src/app/interfaces/student';
 import { DataService } from 'src/app/services/data.service';
 import { PaymentsService } from 'src/app/services/payments.service';
 import { StudentService } from 'src/app/services/student.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { TU_LOGO_IMAGE } from 'src/app/utilities/sharedFile';
-import jspdf from 'jspdf'
-import jsPDF from 'jspdf'
+import jspdf from 'jspdf';
+import jsPDF from 'jspdf';
 
-import html2canvas from 'html2canvas'
-import autoTable from 'jspdf-autotable'// import JSPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import autoTable from 'jspdf-autotable'; // import JSPDF from 'jspdf';
 import { Neo4jdatePipe } from 'src/app/pipes/neo4jdate.pipe';
 
 
@@ -82,7 +82,7 @@ export class StudentledgerComponent implements OnInit {
       {
         this.childMessage = message;
 
-            this.loadData();
+        this.loadData();
             // this.dataSource.paginator = this.paginator;
             // this.dataSource.sort = this.sort;
 
@@ -99,8 +99,8 @@ export class StudentledgerComponent implements OnInit {
   }
 
   exportToPdf(): void {
-    var element = document.getElementById('ExampleTable');
-    html2canvas(element!).then((canvas)=>{
+    let element = document.getElementById('ExampleTable');
+    html2canvas(element!).then((canvas) => {
       console.log(canvas);
       let imgData = canvas.toDataURL('image/png');
 
@@ -123,7 +123,7 @@ export class StudentledgerComponent implements OnInit {
     let prepare: any[] = [];
     this.dataSource.data.forEach(
       e => {
-      var tempObj = [];
+      let tempObj = [];
       tempObj.push(e.datePosted);
       tempObj.push('');
       tempObj.push(e.product);
@@ -215,7 +215,7 @@ export class StudentledgerComponent implements OnInit {
     if (this.childMessage)
       return this.paymentService.Balance.getValue()[0];
     else
-      return "0.0";
+      return '0.0';
   }
 
 
@@ -224,7 +224,7 @@ export class StudentledgerComponent implements OnInit {
     if ( this.childMessage !== undefined && this.childMessage === '') {
       console.log("MSESSAGE IS :::", this.childMessage);
       const aDummyLedger: StudentLedgerEntry[] = [];
-      this.dataSource= new MatTableDataSource(aDummyLedger);
+      this.dataSource = new MatTableDataSource(aDummyLedger);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
       this.dataSource.connect();

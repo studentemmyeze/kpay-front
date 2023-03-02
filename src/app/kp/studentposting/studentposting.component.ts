@@ -305,19 +305,22 @@ export class StudentpostingComponent implements OnInit {
   }
 
 
+  // tslint:disable-next-line:typedef
   async doAutoPaystackPosting() {
     // await this.workOnGender();
     let presPaystackList: string[] = [];
     // get postings that may have been used already
     const payList =  await this.paymentsService.getPayStackPostingsID2();
+    console.log('PAYLIST::', payList);
 
     // this.paymentsService.PayStackPostings.subscribe(
     //   async payList => {
-        if (payList && payList.length > 0) {
+
+    if (payList !== undefined) {
           presPaystackList = payList;
-          console.log("A")
+          console.log('A');
           await this.payStackService.getPayStackPayments2();
-          let count1 = 0
+          let count1 = 0;
           const pp = this.payStackService.PayStackPayments;
           pp.pipe(skipWhile(val => val.length < 1))
           pp.subscribe( async (data19) => {
@@ -327,7 +330,7 @@ export class StudentpostingComponent implements OnInit {
             console.log("B")
             const data9: PaystackAndPayments[] = []; //filtered payStackList
             for (let j = 0; j < data19.length; j++) {
-              if (!presPaystackList.includes(data19[j].reference) && data19[j].jambNo.toLowerCase() != 'nil') {
+              if (!presPaystackList.includes(data19[j].reference) && data19[j].jambNo.toLowerCase() !== 'nil') {
                 data9.push(data19[j]);
               }
               // console.log(`JS-${j}`)
@@ -337,7 +340,7 @@ export class StudentpostingComponent implements OnInit {
             const limitOfPay = data9.length;
             this.totalNumberFound = 0
             let startE = new Date();
-            for (let i=0 ; i < limitOfPay ; i++) {
+            for (let i= 0 ; i < limitOfPay ; i++) {
               const startDate = new Date();
 
               const r = data9[i];
@@ -347,7 +350,7 @@ export class StudentpostingComponent implements OnInit {
               let studentNoPayment = '';
               let studentNoFromJamb = '';
               // check is a regNo has been created for this student
-              const data2 = await this.studentService.checkIfStudentExistsRegNo2(r.jambNo.trim().toUpperCase())
+              const data2 = await this.studentService.checkIfStudentExistsRegNo2(r.jambNo.trim().toUpperCase());
 
               // console.log("INSIDE LAST SUB")
               if (data2 !== undefined && data2 !== '') {
@@ -448,7 +451,7 @@ export class StudentpostingComponent implements OnInit {
 
           }
 
-        })
+        });
 
         }
       // });

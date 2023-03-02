@@ -145,7 +145,7 @@ export class BillService {
     // get debit
 
 
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     const answer: AsyncSubject<any[]> = new AsyncSubject <any[]>();
 
     // const myQualificationList : StudentLedgerEntry[] = [] ;
@@ -261,14 +261,15 @@ optional match (nn)-[:HAS_SPONSOR]->(sp) with nn,k,sp `;
 
   getBalanceBF(searchInfo: BillInfo): AsyncSubject<any[]> {
     // debit, credit list
-    const aList: any[] = []
+    const aList: any[] = [];
     //get credit const
     // get debit
     const BillBF: AsyncSubject<any[]> = new AsyncSubject <any[]>();
 
-    const b = searchInfo.dateToLookAt ? new Date(searchInfo.dateToLookAt).toLocaleDateString('en-GB').split('/') : null;
+    const b = searchInfo.dateToLookAt ? new Date(searchInfo.dateToLookAt)
+      .toLocaleDateString('en-GB').split('/') : null;
 
-    this.angularS1.doConnect();
+    // this.angularS1.doConnect();
     // const answer: BehaviorSubject<StudentLedgerEntry[]> = new BehaviorSubject <StudentLedgerEntry[]>([]);
 
     // const myQualificationList : StudentLedgerEntry[] = [] ;
@@ -320,11 +321,11 @@ optional match (nn)-[:HAS_SPONSOR]->(sp) with nn,k,sp `;
 
     //   }
 
-      this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
     .subscribe((data) => {
-      for (var i = 0; i < data.results.length; i++) {
-        console.log("QUERY FOR BALANCE BF_NEW", (data.results[i]))
-        aList.push(data.results[i])
+      for (let i = 0; i < data.results.length; i++) {
+        console.log("QUERY FOR BALANCE BF_NEW", (data.results[i]));
+        aList.push(data.results[i]);
 
       }
 
@@ -388,14 +389,14 @@ optional match (nn)-[:HAS_SPONSOR]->(sp) with nn,k,sp `;
         //   BillBF.complete();
         //   });
 
-          this.angularS1.queryDB(query,'0')
+        this.angularS1.queryDB(query,'0')
           .subscribe((data) => {
-              for (var i = 0; i < data.results.length; i++) {
+              for (let i = 0; i < data.results.length; i++) {
               console.log("QUERY FOR BALANCE BF_NEW", (data.results[i]))
               aList.push(data.results[i]);
             }
-            BillBF.next(aList);
-            BillBF.complete();
+              BillBF.next(aList);
+              BillBF.complete();
           });
 
         }
@@ -416,7 +417,8 @@ optional match (nn)-[:HAS_SPONSOR]->(sp) with nn,k,sp `;
   checkQuery(aQuery: string, searchString: string): boolean {
     let answer = false;
     if (searchString === aQuery)
-      answer = true;
+    {answer = true;
+    }
 
     return answer;
   }

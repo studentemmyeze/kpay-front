@@ -315,7 +315,7 @@
       required = true
       name = "transacType"
 
-      [(ngModel)]="selectedLedgerInfo.transacType">
+      [(ngModel)]="selectedLedgerInfo.transacType" (change)="transactChange()">
       <mat-radio-button class="example-radio-button" value= 1>Charges (Debit)</mat-radio-button>
       <mat-radio-button class="example-radio-button" value= 2>Payment (Credit)</mat-radio-button>
       </mat-radio-group>
@@ -368,7 +368,7 @@
               class="typicalbutton"
               [disabled]="!guestForm.form.valid"
               ><mat-icon class="matIconSpacing" color="primary">view_column</mat-icon>
-              DEBIT
+              {{advancedCommand}}
       </button>
 
 

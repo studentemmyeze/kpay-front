@@ -54,7 +54,7 @@ public navigateTo(url?: string) {
 
 // tslint:disable-next-line:typedef
 public login5(username: string, password: string) {
-  console.log('AT LOGIN5::', this.email, this.password);
+  // console.log('AT LOGIN5::', this.email, this.password);
   this.userService.signIn(username, password)
   .subscribe(data => {
     // console.log('THIS IS LOGIN RESULT', data);

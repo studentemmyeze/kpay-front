@@ -440,13 +440,22 @@ export class StudentService {
 
 //console.log("THIS IS QUERY AT SETSTUDENT::", query);
 
-    this.angularS1.angularS.run(query).then((res: any) => {
-      for (const r of res) {
-        aAnswer = r[0];
+    // this.angularS1.angularS.run(query).then((res: any) => {
+    //   for (const r of res) {
+    //     aAnswer = r[0];
+    //
+    //   }
+    //   responseQuali.next(parseFloat(aAnswer));
+    //
+    //
+    //   });
 
-      }
-      responseQuali.next(parseFloat(aAnswer));
-
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = (data.results[i][0]);
+        }
+        responseQuali.next(parseFloat(aAnswer));
 
       });
 

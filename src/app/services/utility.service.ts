@@ -9,9 +9,9 @@ import autoTable, { RowInput } from 'jspdf-autotable'// import JSPDF from 'jspdf
 
 // import { AddStaffComponent } from 'src/app/shared/components/dialogs/add-staff/add-staff.component';
 
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 
-import jsPDF from 'jspdf'
+import jsPDF from 'jspdf';
 import { formatDate } from '@angular/common';
 
 @Injectable({

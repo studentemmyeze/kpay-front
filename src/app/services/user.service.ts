@@ -1,11 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AsyncSubject, BehaviorSubject } from 'rxjs';
+import {AsyncSubject, BehaviorSubject, Observable} from 'rxjs';
 import { StorageKey, StorageKey2 } from '../interfaces/storage-key';
 import { User } from '../interfaces/user';
 import { KLoginService } from './klogin.service';
 import { StorageService } from './storage.service';
 import { UtilityService } from './utility.service';
+import {environment} from '../../environments/environment';
+import {catchError, tap} from 'rxjs/operators';
 const { AUTH_TOKEN } = StorageKey;
 const { AUTH_LEVEL } = StorageKey2;
 // const { AUTH_NAME } = StorageKey3;
@@ -36,12 +38,12 @@ export class UserService {
   constructor(public angularS1: KLoginService, private storage: StorageService,
               public utilityService: UtilityService, private http: HttpClient) {
     // this.angularS1.doConnect();
-    this.token = this.storage.read(AUTH_TOKEN) || '';
+    this.token = this.storage.read(AUTH_TOKEN) || null;
     // this.token2 = this.storage.read2(AUTH_LEVEL) || '';
     // this.nameToken = this.storage.read3(AUTH_NAME) || '';
     // this.loginNodeID = this.storage.read4(AUTH_LOGINID) || '';
-    const tempToken = this.storage.read2(AUTH_LEVEL) || '';
-    this.splitFunction(tempToken);
+    const tempToken = this.storage.read2(AUTH_LEVEL) || null;
+    if (tempToken) {this.splitFunction(tempToken); }
 
 
   }
@@ -209,7 +211,7 @@ export class UserService {
           const handOverID = this.utilityService.prepareNewID4();
 
           const tempList = [];
-          if (!handOffList) {handOffList = [];}
+          if (!handOffList) {handOffList = []; }
 
           // let query = '';
           for ( let i = 0; i < handOffList.length; i++) {
@@ -240,7 +242,7 @@ export class UserService {
 
     // });
 
-    this.angularS1.writeDB(query,'0')
+        this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
         for (let i = 0; i < data.results.length; i++) {
           answer = (data.results[i][0]);
@@ -292,6 +294,21 @@ export class UserService {
       return Answer;
     }
 
+    public signInTest(username: string, password: string): Observable<any> {
+      let queryParams = new HttpParams();
+
+      queryParams = queryParams.append('username', username );
+      queryParams = queryParams.append('password', password );
+      return this.http.get<{results: any[], message: any, status: number}>(`${environment.neo4jAPI}/api/login`,
+
+      // return this.http.get<{results: any[], message: any, status: number}>(`${environment.neo4jAPI}/api/db-read`,
+        {params: queryParams})
+        .pipe(
+          tap(_ => console.log (`fetched the query:: ${username}`)),
+          // catchError(this.handleError<any>(`Issues with the query::${query}`, undefined))
+        );
+    }
+
   public signIn(
     username: string,
     password: string, handOffUser?: string,
@@ -314,52 +331,57 @@ export class UserService {
     // queryParams = queryParams.append("queries", query );
     // queryParams.append("option", '0' );
     // this.http.get<{results:any[],message:any, status:number}>(`http://localhost:3000/api/db-read`,{params:queryParams})
-    this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
     .subscribe((data) => {
-      for (let i = 0; i < data.results.length; i++) {
-        // console.log((data.results[i]));
-        answer = data.results[i][0];
-        answer2 = data.results[i][1];
-        answer3 = data.results[i][2];
-        answer4 = data.results[i][3];
+      // console.log('data @singIN::', data);
+      if (data && data.results.length > 0) {
+        for (let i = 0; i < data.results.length; i++) {
+          console.log((data.results[i]));
+          answer = data.results[0];
+          answer2 = data.results[1];
+          answer3 = data.results[2];
+          answer4 = data.results[3];
 
+        }
+        console.log('answer, password::', answer, password);
+
+        if (answer === password)
+        {
+          this.token = username; //
+          this.token2 = answer2; // permission
+          this.nameToken = answer3 + ' ' + answer4; // name
+
+          this.makeLogin(username, handOffUser,
+            handOffUserLoginID, handOffList)
+            // tslint:disable-next-line:no-shadowed-variable
+            .subscribe((data) => {
+              if (data) {
+                const tempToSave  = this.token2 + '$$$' + this.nameToken
+                  + '$$$' + this.loginNodeID;
+                this.storage.save(StorageKey.AUTH_TOKEN, this.token);
+                this.storage.save2(StorageKey2.AUTH_LEVEL, tempToSave);
+                // this.storage.save2(StorageKey2.AUTH_LEVEL, this.token2);
+                // this.storage.save3(StorageKey3.AUTH_NAME, this.nameToken);
+                // this.storage.save4(StorageKey4.AUTH_LOGINID, this.loginNodeID);
+
+
+                // console.log('AT GET LEVEL: ', this.getLevel());
+                const level = this.getLevel();
+                const mTest = (/MANAGER/i).test(level);
+                this.isManager =  (mTest ? true : false);
+                const adTest = (/ADMINISTRATOR/i).test(level);
+                this.isAdmin =  (adTest ? true : false);
+                toReturn =  true;
+                // console.log('TO RETURN VALUE: ', toReturn);
+                Answer.next(toReturn);
+                Answer.complete();
+
+              }
+              // else { toReturn = false; }
+            });
+        }
       }
 
-      if (answer === password)
-      {
-        this.token = username; //
-        this.token2 = answer2; // permission
-        this.nameToken = answer3 + ' ' + answer4; // name
-
-        this.makeLogin(username, handOffUser,
-          handOffUserLoginID, handOffList)
-          // tslint:disable-next-line:no-shadowed-variable
-          .subscribe((data) => {
-            if (data) {
-              const tempToSave  = this.token2 + '$$$' + this.nameToken
-              + '$$$' + this.loginNodeID;
-              this.storage.save(StorageKey.AUTH_TOKEN, this.token);
-              this.storage.save2(StorageKey2.AUTH_LEVEL, tempToSave);
-              // this.storage.save2(StorageKey2.AUTH_LEVEL, this.token2);
-              // this.storage.save3(StorageKey3.AUTH_NAME, this.nameToken);
-              // this.storage.save4(StorageKey4.AUTH_LOGINID, this.loginNodeID);
-
-
-              // console.log('AT GET LEVEL: ', this.getLevel());
-              const level = this.getLevel();
-              const mTest = (/MANAGER/i).test(level);
-              this.isManager =  (mTest ? true : false);
-              const adTest = (/ADMINISTRATOR/i).test(level);
-              this.isAdmin =  (adTest ? true : false);
-              toReturn =  true;
-              // console.log('TO RETURN VALUE: ', toReturn);
-              Answer.next(toReturn);
-              Answer.complete();
-
-            }
-            // else { toReturn = false; }
-          });
-      }
   });
 
     // console.log('GET LOGIN QUERY: ', query);
@@ -455,7 +477,7 @@ public logout(): AsyncSubject<boolean> {
 
 }
 
-public async logout1(): Promise<boolean> {//Promise<boolean> {
+public async logout1(): Promise<boolean> {// Promise<boolean> {
   let answer = false;
   // await this.makeLogout().then((data) => {
   //   if (data) {
@@ -474,7 +496,7 @@ public async logout1(): Promise<boolean> {//Promise<boolean> {
 }
 
 public isLogged(): boolean {
-    return this.token.length > 0;
+    return this.token ? true : false;
 }
 
   getUserMaxId(): BehaviorSubject<string> {
@@ -589,7 +611,7 @@ getPassword(aUserName: string): BehaviorSubject<string> {
 getPassword2(aUserName: string): string {
   // const MaxRm: BehaviorSubject<string> = new BehaviorSubject<string>('');
   const query = `match (a:User) where a.staffID = '${aUserName}' return a.password`;
-  let answer = '';
+  const answer = '';
   // this.angularS1.doConnect();
   // this.angularS1.angularS.run(query).then((res: any) => {
   //   for (const r of res) {
@@ -600,7 +622,7 @@ getPassword2(aUserName: string): string {
 
 
     // });
-  //console.log('AT GET PASSWORD: ', answer);
+  // console.log('AT GET PASSWORD: ', answer);
   return answer;
 }
 

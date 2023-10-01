@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AsyncSubject, BehaviorSubject } from 'rxjs';
-import { AdvPostingInfo, Concession, LedgerInfo, OutstandingInfo, OutstandingInfoData,
-  PaystackAndPayments,  Student, StudentLedgerEntry, StudentLedgerEntryMax, StudentLedgerEntryMax2,
-  StudentProduct } from '../interfaces/student';
+import { AdvPostingInfo, Concession, LedgerInfo, OutstandingInfo, OutstandingInfoData, PaystackAndPayments,  Student, StudentLedgerEntry, StudentLedgerEntryMax, StudentLedgerEntryMax2, StudentProduct } from '../interfaces/student';
 import { KLoginService } from './klogin.service';
-import { UtilityService } from './utility.service';
+import {UtilityService} from "./utility.service";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +19,8 @@ export class PaymentsService {
 
 
 
-  constructor(public angularS1: KLoginService, private utils: UtilityService) {
+  constructor(public angularS1: KLoginService, private utils: UtilityService
+              ) {
     this.PostingsExtra.next([]);
     this.getPayStackPostingsID();
   }
@@ -31,12 +30,12 @@ export class PaymentsService {
     const responseQuali: AsyncSubject<number> = new AsyncSubject<number>();
     // const a = new Date(anEntry.datePosted).toLocaleDateString('en-GB').split('/');
     const b = anEntry.tellerDate ? new Date(anEntry.tellerDate).toLocaleDateString('en-GB').split('/') : null;
-    const bb = anEntry.tellerDate ? new Date(anEntry.tellerDate).toLocaleTimeString('en-GB').split(':') : null;
+    const bb = anEntry.tellerDate ? new Date(anEntry.tellerDate).toLocaleTimeString('en-GB').split(':'): null;
     let aAnswer: string;
 
 
     // const myQualificationList : StudentProduct[] = [] ;         studentNo: "${aStudent.studentNo ? aStudent.studentNo: ''}",
-    let query = '';
+    let query = "";
     if (anEntry.paymentMode === 'PayStack') {
       query = `
       MATCH(q:Student {studentNo: "${studentNo}"})
@@ -63,7 +62,7 @@ export class PaymentsService {
         timezone:'+01:00' })
 
       `;
-      console.log('IN THE PAYSTACK OPTION::', query);
+      console.log("IN THE PAYSTACK OPTION::", query)
     }
     else {
       query = `
@@ -93,21 +92,12 @@ export class PaymentsService {
       minute:${Number(bb![1])}, second:${Number(bb![2])},
           timezone:'+01:00' })` : '');
 
-      query += `})-[:POSTINGS_FOR]->(q) return '1'`;
+      query += `})-[:POSTINGS_FOR]->(q) return 1`;
     }
 
 
 
 
-    // console.log("QUERY FOR POSTING", query);
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     aAnswer = r[0];
-    //   }
-    //   responseQuali.next(parseFloat(aAnswer));
-    //   responseQuali.complete();
-
-    //   });
 
     this.angularS1.writeDB(query, '0')
           .subscribe((data) => {
@@ -123,17 +113,18 @@ export class PaymentsService {
     return responseQuali;
   }
 
+  // tslint:disable-next-line:typedef
   async makePosting2(studentNo: any, anEntry: StudentLedgerEntry) {
     // this.angularS1.doConnect();
-    const responseQuali: AsyncSubject<number> = new AsyncSubject<number>();
+    let responseQuali: AsyncSubject<number> = new AsyncSubject<number>();
     // const a = new Date(anEntry.datePosted).toLocaleDateString('en-GB').split('/');
     const b = anEntry.tellerDate ? new Date(anEntry.tellerDate).toLocaleDateString('en-GB').split('/') : null;
-    const bb = anEntry.tellerDate ? new Date(anEntry.tellerDate).toLocaleTimeString('en-GB').split(':') : null;
-    let aAnswer = 0;
+    const bb = anEntry.tellerDate ? new Date(anEntry.tellerDate).toLocaleTimeString('en-GB').split(':'): null;
+    let aAnswer= 0;
 
 
     // const myQualificationList : StudentProduct[] = [] ;         studentNo: "${aStudent.studentNo ? aStudent.studentNo: ''}",
-    let query = '';
+    let query = "";
     if (anEntry.paymentMode === 'PayStack') {
       query = `
       MATCH(q:Student {studentNo: "${studentNo}"})
@@ -198,17 +189,8 @@ export class PaymentsService {
 
 
 
-    console.log('QUERY FOR POSTING', query);
-    const tempAnswer = '';
-    // await this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     tempAnswer = r[0];
-    //     aAnswer = parseFloat(tempAnswer);
-    //   }
-    //   // responseQuali.next(parseFloat(aAnswer));
-    //   // responseQuali.complete();
-
-    //   });
+    console.log("QUERY FOR POSTING", query);
+    let tempAnswer = ""
 
     await this.angularS1.writeDB(query, '0')
           .subscribe((data) => {
@@ -229,13 +211,6 @@ export class PaymentsService {
 
     const myQualificationList: StudentProduct[] = [] ;
     const query = `MATCH (n:StudentProduct)  return n order by n.prodCode`;
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     myQualificationList.push(r[0].properties as StudentProduct);
-    //   }
-    //   answer.next(myQualificationList);
-
-    //   });
 
     this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
@@ -259,19 +234,10 @@ export class PaymentsService {
     // this.angularS1.doConnect();
     // const answer: BehaviorSubject<StudentLedgerEntry[]> = new BehaviorSubject <StudentLedgerEntry[]>([]);
 
-    const myQualificationList: StudentLedgerEntry[] = [] ;
+    const myQualificationList : StudentLedgerEntry[] = [] ;
     const query = `MATCH (n:Student {studentNo: "${studentNo}"})<-[:POSTINGS_FOR]-(l:StudentLedgerEntry)
       return l order by l.datePosted`;
-    console.log('QUERY FOR PAYMENTS', query);
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     myQualificationList.push(r[0].properties as StudentLedgerEntry);
-    //   }
-    //   console.log('ledger entries found::', myQualificationList)
-    //   this.Postings.next(myQualificationList);
-
-    //   });
-
+    console.log("QUERY FOR PAYMENTS", query);
     this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
         if (data) {
@@ -304,8 +270,8 @@ export class PaymentsService {
     // this.angularS1.doConnect();
     const answer: AsyncSubject<StudentLedgerEntryMax[]> = new AsyncSubject <StudentLedgerEntryMax[]>();
 
-    const myQualificationList: any[] = [] ;
-    const myQualificationList2: any[] = [] ;
+    const myQualificationList : any[] = [] ;
+    const myQualificationList2 : any[] = [] ;
 
     const a = searchInfo.datePostedList && searchInfo.datePostedList.length > 0 ? new Date(searchInfo.datePostedList[0]).toLocaleDateString('en-GB').split('/') : null;
     const b = searchInfo.datePostedList && searchInfo.datePostedList.length > 0 ? new Date(searchInfo.datePostedList[1]).toLocaleDateString('en-GB').split('/') : null;
@@ -378,27 +344,27 @@ export class PaymentsService {
     queryWhere = this.checkQuery(query, queryTemp);
 
     if (searchInfo.amount){
-      if (queryWhere) {query += ' where '; }
-        else { query += ' and '; }
+      if (queryWhere) {query += ' where '}
+      else { query += " and ";}
 
       if ( searchInfo.transacType === '1') {
 
-        query += searchInfo.paidSign === '>'  ? ` l.dr > ${searchInfo.amount} ` : '';
-        query += searchInfo.paidSign === '<'  ? ` l.dr < ${searchInfo.amount} ` : '';
-        query += searchInfo.paidSign === '='  ? ` l.dr = ${searchInfo.amount} ` : '';
+        query += searchInfo.paidSign=== '>'  ? ` l.dr > ${searchInfo.amount} ` : '';
+        query += searchInfo.paidSign=== '<'  ? ` l.dr < ${searchInfo.amount} ` : '';
+        query += searchInfo.paidSign=== '='  ? ` l.dr = ${searchInfo.amount} ` : '';
 
-      } // debit
+      } //debit
 
       else if (searchInfo.transacType === '2') {
-        query += searchInfo.paidSign === '>'  ? `l.cr > ${searchInfo.amount}` : '';
-        query += searchInfo.paidSign === '<'  ? `l.cr < ${searchInfo.amount}` : '';
-        query += searchInfo.paidSign === '='  ? `l.cr = ${searchInfo.amount}` : '';
-      } // credit
+        query += searchInfo.paidSign=== '>'  ? `l.cr > ${searchInfo.amount}` : '';
+        query += searchInfo.paidSign=== '<'  ? `l.cr < ${searchInfo.amount}` : '';
+        query += searchInfo.paidSign=== '='  ? `l.cr = ${searchInfo.amount}` : '';
+      } //credit
 
       else {
         query += searchInfo.paidSign === '>'  ? `l.dr > ${searchInfo.amount} or l.cr > ${searchInfo.amount}` : '';
-        query += searchInfo.paidSign === '<'  ? `l.dr < ${searchInfo.amount} or l.cr < ${searchInfo.amount}` : '';
-        query += searchInfo.paidSign === '='  ? `l.dr = ${searchInfo.amount} or l.cr = ${searchInfo.amount}` : '';
+        query += searchInfo.paidSign=== '<'  ? `l.dr < ${searchInfo.amount} or l.cr < ${searchInfo.amount}` : '';
+        query += searchInfo.paidSign=== '='  ? `l.dr = ${searchInfo.amount} or l.cr = ${searchInfo.amount}` : '';
 
       }
 
@@ -426,53 +392,15 @@ export class PaymentsService {
     query += searchInfo.product && !queryWhere ? ` and l.product = "${searchInfo.product}" ` : '';
     queryWhere = this.checkQuery(query, queryTemp);
 
+    query += searchInfo.staffIn && queryWhere ? ` where l.staffIn = "${searchInfo.staffIn}" ` : '';
+    query += searchInfo.staffIn && !queryWhere ? ` and l.staffIn = "${searchInfo.staffIn}" ` : '';
+    queryWhere = this.checkQuery(query, queryTemp);
+
+
 
 
     query += ` return l, n order by l.datePosted`;
-    console.log('@getPostingsInfo-QUERY FOR PAYMENTS INFO', query);
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-
-    //       myQualificationList.push(
-    //         {
-    //             datePosted:  r[0].properties.datePosted,
-    //             session: r[0].properties.session,
-    //             semester: r[0].properties.semester,
-    //             product: r[0].properties.product,
-    //             qty: r[0].properties.qty,
-
-    //             dr: r[0].properties.dr,
-    //             cr: r[0].properties.cr,
-    //             balance: r[0].properties.balance,
-    //             details: r[0].properties.details,
-
-    //             paymentMode: r[0].properties.paymentMode,
-    //             bank: r[0].properties.bank,
-    //             tellerDate: r[0].properties.tellerDate,
-    //             tellerNo: r[0].properties.tellerNo,
-    //             receiptNo: r[0].properties.receiptNo,
-    //             depositor: r[0].properties.depositor,
-    //             staffIn: r[0].properties.staffIn,
-    //             studentNo: r[1].properties.studentNo,
-    //         firstName: r[1].properties.firstName,
-    //         middleName: r[1].properties.middleName,
-    //         lastName: r[1].properties.lastName,
-    //         gender: r[1].properties.gender,
-    //         level: r[1].properties.level,
-
-    //         activeStatus: r[0].properties.activeStatus,
-    //         studentType: r[0].properties.studentType,
-    //         department: r[1].properties.department
-    //       } as StudentLedgerEntryMax
-
-    //         );
-    //   }
-    //   this.PostingsExtra.next(myQualificationList);
-    //   answer.next(myQualificationList);
-    //   answer.complete();
-
-    //   });
-
+    console.log("QUERY FOR PAYMENTS INFO", query);
     this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
         if (data) {
@@ -508,7 +436,7 @@ export class PaymentsService {
 
               activeStatus: data.results[i][1].activeStatus,
               studentType: data.results[i][1].studentType,
-              department: data.results[i][1].department
+              programme: data.results[i][1].programme
             } as StudentLedgerEntryMax
 
               );
@@ -773,7 +701,7 @@ export class PaymentsService {
             {
               // ledger: r[0].properties as StudentLedgerEntry,
               // export interface StudentLedgerEntryMax {
-              datePosted:  data.results[i][0].datePosted,
+              datePosted: data.results[i][0].datePosted,
               session: data.results[i][0].session,
               semester: data.results[i][0].semester,
               product: data.results[i][0].product,
@@ -800,9 +728,9 @@ export class PaymentsService {
 
               activeStatus: data.results[i][0].activeStatus,
               studentType: data.results[i][0].studentType,
-              department: data.results[i][0].department,
+              programme: data.results[i][0].programme,
               id: data.results[i][2]
-            } as StudentLedgerEntryMax2
+            } as unknown as StudentLedgerEntryMax2
 
           );
         }
@@ -978,7 +906,7 @@ export class PaymentsService {
     `;
     query += postingInfo.level ?  ` and (n)-[:IN_LEVEL]->(:Level{lCode:${postingInfo.level}})` : '';
     query += postingInfo.faculty ? ` and f.dCode = '${postingInfo.faculty}' ` : '';
-    query += postingInfo.department ? ` and p.dName = '${postingInfo.department}' ` : '';
+    query += postingInfo.programme ? ` and p.dName = '${postingInfo.programme}' ` : '';
 
 
     query += ` return (sum(toFloat(l.cr))- sum(toFloat(l.dr))) as balance, n.studentNo as studentNo order by n.studentNo`;
@@ -1070,8 +998,8 @@ export class PaymentsService {
     query += searchInfo.gender && !queryWhere ? ` and n.gender = "${searchInfo.gender}" ` : '';
     queryWhere = this.checkQuery(query, queryTemp);
 
-    query += searchInfo.department && queryWhere ? ` where n.department = "${searchInfo.department}" ` : '';
-    query += searchInfo.department && !queryWhere ? ` and n.department = "${searchInfo.department}" ` : '';
+    query += searchInfo.programme && queryWhere ? ` where n.programme = "${searchInfo.programme}" ` : '';
+    query += searchInfo.programme && !queryWhere ? ` and n.programme = "${searchInfo.programme}" ` : '';
     queryWhere = this.checkQuery(query, queryTemp);
 
     query += searchInfo.faculty && queryWhere ? ` where f.dCode = "${searchInfo.faculty}" ` : '';
@@ -1099,7 +1027,7 @@ export class PaymentsService {
 
     query += `return n.studentNo as studentNo,s.status as status, n.lastName as lastName,
      n.firstName as firstName, n.middleName as middleName, n.gender as gender, (sum(toFloat(l.cr))- sum(toFloat(l.dr))) as balance,
-    n.department as department, n.level as level order by balance`;
+    n.programme as programme, n.level as level order by balance`;
     console.log('QUERY FOR PAYMENTS', query);
     // this.angularS1.angularS.run(query).then((res: any) => {
     //   for (const r of res) {
@@ -1129,7 +1057,7 @@ export class PaymentsService {
               status: data.results[i][1],
               lastName: data.results[i][2], firstName: data.results[i][3], middleName: data.results[i][4],
               gender: data.results[i][5], balance: data.results[i][6],
-              department: data.results[i][7], level: data.results[i][8]
+              programme: data.results[i][7], level: data.results[i][8]
             } as OutstandingInfoData);
           console.log('QUERY FOR BALANCE', data.results[i]);
         }

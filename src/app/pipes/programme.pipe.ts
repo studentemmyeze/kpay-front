@@ -14,7 +14,7 @@ export class ProgrammePipe implements PipeTransform {
     console.log('search text: ', searchText);
 
     return items.filter(myItem => {
-      myItem.dName.toLocaleLowerCase().includes(searchText);
+      myItem.pName.toLocaleLowerCase().includes(searchText);
 
     });
 

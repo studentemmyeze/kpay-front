@@ -1,9 +1,9 @@
 export interface Product {
-    description: string;
-    price: number;
-    prodCode: string;
-    creationStamp: string;
-    notDefault?: boolean;
+  description: string;
+  price: number;
+  prodCode: string;
+  creationStamp: string;
+  notDefault?: boolean;
 }
 
 // export interface Programme {
@@ -14,13 +14,16 @@ export interface Product {
 // }
 
 export interface Programme {
-  dName: string;
+
+  pName: string;
+  dName?: string;
 
 }
 
 export interface ProgrammeFaculty {
-  dName: string;
+  pName: string;
   facultyDCode: string;
+
 
 }
 

@@ -121,12 +121,12 @@
         </div>
 
         <div class="postingdetail">
-          <mat-checkbox name="departmentMarker"  (change)= "checkStat('department')" class="example-margin" [(ngModel)]= "departmentMarker">
+          <mat-checkbox name="departmentMarker"  (change)= "checkStat('programme')" class="example-margin" [(ngModel)]= "departmentMarker">
 
           </mat-checkbox>
         <mat-form-field>
-          <mat-label>DEPARTMENT</mat-label>
-          <mat-select [(ngModel)]= "selectedLedgerInfo.department" name = "department"
+          <mat-label>PROGRAMME</mat-label>
+          <mat-select [(ngModel)]= "selectedLedgerInfo.programme" name = "programme"
           required = "departmentMarker"
           [disabled]= "!departmentMarker"
 
@@ -135,7 +135,7 @@
                   {{stat}}
               </mat-option>
           </mat-select>
-          <mat-error>Department Required!</mat-error>
+          <mat-error>Programme Required!</mat-error>
 
       </mat-form-field>
   </div>

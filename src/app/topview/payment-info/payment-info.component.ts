@@ -10,6 +10,8 @@ import { Concession, LedgerInfo, Student, StudentLedgerEntry, StudentProduct } f
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { StudentService } from 'src/app/services/student.service';
+import { User } from 'src/app/interfaces/user';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -19,7 +21,7 @@ import { StudentService } from 'src/app/services/student.service';
   providers: [
     {provide: DateAdapter, useClass: AppDateAdapter},
     {provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS}
-]
+  ]
 })
 export class PaymentInfoComponent implements OnInit {
   selectedLedgerInfo: Partial <LedgerInfo> = {};
@@ -29,7 +31,7 @@ export class PaymentInfoComponent implements OnInit {
   paymentModeList = ['Cash', 'Transfer' , 'Bank', 'PayStack', 'Concessions', 'Error Correct']
   displayedColumns = ['datePosted', 'session', 'semester', 'product', 'qty',
     'dr', 'cr' ,'balance', 'paymentMode', 'bank' , 'tellerDate','receiptNo',
-  'details', 'depositor' ,'studentNo', 'lastName', 'firstName', 'gender', 'level', 'department', 'staffIn'];
+    'details', 'depositor' ,'studentNo', 'lastName', 'firstName', 'gender', 'level', 'programme','staffIn', 'actions'];
   paidList = ['>', '<', '=' ];
   Genders = [ 'M', 'F' ];
 
@@ -41,6 +43,7 @@ export class PaymentInfoComponent implements OnInit {
   studentList: Student[] =[];
 
   bankList: any[] = [];
+  usersList: any[] = [];
   searchVariables = ['studentNo']
   dateMarker = false;
   tellerDateMarker = false;
@@ -51,6 +54,7 @@ export class PaymentInfoComponent implements OnInit {
   concessionMarker = false;
   sessionMarker = false;
   receiptNoMarker = false;
+  staffInMarker = false;
   semesterMarker = false;
   productMarker = false;
   transacTypeMarker = false;
@@ -68,9 +72,12 @@ export class PaymentInfoComponent implements OnInit {
     end2: new FormControl(),
   });
   selectedProduct: Partial <StudentProduct> = {};
+  selectedStaff: Partial <User> = {};
   stateCtrl = new FormControl();
+  stateCtrlStaff = new FormControl();
   filteredStates: Observable<StudentProduct[]>;
   filteredStates2: Observable<Student[]>;
+  filteredStates3: Observable<User[]>;
   stateCtrl2= new FormControl();
 
 
@@ -78,6 +85,7 @@ export class PaymentInfoComponent implements OnInit {
 
   constructor(
     private utilityService: UtilityService,
+    private userService: UserService,
     private paymentsService: PaymentsService,
     private bankService: BankService,
     private studentService: StudentService
@@ -89,11 +97,18 @@ export class PaymentInfoComponent implements OnInit {
         map(state => state ? this._filterStates(state) : this.productList.slice())
       );
 
-      this.filteredStates2 = this.stateCtrl2.valueChanges
+    this.filteredStates2 = this.stateCtrl2.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.studentNo),
         map(state => state ? this._filterStates2(state) : this.studentList.slice())
+      );
+
+    this.filteredStates3 = this.stateCtrlStaff.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value.staffID),
+        map(state => state ? this._filterStates3(state) : this.usersList.slice())
       );
   }
 
@@ -115,14 +130,21 @@ export class PaymentInfoComponent implements OnInit {
         this.concessionList = data;
       }
     );
+    // this.bankList = this.bankService.getAllBanks();
+    this.userService.getUsers().subscribe(
+      data => {
+        this.usersList = data;
+        // console.log("APPLICATION:::", data);
+      }
+    );
 
     this.bankService.getAllBanks().subscribe(
       (data) => {
-        this.bankList = data
+        if (data && data.length > 0 )
+        {this.bankList = data; }
 
       }
     );
-    // this.bankList = this.bankService.getAllBanks();
 
 
 
@@ -130,26 +152,26 @@ export class PaymentInfoComponent implements OnInit {
 
   postingsTest(): void {
     if (this.dateMarker && this.range.value)
-      {
-        const dateList = [];
-        dateList.push(this.range.value.start);
-        dateList.push(this.range.value.end);
-        this.selectedLedgerInfo.datePostedList = dateList;
+    {
+      const dateList = [];
+      dateList.push(this.range.value.start);
+      dateList.push(this.range.value.end);
+      this.selectedLedgerInfo.datePostedList = dateList;
 
 
-      }
-      // else {const tellerDateList = [];this.range2.reset();}
+    }
+    // else {const tellerDateList = [];this.range2.reset();}
 
-      if (this.tellerDateMarker && this.range2.value)
-      {
-        const tellerDateList = [];
-        tellerDateList.push(this.range2.value.start2);
-        tellerDateList.push(this.range2.value.end2);
-        this.selectedLedgerInfo.tellerDateList = tellerDateList;
+    if (this.tellerDateMarker && this.range2.value)
+    {
+      const tellerDateList = [];
+      tellerDateList.push(this.range2.value.start2);
+      tellerDateList.push(this.range2.value.end2);
+      this.selectedLedgerInfo.tellerDateList = tellerDateList;
 
 
-      }
-      // else {const tellerDateList = [];this.range2.reset();}
+    }
+    // else {const tellerDateList = [];this.range2.reset();}
     // console.log('HERE IS SELECTED_L_INFO:::', this.selectedLedgerInfo as LedgerInfo);
 
     this.paymentsService.getPostingsInfo(this.selectedLedgerInfo as LedgerInfo);
@@ -164,14 +186,14 @@ export class PaymentInfoComponent implements OnInit {
     const filterValue = value.toLowerCase();
 
     return this.productList.filter(state =>
-      {
+    {
 
-        return state.prodCode.toLocaleLowerCase().includes(filterValue)
-      || state.description.toLocaleLowerCase().includes(filterValue);
-        // state.jambNo.toLowerCase().includes(filterValue)
-        // || state.lastName.toLowerCase().includes(filterValue);
+      return state.prodCode.toLocaleLowerCase().includes(filterValue)
+        || state.description.toLocaleLowerCase().includes(filterValue);
+      // state.jambNo.toLowerCase().includes(filterValue)
+      // || state.lastName.toLowerCase().includes(filterValue);
 
-      });
+    });
   }
 
   uncheckAll(): void {
@@ -231,6 +253,11 @@ export class PaymentInfoComponent implements OnInit {
       this.selectedStudent = {};
     }
 
+    if (aString === 'staffIn' && !this.staffInMarker) {
+      this.selectedStaff.staffID = undefined;
+      this.selectedStaff = {};
+    }
+
     if (aString === 'date' && !this.dateMarker) {
       this.selectedLedgerInfo.datePostedList = [];
       this.range.reset();
@@ -278,20 +305,42 @@ export class PaymentInfoComponent implements OnInit {
     return applicant && applicant.studentNo ? applicant.studentNo : '';
   }
 
+  displayFnStaff(applicant: User): string {
+    // console.log("THE INDEX::", applicant);
+    // this.selectedApplication = applicant;
+    // console.log("THE APP::", this.selectedStudent);
+
+    return applicant && applicant.staffID ? applicant.staffID : '';
+  }
+
   private _filterStates2(value: string): Student[] {
     const filterValue = value.toLowerCase();
 
     return this.studentList.filter(state =>
-      {
+    {
 
-        return state.studentNo.toLocaleLowerCase().includes(filterValue)
-      || state.lastName.toLocaleLowerCase().includes(filterValue)
-      || state.firstName.toLocaleLowerCase().includes(filterValue)
-      || state.department.toLowerCase().includes(filterValue);
-        // state.jambNo.toLowerCase().includes(filterValue)
-        // || state.lastName.toLowerCase().includes(filterValue);
+      return state.studentNo.toLocaleLowerCase().includes(filterValue)
+        || state.lastName.toLocaleLowerCase().includes(filterValue)
+        || state.firstName.toLocaleLowerCase().includes(filterValue)
+        || state.programme.toLowerCase().includes(filterValue);
+      // state.jambNo.toLowerCase().includes(filterValue)
+      // || state.lastName.toLowerCase().includes(filterValue);
 
-      });
+    });
+  }
+
+  private _filterStates3(value: string): User[] {
+    const filterValue = value.toLowerCase();
+
+    return this.usersList.filter(state =>
+    {
+
+      return state.staffID.toLocaleLowerCase().includes(filterValue)
+        || state.lName.toLocaleLowerCase().includes(filterValue)
+        || state.fName.toLocaleLowerCase().includes(filterValue)
+
+
+    });
   }
 
   clearFilter(): void {
@@ -299,8 +348,16 @@ export class PaymentInfoComponent implements OnInit {
 
   }
 
+  clearFilterStaff(): void {
+    this.selectedStaff = {};
+
+  }
+
   setStudentNo(): void {
     this.selectedLedgerInfo.studentNo = this.selectedStudent.studentNo;
+  }
+  setStaffNo(): void {
+    this.selectedLedgerInfo.staffIn = this.selectedStaff.staffID;
   }
 
 }

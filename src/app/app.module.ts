@@ -106,6 +106,7 @@ import { SettingsProgrammeComponent } from './tables/settings-programme/settings
 import { FacultyPipe } from './pipes/faculty.pipe';
 import { ProgrammePipe } from './pipes/programme.pipe';
 import { Neo4jdatePipe } from './pipes/neo4jdate.pipe';
+import { Login2Component } from './topview/login2/login2.component';
 // import { StoreModule } from '@ngrx/store';
 // import { appReducer } from './app.reducer';
 
@@ -160,7 +161,8 @@ import { Neo4jdatePipe } from './pipes/neo4jdate.pipe';
     SettingsProgrammeComponent,
     FacultyPipe,
     ProgrammePipe,
-    Neo4jdatePipe
+    Neo4jdatePipe,
+    Login2Component
   ],
   imports: [
     BrowserModule,

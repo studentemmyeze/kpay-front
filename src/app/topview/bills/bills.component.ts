@@ -47,12 +47,13 @@ export class BillsComponent implements OnInit {
   DCol: any[] = [];
   displayedColumns = [
 
-  'studentNo', 'lastName', 'firstName', 'middleName','balance','gender', 'level', 'department'];
+    'studentNo', 'lastName', 'firstName', 'middleName','balance','gender', 'level', 'programme'];
   paidList = ['>', '<', '=' ];
   Genders = [ 'M', 'F' ];
   OutstandingList: BehaviorSubject<any[]> = new BehaviorSubject <any[]>([]);
 
   progressChecks: BehaviorSubject<number> = new BehaviorSubject <number>(0);
+  studentListToEmail: string[] = []
 
   Levels = [100, 200, 300, 400, 500 ];
   facultyList: string[] = [];
@@ -138,12 +139,12 @@ export class BillsComponent implements OnInit {
         map(value => typeof value === 'string' ? value : value.studentNo),
         map(state => state ? this._filterStates2(state) : this.studentList.slice())
       );
-      this.studentService.getStudentsList().subscribe(
-        data => {
-          this.studentList = data;
-          // console.log("APPLICATION:::", data);
-        }
-      );
+    this.studentService.getStudentsList().subscribe(
+      data => {
+        this.studentList = data;
+        // console.log("APPLICATION:::", data);
+      }
+    );
 
   }
 
@@ -160,85 +161,85 @@ export class BillsComponent implements OnInit {
 
 
   // receives sorted transactions and re-arranges it debit before credit
-reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEntryMax2[] {
-  const result: StudentLedgerEntryMax2[] = [];
-  const acceptance_cr: StudentLedgerEntryMax2[] = [];
-  const acceptance_dr: StudentLedgerEntryMax2[] = [];
+  reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEntryMax2[] {
+    const result: StudentLedgerEntryMax2[] = [];
+    const acceptance_cr: StudentLedgerEntryMax2[] = [];
+    const acceptance_dr: StudentLedgerEntryMax2[] = [];
 
-  const fees_cr: StudentLedgerEntryMax2[] = [];
-  const fees_dr : StudentLedgerEntryMax2[]= [];
+    const fees_cr: StudentLedgerEntryMax2[] = [];
+    const fees_dr : StudentLedgerEntryMax2[]= [];
 
-  const jamb_cr: StudentLedgerEntryMax2[] = [];
-  const jamb_dr : StudentLedgerEntryMax2[]= [];
-  const dataSource2 = aBillInfoData;
-  const dataSource: StudentLedgerEntryMax2[]= [];
-  let addHours = 4;
-  dataSource2.sort((a, b) => +new Date(a.datePosted ) - +new Date (b.datePosted))
+    const jamb_cr: StudentLedgerEntryMax2[] = [];
+    const jamb_dr : StudentLedgerEntryMax2[]= [];
+    const dataSource2 = aBillInfoData;
+    const dataSource: StudentLedgerEntryMax2[]= [];
+    let addHours = 4;
+    dataSource2.sort((a, b) => +new Date(a.datePosted ) - +new Date (b.datePosted))
 
-  dataSource2.forEach(data => {
-    if (data) {dataSource.push(data)}
-  })
-
-  if (dataSource2[0].studentNo === "202100055") {
     dataSource2.forEach(data => {
-      console.log("\n\nXXXXXXXXXXX dataSource2", data.studentNo, data?.dr, data?.cr, data.balance)
-
+      if (data) {dataSource.push(data)}
     })
-  }
 
-  const beginDate = new Date(dataSource[0].datePosted);
-  for (let i = 0; i < dataSource.length; i++) {
-    if (dataSource[i].cr && dataSource[i].product.includes('ACCEPTANCE'))
-    {
-      acceptance_cr.push(dataSource[i]);
+    if (dataSource2[0].studentNo === "202100055") {
+      dataSource2.forEach(data => {
+        console.log("\n\nXXXXXXXXXXX dataSource2", data.studentNo, data?.dr, data?.cr, data.balance)
+
+      })
     }
 
-    if (dataSource[i].dr && dataSource[i].product.includes('ACCEPTANCE'))
-    {
-      acceptance_dr.push(dataSource[i]);
+    const beginDate = new Date(dataSource[0].datePosted);
+    for (let i = 0; i < dataSource.length; i++) {
+      if (dataSource[i].cr && dataSource[i].product.includes('ACCEPTANCE'))
+      {
+        acceptance_cr.push(dataSource[i]);
+      }
+
+      if (dataSource[i].dr && dataSource[i].product.includes('ACCEPTANCE'))
+      {
+        acceptance_dr.push(dataSource[i]);
+      }
+
+      if (dataSource[i].cr && !dataSource[i].product.includes('ACCEPTANCE') && dataSource[i].product.includes('FEE'))
+      {
+        fees_cr.push(dataSource[i]);
+      }
+
+
+
+      if (dataSource[i].dr && !dataSource[i].product.includes('ACCEPTANCE') && dataSource[i].product.includes('FEE'))
+      {
+        if (dataSource[i].product.includes('LAWFEES') ||
+          dataSource[i].product.includes('ENGINEERINGFEES') ||
+          dataSource[i].product.includes('MASSFEES') ||
+          dataSource[i].product.includes('COMPASSFEES')) {
+          dataSource[i].details = '2021/2022 tuition, accommodation and feeding fees';
+          dataSource[i].details = dataSource[i].details.toUpperCase();
+
+        }
+        fees_dr.push(dataSource[i]);
+      }
+
+      if (dataSource[i].dr && dataSource[i].product.includes('JAMB') )
+      {
+        jamb_dr.push(dataSource[i]);
+      }
+
+      if (dataSource[i].cr && dataSource[i].product.includes('JAMB') )
+      {
+        jamb_cr.push(dataSource[i]);
+      }
+
     }
 
-    if (dataSource[i].cr && !dataSource[i].product.includes('ACCEPTANCE') && dataSource[i].product.includes('FEE'))
-    {
-      fees_cr.push(dataSource[i]);
+    if (dataSource2[0].studentNo === "202100055") {
+      console.log("CHECK", acceptance_cr, acceptance_dr, fees_cr, fees_dr, jamb_cr, jamb_dr)
     }
 
 
-
-    if (dataSource[i].dr && !dataSource[i].product.includes('ACCEPTANCE') && dataSource[i].product.includes('FEE'))
-    {
-      if (dataSource[i].product.includes('LAWFEES') ||
-      dataSource[i].product.includes('ENGINEERINGFEES') ||
-      dataSource[i].product.includes('MASSFEES') ||
-      dataSource[i].product.includes('COMPASSFEES')) {
-        dataSource[i].details = '2021/2022 tuition, accommodation and feeding fees';
-        dataSource[i].details = dataSource[i].details.toUpperCase();
-
-              }
-      fees_dr.push(dataSource[i]);
-    }
-
-    if (dataSource[i].dr && dataSource[i].product.includes('JAMB') )
-    {
-      jamb_dr.push(dataSource[i]);
-    }
-
-    if (dataSource[i].cr && dataSource[i].product.includes('JAMB') )
-    {
-      jamb_cr.push(dataSource[i]);
-    }
-
-  }
-
-  if (dataSource2[0].studentNo === "202100055") {
-    console.log("CHECK", acceptance_cr, acceptance_dr, fees_cr, fees_dr, jamb_cr, jamb_dr)
-  }
-
-
-  if (acceptance_cr && acceptance_cr[0]) {
-    let crDate = new Date(acceptance_cr[0].datePosted);
-    // if (new Date(acceptance_cr[0].datePosted))
-    if (acceptance_dr)
+    if (acceptance_cr && acceptance_cr[0]) {
+      let crDate = new Date(acceptance_cr[0].datePosted);
+      // if (new Date(acceptance_cr[0].datePosted))
+      if (acceptance_dr)
       {
         // const drDate = crDate.setTime(crDate.getTime()- (addHours * 60 * 60 * 1000))
         //acceptance_dr[0].datePosted = new Date(drDate);// .setDate(acceptance_cr[0].datePosted.getDate() - 0.3);
@@ -255,17 +256,17 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
       }
 
 
-  }
+    }
 
-  else {
-    acceptance_dr[0].datePosted = new Date(beginDate.setTime(beginDate.getTime() - (addHours*60*60*1000)));
-    result.push(acceptance_dr[0]);
+    else {
+      acceptance_dr[0].datePosted = new Date(beginDate.setTime(beginDate.getTime() - (addHours*60*60*1000)));
+      result.push(acceptance_dr[0]);
 
-  }
+    }
 
-  if (fees_cr && fees_cr[0]) {
-    let crFeeDate = new Date(fees_cr[0].datePosted);
-    if (fees_dr)
+    if (fees_cr && fees_cr[0]) {
+      let crFeeDate = new Date(fees_cr[0].datePosted);
+      if (fees_dr)
       {
         const drFeeDate = crFeeDate.setTime(crFeeDate.getTime()- ((addHours - 1) * 60 * 60 * 1000))
         fees_dr[0].datePosted = new Date(drFeeDate);
@@ -273,91 +274,91 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
 
       }
 
-    fees_cr.forEach(data => {
-      result.push(data);
+      fees_cr.forEach(data => {
+        result.push(data);
+      })
+
+    }
+
+    else {
+
+      fees_dr.forEach(data => {
+        result.push(data);
+      });
+
+      // result.push(fees_dr[0]);
+
+    }
+
+    if (jamb_dr) {
+      // jamb_dr[0].datePosted = new Date(fees_cr[0].datePosted.getDate() - 0.3)
+      result.push(jamb_dr[0]);
+
+    }
+
+    if (jamb_cr) {result.push(jamb_cr[0]);}
+
+    let balance = 0.00;
+    const temp2: StudentLedgerEntryMax2[] = [];
+    result.forEach((data: StudentLedgerEntryMax2) => {
+
+      if (data) {temp2.push(data)}
     })
 
-  }
+    ///////
+    if (temp2[0].studentNo === "202100055") {
+      temp2.forEach(data => {
+        console.log("\n\nXXXXXXXXXXX", data.studentNo, data?.dr, data?.cr, data.balance)
 
-  else {
+      })
+    }
 
-    fees_dr.forEach(data => {
-      result.push(data);
-    });
-
-    // result.push(fees_dr[0]);
-
-  }
-
-  if (jamb_dr) {
-    // jamb_dr[0].datePosted = new Date(fees_cr[0].datePosted.getDate() - 0.3)
-    result.push(jamb_dr[0]);
-
-  }
-
-  if (jamb_cr) {result.push(jamb_cr[0]);}
-
-  let balance = 0.00;
-  const temp2: StudentLedgerEntryMax2[] = [];
-  result.forEach((data: StudentLedgerEntryMax2) => {
-
-    if (data) {temp2.push(data)}
-  })
-
-  ///////
-  if (temp2[0].studentNo === "202100055") {
+    temp2.sort((a, b) => +new Date(a.datePosted ) - +new Date (b.datePosted))
+    const temp3:any[] = [];
     temp2.forEach(data => {
-      console.log("\n\nXXXXXXXXXXX", data.studentNo, data?.dr, data?.cr, data.balance)
-
+      if (data) {temp3.push(data)}
     })
-  }
 
-  temp2.sort((a, b) => +new Date(a.datePosted ) - +new Date (b.datePosted))
-  const temp3:any[] = [];
-  temp2.forEach(data => {
-    if (data) {temp3.push(data)}
-  })
+    if (temp3[0].studentNo === "202100055") {
+      temp3.forEach(data => {
+        console.log("\n\nXXXXXXXXXXX", data.studentNo, data?.dr, data?.cr, data.balance)
 
-  if (temp3[0].studentNo === "202100055") {
-    temp3.forEach(data => {
-      console.log("\n\nXXXXXXXXXXX", data.studentNo, data?.dr, data?.cr, data.balance)
+      })
+    }
+    for (let i = 0; i < temp3.length; i++) {
 
-    })
-  }
-  for (let i = 0; i < temp3.length; i++) {
+      if (temp3[i]) {
 
-    if (temp3[i]) {
+        if (temp3[i].studentNo === "202100055") {
+          console.log("\n\nXXXXXXXXXXX", temp3[i].studentNo, temp3[i]?.dr, temp3[i]?.cr, temp3[i].balance)
+        }
+        if (temp3[i].dr !== undefined && temp3[i].dr)
+        {
 
+          temp3[i].balance = balance - temp3[i].dr  ;
+          balance = balance - temp3[i].dr;
+        }
+        else {
+
+          temp3[i].balance = balance +  temp3[i].cr ;
+          balance = balance +  temp3[i].cr;
+        }
+      }
       if (temp3[i].studentNo === "202100055") {
-        console.log("\n\nXXXXXXXXXXX", temp3[i].studentNo, temp3[i]?.dr, temp3[i]?.cr, temp3[i].balance)
-      }
-      if (temp3[i].dr !== undefined && temp3[i].dr)
-      {
+        console.log("\n\nXXXXXXXXXXX", temp3[i])
 
-        temp3[i].balance = balance - temp3[i].dr  ;
-        balance = balance - temp3[i].dr;
       }
-      else {
-
-        temp3[i].balance = balance +  temp3[i].cr ;
-        balance = balance +  temp3[i].cr;
-      }
-  }
-  if (temp3[i].studentNo === "202100055") {
-    console.log("\n\nXXXXXXXXXXX", temp3[i])
-
-  }
       this.waitforme(500);
 
+    }
+    const temp: StudentLedgerEntryMax2[] = [];
+    temp3.forEach((data: StudentLedgerEntryMax2) => {
+
+      if (data) {temp.push(data)}
+    })
+
+    return temp;
   }
-  const temp: StudentLedgerEntryMax2[] = [];
-  temp3.forEach((data: StudentLedgerEntryMax2) => {
-
-    if (data) {temp.push(data)}
-  })
-
-  return temp;
-}
 
   exportToPdf2(aBillInfoData: BillInfoData[]) {
     let prepare: any[] = [];
@@ -366,22 +367,22 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
     const studentFirstName = aBillInfoData[0].firstName;
     const studentLastName =aBillInfoData[0].lastName;
     const studentNo =aBillInfoData[0].studentNo;
-    const programme = aBillInfoData[0].department;
+    const programme = aBillInfoData[0].programme;
     let dataSource2 = [];
 
     dataSource.sort((a, b) => +new Date(a.datePosted ) - +new Date (b.datePosted))
 
     let lastBalance = dataSource[dataSource.length - 1].balance;
-    console.log('each bill', dataSource, lastBalance);
+    // console.log('each bill', dataSource, lastBalance);
 
     // check for balance filter
     if (this.selectedLedgerInfo.balance === undefined || (lastBalance < (-1 * this.selectedLedgerInfo.balance) && lastBalance ))
     {
       console.log("ENTERRED");
-        // console.log("INSIDE IF- lastbalance - cutoff::", lastBalance, this.selectedLedgerInfo.balance)
-        lastBalance = lastBalance > 0 ? 0.0 : lastBalance;
-        dataSource.forEach(
-          e => {
+      // console.log("INSIDE IF- lastbalance - cutoff::", lastBalance, this.selectedLedgerInfo.balance)
+      lastBalance = lastBalance > 0 ? 0.0 : lastBalance;
+      dataSource.forEach(
+        e => {
           var tempObj = [];
           const d = new Date(e.datePosted);
           const ye = new Intl.DateTimeFormat('en-GB', { year: 'numeric' }).format(d);
@@ -471,98 +472,99 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
           dataSource2 = tempObj;
           prepare.push(tempObj);
         });
-        const doc = new jsPDF({
-          orientation: "portrait"
+      const doc = new jsPDF({
+        orientation: "portrait"
 
-        });
+      });
 
-        const d = new Date();
-        const ye = new Intl.DateTimeFormat('en-GB', { year: 'numeric' }).format(d);
-        const mo = new Intl.DateTimeFormat('en-GB', { month: '2-digit' }).format(d);
-        const da = new Intl.DateTimeFormat('en-GB', { day: '2-digit' }).format(d);
-        const bb = d.toLocaleTimeString('en-GB');
-        const myDate = (`${da}/${mo}/${ye} `);
-        doc.text("TOPFAITH UNIVERSITY, MKPATAK", 60, 12);
-        doc.text("AKWA IBOM STATE", 60, 20);
-        doc.setFontSize(10);
-        doc.text("Email: info@topfaith.edu.ng", 60, 28);
-        doc.text("Phone: +2348053475763 ; +2347066211122", 60, 33);
-
-
-
-        // salutation
-        doc.setFontSize(10);
-        doc.text(`${myDate} `, 12,43)
-
-        doc.text(`Dear ${studentLastName} ${studentFirstName} (${studentNo} -${programme}), `, 12,51)
-        doc.setFontSize(12);
-        doc.text(`${this.selectedLedgerInfo.session} SESSION FINANCIAL POSITION`, 60,63,)
+      const d = new Date();
+      const ye = new Intl.DateTimeFormat('en-GB', { year: 'numeric' }).format(d);
+      const mo = new Intl.DateTimeFormat('en-GB', { month: '2-digit' }).format(d);
+      const da = new Intl.DateTimeFormat('en-GB', { day: '2-digit' }).format(d);
+      const bb = d.toLocaleTimeString('en-GB');
+      const myDate = (`${da}/${mo}/${ye} `);
+      doc.text("TOPFAITH UNIVERSITY, MKPATAK", 60, 12);
+      doc.text("AKWA IBOM STATE", 60, 20);
+      doc.setFontSize(10);
+      doc.text("Email: info@topfaith.edu.ng", 60, 28);
+      doc.text("Phone: +2348053475763 ; +2347066211122", 60, 33);
 
 
 
-        doc.addImage(TU_LOGO_IMAGE, 'PNG', 10, 5, 28,28);
+      // salutation
+      doc.setFontSize(10);
+      doc.text(`${myDate} `, 12,43)
 
-        autoTable(doc,
-          { head: [['DATE POSTED','DETAILS','DEBIT','CREDIT','BALANCE']],
-        body: prepare, startY: 66,
-        bodyStyles: {lineWidth:0.2, cellPadding:2} ,
-        columnStyles: {0: { cellWidth: 30, halign: 'center'}, 1: { cellWidth: 'auto'}, 2: {halign: 'right', cellWidth:'wrap'}, 3: {halign: 'right', cellWidth:'wrap'}, 4: {halign: 'right', cellWidth:'wrap'}},
-        headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
-        showFoot: 'lastPage',
-    tableLineWidth: 0.5,
-    theme: 'grid'
-
-      })
-
-
-        // @ts-ignore
-        const endY = Math.round(doc.autoTable.previous.finalY)
-
-        doc.text(`FEES PAYABLE:`, 60, endY + 6)
-        doc.text(`${Math.abs(lastBalance).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`, 172, endY + 5)
+      doc.text(`Dear ${studentLastName} ${studentFirstName} (${studentNo} -${programme}), `, 12,51)
+      doc.setFontSize(12);
+      doc.text(`${this.selectedLedgerInfo.session} SESSION FINANCIAL POSITION`, 60,63,)
 
 
 
-        doc.text(`PLEASE MAKE PAYMENTS VIA THIS LINK:`, 10, endY + 17)
-        doc.setFont('helvetica', 'italic')
-        doc.setFontSize(14);
-        doc.setTextColor(0, 0, 255);
-        doc.text(` https://paystack.com/pay/paytopfaithfees`, 103, endY + 17)
+      doc.addImage(TU_LOGO_IMAGE, 'PNG', 10, 5, 28,28);
 
-        doc.setTextColor(0, 0, 0);
+      autoTable(doc,
+        { head: [['DATE POSTED','DETAILS','DEBIT','CREDIT','BALANCE']],
+          body: prepare, startY: 66,
+          bodyStyles: {lineWidth:0.2, cellPadding:2} ,
+          columnStyles: {0: { cellWidth: 30, halign: 'center'}, 1: { cellWidth: 'auto'}, 2: {halign: 'right', cellWidth:'wrap'}, 3: {halign: 'right', cellWidth:'wrap'}, 4: {halign: 'right', cellWidth:'wrap'}},
+          headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
+          showFoot: 'lastPage',
+          tableLineWidth: 0.5,
+          theme: 'grid'
 
-        doc.setFontSize(9);
-
-        doc.text(`Please note that payments can also be made to any of the following banks:`, 10, endY + 28)
+        })
 
 
+      // @ts-ignore
+      const endY = Math.round(doc.autoTable.previous.finalY)
 
-        autoTable(doc,
-          {
-        body: [['UBA  (1024784509)', 'ZENITH BANK   (1217023060)']], startY: endY + 33,
-        bodyStyles: {lineWidth:0.2, cellWidth:'wrap', cellPadding:2, fontSize:9} ,
+      doc.text(`FEES PAYABLE:`, 60, endY + 6)
+      doc.text(`${Math.abs(lastBalance).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`, 172, endY + 5)
 
-        headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
-        showFoot: 'lastPage',
-    tableLineWidth: 0.5,
-    theme: 'grid'
 
-      })
+
+      doc.text(`PLEASE MAKE PAYMENTS VIA THIS LINK:`, 10, endY + 17)
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 255);
+      doc.text(` https://paystack.com/pay/paytopfaithfees`, 103, endY + 17)
+
+      doc.setTextColor(0, 0, 0);
+
+      doc.setFontSize(9);
+
+      doc.text(`Please note that payments can also be made to any of the following banks:`, 10, endY + 28)
+
+
+
+      autoTable(doc,
+        {        body: [['UBA  (1024784509)','FCMB   (9324084010)', 'ZENITH BANK   (1217023060)']], startY: endY + 33,
+
+          // body: [['UBA  (1024784509)', 'ZENITH BANK   (1217023060)']], startY: endY + 33,
+          bodyStyles: {lineWidth:0.2, cellWidth:'wrap', cellPadding:2, fontSize:9} ,
+
+          headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
+          showFoot: 'lastPage',
+          tableLineWidth: 0.5,
+          theme: 'grid'
+
+        })
 
       // @ts-ignore
       const endY2 = Math.round(doc.autoTable.previous.finalY)
 
-              doc.setFont('helvetica', 'normal')
-              // console.log('FONTLIST', doc.getFontList());
-              doc.setFontSize(10);
-              doc.text(`NOTE: ANY PAYMENT INTO ANY LINK OR BANK OTHER THAN THE LISTED`, 10, endY2 + 13)
-              doc.text(`ABOVE SHALL NOT BE ACCEPTED.`, 10, endY2 + 18)
-              doc.text(`EVIDENCE OF PAYMENTS MADE INTO THE BANK ACCOUNTS LISTED SHOULD BE SENT TO: bursary@topfaith.edu.ng `, 10, endY2 + 25)
-              doc.setFontSize(9);
-              doc.text(`Thank you.`, 10, endY2 + 37)
+      doc.setFont('helvetica', 'normal')
+      // console.log('FONTLIST', doc.getFontList());
+      doc.setFontSize(10);
+      doc.text(`NOTE: ANY PAYMENT INTO ANY LINK OR BANK OTHER THAN THE LISTED`, 10, endY2 + 13)
+      doc.text(`ABOVE SHALL NOT BE ACCEPTED.`, 10, endY2 + 18)
+      doc.text(`EVIDENCE OF PAYMENTS MADE INTO THE BANK ACCOUNTS LISTED SHOULD BE SENT TO: bursary@topfaith.edu.ng `, 10, endY2 + 25)
+      doc.setFontSize(9);
+      doc.text(`Thank you.`, 10, endY2 + 37)
 
-              doc.text(`Topfaith University Bursary`, 10, endY2 + 47)
-              doc.save(studentNo + '.pdf');
+      doc.text(`Topfaith University Bursary`, 10, endY2 + 47)
+      doc.save(studentNo + '.pdf');
     }
 
   }
@@ -570,11 +572,11 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
   exportToPdf_Print(aBillInfoData: BillInfoData[], doc: any) {
     let prepare: any[] = [];
     const dataSource = aBillInfoData;
-    console.log('DATASOURCE:::', aBillInfoData);
+    // console.log('DATASOURCE:::', aBillInfoData);
     const studentFirstName =aBillInfoData[0].firstName;
     const studentLastName =aBillInfoData[0].lastName;
     const studentNo =aBillInfoData[0].studentNo;
-    const programme = aBillInfoData[0].department;
+    const programme = aBillInfoData[0].programme;
     let dataSource2 = [];
 
     dataSource.sort((a, b) => +new Date(a.datePosted ) - +new Date (b.datePosted))
@@ -584,10 +586,10 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
     {
       // console.log('LAST BALANCE ENTERED::', lastBalance, this.selectedLedgerInfo.balance);
 
-        // console.log("INSIDE IF- lastbalance - cutoff::", lastBalance, this.selectedLedgerInfo.balance)
-        lastBalance = lastBalance > 0 ? 0.0 : lastBalance;
-        dataSource.forEach(
-          e => {
+      // console.log("INSIDE IF- lastbalance - cutoff::", lastBalance, this.selectedLedgerInfo.balance)
+      lastBalance = lastBalance > 0 ? 0.0 : lastBalance;
+      dataSource.forEach(
+        e => {
           var tempObj = [];
           const d = new Date(e.datePosted);
           const ye = new Intl.DateTimeFormat('en-GB', { year: 'numeric' }).format(d);
@@ -675,101 +677,101 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
           dataSource2 = tempObj;
           prepare.push(tempObj);
         });
-        // const doc = new jsPDF({
-        //   orientation: "portrait"
+      // const doc = new jsPDF({
+      //   orientation: "portrait"
 
-        // });
+      // });
 
-        const d = new Date();
-        const ye = new Intl.DateTimeFormat('en-GB', { year: 'numeric' }).format(d);
-        const mo = new Intl.DateTimeFormat('en-GB', { month: '2-digit' }).format(d);
-        const da = new Intl.DateTimeFormat('en-GB', { day: '2-digit' }).format(d);
-        const bb = d.toLocaleTimeString('en-GB');
-        const myDate = (`${da}/${mo}/${ye} `);
-        doc.setFontSize(18);
+      const d = new Date();
+      const ye = new Intl.DateTimeFormat('en-GB', { year: 'numeric' }).format(d);
+      const mo = new Intl.DateTimeFormat('en-GB', { month: '2-digit' }).format(d);
+      const da = new Intl.DateTimeFormat('en-GB', { day: '2-digit' }).format(d);
+      const bb = d.toLocaleTimeString('en-GB');
+      const myDate = (`${da}/${mo}/${ye} `);
+      doc.setFontSize(18);
 
-        doc.text("TOPFAITH UNIVERSITY, MKPATAK", 60, 12);
-        doc.text("AKWA IBOM STATE", 60, 20);
-        doc.setFontSize(10);
-        doc.text("Email: info@topfaith.edu.ng", 60, 28);
-        doc.text("Phone: +2348053475763 ; +2347066211122", 60, 33);
-
-
-
-        // salutation
-        doc.setFontSize(10);
-        doc.text(`${myDate} `, 12,43)
-
-        doc.text(`Dear ${studentLastName} ${studentFirstName} (${studentNo} -${programme}), `, 12,51)
-        doc.setFontSize(12);
-        doc.text(`${this.selectedLedgerInfo.session} SESSION FINANCIAL POSITION`, 60,63,)
-
-
-        doc.addImage(TU_LOGO_IMAGE, 'PNG', 10, 5, 28,28);
-
-        autoTable(doc,
-          { head: [['DATE POSTED','DETAILS','DEBIT','CREDIT','BALANCE']],
-        body: prepare, startY: 66,
-        bodyStyles: {lineWidth:0.2, cellPadding:2} ,
-        columnStyles: {0: { cellWidth: 30, halign: 'center'}, 1: { cellWidth: 'auto'}, 2: {halign: 'right', cellWidth:'wrap'}, 3: {halign: 'right', cellWidth:'wrap'}, 4: {halign: 'right', cellWidth:'wrap'}},
-        headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
-        showFoot: 'lastPage',
-    tableLineWidth: 0.5,
-    theme: 'grid'
-
-      })
-
-
-        // @ts-ignore
-        const endY = Math.round(doc.autoTable.previous.finalY)
-
-        doc.text(`FEES PAYABLE:`, 60, endY + 6)
-        doc.text(`${Math.abs(lastBalance).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`, 172, endY + 5)
+      doc.text("TOPFAITH UNIVERSITY, MKPATAK", 60, 12);
+      doc.text("AKWA IBOM STATE", 60, 20);
+      doc.setFontSize(10);
+      doc.text("Email: info@topfaith.edu.ng", 60, 28);
+      doc.text("Phone: +2348053475763 ; +2347066211122", 60, 33);
 
 
 
-        doc.text(`PLEASE MAKE PAYMENTS VIA THIS LINK:`, 10, endY + 17)
-        doc.setFont('helvetica', 'italic')
-        doc.setFontSize(14);
-        doc.setTextColor(0, 0, 255);
-        doc.text(` https://paystack.com/pay/paytopfaithfees`, 103, endY + 17)
+      // salutation
+      doc.setFontSize(10);
+      doc.text(`${myDate} `, 12,43)
 
-        doc.setTextColor(0, 0, 0);
-
-        doc.setFontSize(9);
-
-        doc.text(`Please note that payments can also be made to any of the following banks:`, 10, endY + 28)
+      doc.text(`Dear ${studentLastName} ${studentFirstName} (${studentNo} -${programme}), `, 12,51)
+      doc.setFontSize(12);
+      doc.text(`${this.selectedLedgerInfo.session} SESSION FINANCIAL POSITION`, 60,63,)
 
 
+      doc.addImage(TU_LOGO_IMAGE, 'PNG', 10, 5, 28,28);
 
-        autoTable(doc,
-          {
-        body: [['UBA  (1024784509)', 'ZENITH BANK   (1217023060)']], startY: endY + 33,
-        bodyStyles: {lineWidth:0.2, cellWidth:'wrap', cellPadding:2, fontSize:9} ,
+      autoTable(doc,
+        { head: [['DATE POSTED','DETAILS','DEBIT','CREDIT','BALANCE']],
+          body: prepare, startY: 66,
+          bodyStyles: {lineWidth:0.2, cellPadding:2} ,
+          columnStyles: {0: { cellWidth: 30, halign: 'center'}, 1: { cellWidth: 'auto'}, 2: {halign: 'right', cellWidth:'wrap'}, 3: {halign: 'right', cellWidth:'wrap'}, 4: {halign: 'right', cellWidth:'wrap'}},
+          headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
+          showFoot: 'lastPage',
+          tableLineWidth: 0.5,
+          theme: 'grid'
 
-        headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
-        showFoot: 'lastPage',
-    tableLineWidth: 0.5,
-    theme: 'grid'
+        })
 
-      })
+
+      // @ts-ignore
+      const endY = Math.round(doc.autoTable.previous.finalY)
+
+      doc.text(`FEES PAYABLE:`, 60, endY + 6)
+      doc.text(`${Math.abs(lastBalance).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`, 172, endY + 5)
+
+
+
+      doc.text(`PLEASE MAKE PAYMENTS VIA THIS LINK:`, 10, endY + 17)
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 255);
+      doc.text(` https://paystack.com/pay/paytopfaithfees`, 103, endY + 17)
+
+      doc.setTextColor(0, 0, 0);
+
+      doc.setFontSize(9);
+
+      doc.text(`Please note that payments can also be made to any of the following banks:`, 10, endY + 28)
+
+
+
+      autoTable(doc,
+        {
+          body: [['UBA  (1024784509)', 'FCMB   (9324084010)']], startY: endY + 33,
+          bodyStyles: {lineWidth:0.2, cellWidth:'wrap', cellPadding:2, fontSize:9} ,
+
+          headStyles: { halign: 'center', fillColor:  false, textColor: 20, lineWidth:0.2 , cellPadding:2},
+          showFoot: 'lastPage',
+          tableLineWidth: 0.5,
+          theme: 'grid'
+
+        })
 
       // @ts-ignore
       const endY2 = Math.round(doc.autoTable.previous.finalY)
 
-              doc.setFont('helvetica', 'normal')
-              // console.log('FONTLIST', doc.getFontList());
-              doc.setFontSize(10);
-              doc.text(`NOTE: ANY PAYMENT INTO ANY LINK OR BANK OTHER THAN THE LISTED`, 10, endY2 + 13)
-              doc.text(`ABOVE SHALL NOT BE ACCEPTED.`, 10, endY2 + 18)
-              doc.text(`EVIDENCE OF PAYMENTS MADE INTO THE BANK ACCOUNTS LISTED SHOULD BE SENT TO: bursary@topfaith.edu.ng `, 10, endY2 + 25)
-              doc.setFontSize(9);
-              doc.text(`Thank you.`, 10, endY2 + 37)
+      doc.setFont('helvetica', 'normal')
+      // console.log('FONTLIST', doc.getFontList());
+      doc.setFontSize(10);
+      doc.text(`NOTE: ANY PAYMENT INTO ANY LINK OR BANK OTHER THAN THE LISTED`, 10, endY2 + 13)
+      doc.text(`ABOVE SHALL NOT BE ACCEPTED.`, 10, endY2 + 18)
+      doc.text(`EVIDENCE OF PAYMENTS MADE INTO THE BANK ACCOUNTS LISTED SHOULD BE SENT TO: bursary@topfaith.edu.ng `, 10, endY2 + 25)
+      doc.setFontSize(9);
+      doc.text(`Thank you.`, 10, endY2 + 37)
 
-              doc.text(`Topfaith University Bursary`, 10, endY2 + 47)
+      doc.text(`Topfaith University Bursary`, 10, endY2 + 47)
 
 
-        doc.addPage()
+      doc.addPage()
     }
 
   }
@@ -796,16 +798,16 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
     const filterValue = value.toLowerCase();
 
     return this.studentList.filter(state =>
-      {
+    {
 
-        return state.studentNo.toLocaleLowerCase().includes(filterValue)
-      || state.lastName.toLocaleLowerCase().includes(filterValue)
-      || state.firstName.toLocaleLowerCase().includes(filterValue)
-      || state.department.toLowerCase().includes(filterValue);
-        // state.jambNo.toLowerCase().includes(filterValue)
-        // || state.lastName.toLowerCase().includes(filterValue);
+      return state.studentNo.toLocaleLowerCase().includes(filterValue)
+        || state.lastName.toLocaleLowerCase().includes(filterValue)
+        || state.firstName.toLocaleLowerCase().includes(filterValue)
+        || state.programme.toLowerCase().includes(filterValue);
+      // state.jambNo.toLowerCase().includes(filterValue)
+      // || state.lastName.toLowerCase().includes(filterValue);
 
-      });
+    });
   }
 
   add(event: MatChipInputEvent): void {
@@ -824,10 +826,15 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
 
   constructBF(aDbBalance:any[]): BillInfoData[] {
     const answer: BillInfoData[] = [];
-
+    let balance2Check = 0.0
+    if (this.paidMarker){
+      balance2Check = this.selectedLedgerInfo.balance ? -1 * this.selectedLedgerInfo.balance : 0.0;
+    }
 
     for (let i=0; i < aDbBalance.length ; i++) {
-
+      if (this.paidMarker){
+        const tempBalance= (!aDbBalance[i][0]  ? 0.0 : aDbBalance[i][0])
+        if (balance2Check >= (tempBalance)){
           const aBillInfoData: BillInfoData = {
             datePosted: this.selectedLedgerInfo.dateToLookAt as Date,
             studentNo: aDbBalance[i][1],
@@ -838,9 +845,9 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
             details: 'BALANCE BF',
             cr: (!aDbBalance[i][0] || aDbBalance[i][0] > 0 ?
               (aDbBalance[i][0] ? aDbBalance[i][0] : '0.0') : ''),
-            dr: (aDbBalance[i][0] && aDbBalance[i][0] < 0 ? aDbBalance[i][0] : ''),
+            dr: (aDbBalance[i][0] && aDbBalance[i][0] < 0 ? (-1 * aDbBalance[i][0]) : ''),
             balance: (!aDbBalance[i][0]  ? '0.0' : aDbBalance[i][0]),
-            department: aDbBalance[i][5],
+            programme: aDbBalance[i][5],
             level: '',
             status: ''
 
@@ -850,7 +857,32 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
           answer.push(
             aBillInfoData
 
-            );
+          );}}
+      else{
+
+        const aBillInfoData: BillInfoData = {
+          datePosted: this.selectedLedgerInfo.dateToLookAt as Date,
+          studentNo: aDbBalance[i][1],
+          lastName: aDbBalance[i][2],
+          firstName: aDbBalance[i][3],
+          middleName: aDbBalance[i][4],
+
+          details: 'BALANCE BF',
+          cr: (!aDbBalance[i][0] || aDbBalance[i][0] > 0 ?
+            (aDbBalance[i][0] ? aDbBalance[i][0] : '0.0') : ''),
+          dr: (aDbBalance[i][0] && aDbBalance[i][0] < 0 ? (-1 * aDbBalance[i][0]) : ''),
+          balance: (!aDbBalance[i][0]  ? '0.0' : aDbBalance[i][0]),
+          programme: aDbBalance[i][5],
+          level: '',
+          status: ''
+
+        } as BillInfoData
+        // console.log('BILLINFO::', aBillInfoData);
+
+        answer.push(
+          aBillInfoData
+
+        );}
       //   }
       // }
     }
@@ -862,7 +894,9 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
   // for one document contains all printing
   getBills_Print(): void {
     this.totalNumberProcessedPrint = 0
-      // this.generatePdf();
+    this.studentListToEmail = []
+
+    // this.generatePdf();
     // const seperatedList: BillInfoData[][] = [];
     const answer = this.billService.getBalanceBF(this.selectedLedgerInfo as BillInfo);
     const BillBulk = this.billService.getBill(this.selectedLedgerInfo as BillInfo);
@@ -908,9 +942,9 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
       }
     });
   }
-
   //for email or individual printing
   async getBills_saveforemail() {
+    this.studentListToEmail = []
     this.totalNumberProcessedEmail = 0;
     const seperatedList: BillInfoData[][] = [];
     const answer = this.billService.getBalanceBF(this.selectedLedgerInfo as BillInfo);
@@ -929,7 +963,10 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
               if (studentBill.length == 0 || !studentBill) {
                 studentBill = [a];
               }
-              else {studentBill.push(a)}
+              else {
+                studentBill.push(a)
+                this.studentListToEmail.push(a.studentNo);
+              }
               this.exportToPdf2(studentBill);
               await this.waitforme(1000); // loop will be halted here until promise is resolved
               this.totalNumberProcessedEmail += 1;
@@ -994,7 +1031,7 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
       && this.selectedLedgerInfo.dateToLookAt)
     {answer = true;}
     // console.log('canGenBill::', answer);
-      return answer;
+    return answer;
   }
 
   toggleAdvanced(): void {
@@ -1002,32 +1039,35 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
   }
   sendBills_Email(): void {
     this.billService.getBilledPeopleEmail(this.selectedLedgerInfo as BillInfo)
-    .subscribe(
-      (data) => {
-        if (data) {
-        console.log('billedpeople email', data);
-        const dataToSend: any[] = [];
-        data.forEach((answer) => {
+      .subscribe(
+        (data) => {
+          if (data) {
+            console.log('billedpeople email', data);
+            const dataToSend: any[] = [];
+            data.forEach((answer) => {
 
-          // console.log('this is answer email List', answer.emailList);
-          const tempEmailList = answer.emailList;
-          if (answer.sponsorList[0] in tempEmailList)
-          {tempEmailList.push(answer.sponsorList[0]);
+              // console.log('this is answer email List', answer.emailList);
+              const tempEmailList = answer.emailList;
+              if (answer.sponsorList[0] in tempEmailList)
+              {tempEmailList.push(answer.sponsorList[0]);
 
+              }
+              if (this.studentListToEmail.includes(answer.studentNo)) {
+                dataToSend.push({
+
+                  studentNo: answer.studentNo, lastName: answer.lastName,
+                  firstName: answer.firstName,
+                  programme: answer.programme, session: answer.session,
+                  emailList: tempEmailList
+                })
+              }
+
+            });
+            this.progressChecks.next(1);
+            this.sendBillService.sendEmailData(dataToSend);
           }
-          dataToSend.push({
-
-            studentNo: answer.studentNo, lastName: answer.lastName,
-            firstName: answer.firstName,
-            department: answer.department, session: answer.session,
-            emailList: tempEmailList
-          })
-        });
-        this.progressChecks.next(1);
-        this.sendBillService.sendEmailData(dataToSend);
         }
-      }
-    );
+      );
     // this.sendBillService.getEmailStatus();
   }
 
@@ -1038,14 +1078,32 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
     console.log('student list', answer);
     const bigAnswer: {
       student
-      : string; studentTransact: StudentLedgerEntryMax2[];
+        : string; studentTransact: StudentLedgerEntryMax2[];
     }[] = [];
     const BillBulk = this.paymentsService.getPostingsInfo_WithIndex({} as LedgerInfo);
     BillBulk.subscribe(data=> {
       if (data && data.length > 0) {
-            // console.log('THIS IS DATA::', data);
-            if (aStudentList) {
-              aStudentList.forEach( a => {
+        // console.log('THIS IS DATA::', data);
+        if (aStudentList) {
+          aStudentList.forEach( a => {
+            let studentTransact = [];
+            studentTransact = this.ledgerMaxPipe.transform(data, a.studentNo);
+            // studentBill.push(this.billPipe.transform(bF, a.studentNo)[0]); // addition of the bf to the billbulk
+
+            // console.log('Student transact', studentTransact);
+            const responses = this.reArrangeTransactions(studentTransact);
+            // console.log('Student rearranged', responses[0].studentNo, responses);
+
+            bigAnswer.push({student: a.studentNo, studentTransact: responses})
+
+
+          });
+        }
+        else {
+          answer.subscribe((data2: Student[])=> {
+            if (data2 && data2.length > 0) {
+              // console.log('THIS IS DATA2::', data2);
+              for (let a of data2) {
                 let studentTransact = [];
                 studentTransact = this.ledgerMaxPipe.transform(data, a.studentNo);
                 // studentBill.push(this.billPipe.transform(bF, a.studentNo)[0]); // addition of the bf to the billbulk
@@ -1057,46 +1115,28 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
                 bigAnswer.push({student: a.studentNo, studentTransact: responses})
 
 
-              });
-            }
-            else {
-            answer.subscribe((data2: Student[])=> {
-              if (data2 && data2.length > 0) {
-                // console.log('THIS IS DATA2::', data2);
-                for (let a of data2) {
-                  let studentTransact = [];
-                  studentTransact = this.ledgerMaxPipe.transform(data, a.studentNo);
-                  // studentBill.push(this.billPipe.transform(bF, a.studentNo)[0]); // addition of the bf to the billbulk
-
-                  // console.log('Student transact', studentTransact);
-                  const responses = this.reArrangeTransactions(studentTransact);
-                  // console.log('Student rearranged', responses[0].studentNo, responses);
-
-                  bigAnswer.push({student: a.studentNo, studentTransact: responses})
-
-
-                }
-
               }
-            });
-          }
-          if (bigAnswer) {
-            bigAnswer.forEach((answer) =>{
-              answer.studentTransact.forEach((ans) => {
 
-                this.paymentsService.reOrderPostings(ans.id, ans.datePosted, ans.balance, ans.details);
+            }
+          });
+        }
+        if (bigAnswer) {
+          bigAnswer.forEach((answer) =>{
+            answer.studentTransact.forEach((ans) => {
 
-              })
+              this.paymentsService.reOrderPostings(ans.id, ans.datePosted, ans.balance, ans.details);
+
             })
-          }
+          })
+        }
 
-            //this.exportToPdf2(seperatedList[0]);
+        //this.exportToPdf2(seperatedList[0]);
 
-            // console.log("SEPERATED LIST:::",seperatedList );
+        // console.log("SEPERATED LIST:::",seperatedList );
 
-          }
+      }
 
-        });
+    });
 
 
 
@@ -1131,13 +1171,13 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
     const tempObj: any[] = [];
     sourceData.forEach(
       e => {
-      // var tempObj = [];
-      if ((e.balance < cutOff) ) {
-        console.log('THIS IS LESS THAN CUTOFF:::', cutOff, e.balance);
-        tempObj.push(e);
-      }
+        // var tempObj = [];
+        if ((e.balance < cutOff) ) {
+          console.log('THIS IS LESS THAN CUTOFF:::', cutOff, e.balance);
+          tempObj.push(e);
+        }
 
-    });
+      });
     return tempObj;
   }
 
@@ -1168,9 +1208,9 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
     }
 
 
-   if (aString === 'gender' && !this.genderMarker) {
-     this.selectedLedgerInfo.gender = undefined;
-   }
+    if (aString === 'gender' && !this.genderMarker) {
+      this.selectedLedgerInfo.gender = undefined;
+    }
 
 
 
@@ -1182,8 +1222,8 @@ reArrangeTransactions(aBillInfoData: StudentLedgerEntryMax2[]): StudentLedgerEnt
 
     }
 
-    if (aString === 'department' && !this.departmentMarker) {
-      this.selectedLedgerInfo.department = undefined;
+    if (aString === 'programme' && !this.departmentMarker) {
+      this.selectedLedgerInfo.programme = undefined;
 
     }
     if (aString === 'level' && !this.levelMarker) {this.selectedLedgerInfo.level = undefined}

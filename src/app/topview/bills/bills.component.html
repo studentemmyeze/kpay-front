@@ -87,12 +87,12 @@
 <br>
 
 <div class="postingdetail" fxFlex>
-    <mat-checkbox  (change)= "checkStat('department')" class="example-margin" [(ngModel)]= "departmentMarker">
+    <mat-checkbox  (change)= "checkStat('programme')" class="example-margin" [(ngModel)]= "departmentMarker">
 
     </mat-checkbox>
     <mat-form-field fxFlex>
-        <mat-label>DEPARTMENT</mat-label>
-        <mat-select [(ngModel)]= "selectedLedgerInfo.department" name = "department"
+        <mat-label>PROGRAMME</mat-label>
+        <mat-select [(ngModel)]= "selectedLedgerInfo.programme" name = "programme"
         required = "departmentMarker"
         [disabled]= "!departmentMarker"
 
@@ -101,7 +101,7 @@
                 {{stat}}
             </mat-option>
         </mat-select>
-        <mat-error>Department Required!</mat-error>
+        <mat-error>Programme Required!</mat-error>
 
     </mat-form-field>
 </div>
@@ -156,7 +156,7 @@
 
       >
 
-        {{state.studentNo}} | {{state.lastName}} | {{state.department}}
+        {{state.studentNo}} | {{state.lastName}} | {{state.programme}}
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>

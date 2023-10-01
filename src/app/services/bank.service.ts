@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AsyncSubject } from 'rxjs';
 import { ApprovedBank } from '../interfaces/user';
 import { KLoginService } from './klogin.service';
-import {ProgrammeFaculty} from "../interfaces/product";
+import {AsyncSubject} from "rxjs";
 
 
 @Injectable({
@@ -16,23 +15,46 @@ export class BankService {
 
   constructor(public angularS1: KLoginService) { }
 
-  getAllBanks(): AsyncSubject<any[]> {
+  getAllBanks(): AsyncSubject<string[]> {
     // this.angularS1.doConnect();
     const Answer: AsyncSubject<any[]> = new AsyncSubject<any[]>();
+
     let myBankList: any[] = [] ;
+    // const query = 'MATCH (n:Bank) RETURN n.shortName';
     const query = 'MATCH (n:Bank) RETURN n order by n.longName ';
 
     this.angularS1.queryDB(query, '1')
     .subscribe((data) => {
-      myBankList = data.results;
-      Answer.next(myBankList);
-      Answer.complete();
+      if (data) {
+        myBankList = data.results;
+        Answer.next(myBankList);
+        Answer.complete();
+      }
     }
 
-    )
+    );
     console.log('bankAura::', myBankList);
 
     return Answer;
+  }
+
+  getAllBanks_old(): string[] {
+    // this.angularS1.doConnect();
+    let myBankList: any[] = [] ;
+    // const query = 'MATCH (n:Bank) RETURN n.shortName';
+    const query = 'MATCH (n:Bank) RETURN n order by n.longName ';
+
+    this.angularS1.queryDB(query, '1')
+      .subscribe((data) => {
+          myBankList = data.results;
+          // Answer.next(myBankList);
+          // Answer.complete();
+        }
+
+      )
+    console.log('bankAura::', myBankList);
+
+    return myBankList;
   }
 
   getApprovedBanks(): ApprovedBank[] {
@@ -93,9 +115,9 @@ export class BankService {
 
     this.angularS1.queryDB(query, '1')
     .subscribe((data) => {
-      myLevelList = data.results
+      myLevelList = data.results;
       Answer.next(myLevelList);
-      Answer.complete()
+      Answer.complete();
     }
 
     )

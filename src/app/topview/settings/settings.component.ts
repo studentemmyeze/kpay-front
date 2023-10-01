@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { KpClientService } from 'src/app/services/kp-client.service';
 import { StudentService } from 'src/app/services/student.service';
 import { UserService } from 'src/app/services/user.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { RawUtil, UtilityService } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-settings',
@@ -14,7 +14,7 @@ export class SettingsComponent implements OnInit {
   selectedGuest: string;
   Genders = [ 'M', 'F'  ];
   Titles = ['Mr', 'Mrs', 'Ms', 'Dr', 'Alh', 'Prof', 'Past',
-'Rev' ];
+    'Rev' ];
   matricStatus = '';
   sessionList: string[] = [];
   selectedSession = '';
@@ -65,21 +65,21 @@ export class SettingsComponent implements OnInit {
     this.checkMatricStatus();
 
     this.kpClient.getNextSessionResumptionDate()
-    .subscribe(data => {
-      if (data) {
-        this.currentResumptionDate = data;
-        this.minDate = data;
-        // console.log('MIN DATE::', this.minDate)
-        var d = new Date();
-        var year = d.getFullYear();
-        var month = d.getMonth();
-        var day = d.getDate();
-        this.maxDate = new Date(year + 2, month, day);
-      }
-    });
+      .subscribe(data => {
+        if (data) {
+          this.currentResumptionDate = data;
+          this.minDate = data;
+          // console.log('MIN DATE::', this.minDate)
+          var d = new Date();
+          var year = d.getFullYear();
+          var month = d.getMonth();
+          var day = d.getDate();
+          this.maxDate = new Date(year + 2, month, day);
+        }
+      });
 
 
-      }
+  }
 
   mariculateStudents(): void {
     // let matricD = new Date(this.matricDate)
@@ -100,13 +100,13 @@ export class SettingsComponent implements OnInit {
         this.matricStatus = data ? 'YES' : 'PENDING';
         if (data) {
 
-          this.matricDate = new Date(data)
+          // this.matricDate = new Date(data)
           this.kpClient.getMatriculationDate()
-          .subscribe(data => {
-            if (data) {
-              this.matricDate = new Date(data)
-            }
-          });
+            .subscribe(data => {
+              if (data) {
+                this.matricDate = new Date(RawUtil.getEmmyDate(data))
+              }
+            });
         }
 
       }
@@ -132,17 +132,23 @@ export class SettingsComponent implements OnInit {
 
   promoteStudents(): void {
     console.log('THE RESUMPTION DATE', this.nextResumptionDate);
-    this.kpClient.setCurrentSession(this.selectedSession, this.nextResumptionDate)
-    .subscribe(
-      (data => {
-        if (data) {
-          this.currentSession = this.selectedSession;
-          this.promoteClicked = true;
-          this.studentService.promoteStudent();
+    this.kpClient.saveCurrentSessionProducts().subscribe((saveDone)=> {
+      if (saveDone) {
+        this.kpClient.setCurrentSession(this.selectedSession, this.nextResumptionDate)
+          .subscribe(
+            (data => {
+              if (data) {
+                this.currentSession = this.selectedSession;
+                this.promoteClicked = true;
+                this.studentService.promoteStudent();
+                console.log("promote done")
 
-        }
-      })
-    );
+              }
+            })
+          );
+
+      }
+    });
 
 
 

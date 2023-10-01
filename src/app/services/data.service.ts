@@ -21,10 +21,10 @@ export class DataService {
   constructor() { }
 
   changeMessage(message: string) {
-    this.messageSource.next(message)
+    this.messageSource.next(message);
   }
   changeMessage2(message: string) {
-    this.messageSource2.next(message)
+    this.messageSource2.next(message);
   }
   changeProgressMessage(message: number) {
     this.progressMessageSource.next(message)

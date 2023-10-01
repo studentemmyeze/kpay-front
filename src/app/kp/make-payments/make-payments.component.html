@@ -29,7 +29,7 @@
 
             >
 
-              {{state.studentNo}} | {{state.lastName}} | {{state.department}}
+              {{state.studentNo}} | {{state.lastName}} | {{state.programme}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -100,8 +100,8 @@
     <div fxLayout="column" class="dialogspacing" fxFlex>
         <mat-form-field fxFlex>
             <input  matInput type="text" class="displayName"
-            placeholder= "DEPARTMENT" [(ngModel)]=  "selectedStudent.department"
-            name = "department" >
+            placeholder= "PROGRAMME" [(ngModel)]=  "selectedStudent.programme"
+            name = "programme" >
 
 
         </mat-form-field>

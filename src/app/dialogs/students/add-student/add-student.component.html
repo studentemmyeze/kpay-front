@@ -1,1113 +1,1095 @@
 <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
   <!-- <div fxLayout="row"> -->
-    <span>CREATE STUDENT</span>
-    <div >
-      <button *ngIf="studentSaved[0]" mat-icon-button class="status-buttons">
-        <mat-icon ><span class="material-icons-outlined">
+  <span>CREATE STUDENT</span>
+  <div >
+
+    <button  mat-icon-button class="status-buttons">
+      <mat-icon *ngIf="checkinterent" color="primary" matTooltip="Online"><span class="material-icons-outlined">
+          wifi
+        </span></mat-icon>
+      <mat-icon *ngIf="!checkinterent" color="warn" matTooltip="student emails can not be generated when offline"><span class="material-icons-outlined">
+          wifi_off
+        </span></mat-icon>
+    </button>
+
+    <button *ngIf="studentSaved[0]" mat-icon-button class="status-buttons"
+            matTooltip="Student creation status">
+      <mat-icon ><span class="material-icons-outlined">
           saved
         </span></mat-icon>
-      </button>
-      <mat-icon *ngIf= "studentSaved[1]" color="primary">
+    </button>
+    <mat-icon *ngIf= "studentSaved[1]" color="primary">
         <span class="material-icons-outlined">
           task_alt
           </span>
-      </mat-icon>
+    </mat-icon>
 
-      <button *ngIf= "emailCreated[0]"  mat-icon-button class="status-buttons">
-        <mat-icon>email</mat-icon></button>
-        <mat-icon *ngIf= "emailCreated[1]" color="primary">
+    <button *ngIf= "emailCreated[0]"  mat-icon-button class="status-buttons"
+            matTooltip="Email creation status">
+      <mat-icon>email</mat-icon></button>
+    <mat-icon *ngIf= "emailCreated[1]" color="primary">
           <span class="material-icons-outlined">
             task_alt
             </span>
-        </mat-icon>
-      <button *ngIf= "groupJoined[0]" mat-icon-button class="status-buttons">
-        <mat-icon>groups</mat-icon></button>
-        <mat-icon *ngIf= "groupJoined[1]" color="primary">
+    </mat-icon>
+    <button *ngIf= "groupJoined[0]" mat-icon-button class="status-buttons"
+            matTooltip="Group joining status">
+      <mat-icon>groups</mat-icon></button>
+    <mat-icon *ngIf= "groupJoined[1]" color="primary">
           <span class="material-icons-outlined">
             task_alt
             </span>
-        </mat-icon>
+    </mat-icon>
 
 
 
-    </div>
+  </div>
   <!-- </div> -->
 
 </mat-toolbar>
 <form   #guestForm="ngForm" >
-<mat-dialog-content>
+  <mat-dialog-content>
     <mat-tab-group #tabGroup >
 
-        <mat-tab>
-            <ng-template mat-tab-label>
-                <mat-icon color = "primary">menu_book</mat-icon>
-                STUDY INFO
-            </ng-template>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon color = "primary">menu_book</mat-icon>
+          STUDY INFO
+        </ng-template>
 
-            <div *ngIf = "!isUpdates" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                <div fxFlex="70"></div>
-                <button mat-raised-button fxFlex class="typicalbutton typicalbutton2"
-                (click) = "readyUpdates()"
-                >
-                <mat-icon color="primary" class="matIconSpacing" >add_circle</mat-icon> ADD NEW STUDY
-                </button>
-            </div>
+        <div *ngIf = "!isUpdates" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+          <div fxFlex="70"></div>
+          <button mat-raised-button fxFlex class="typicalbutton typicalbutton2"
+                  (click) = "readyUpdates()"
+          >
+            <mat-icon color="primary" class="matIconSpacing" >add_circle</mat-icon> ADD NEW STUDY
+          </button>
+        </div>
 
 
 
 
 
-            <mat-card *ngIf = "isUpdates">
-                <form #guestForm35="ngForm">
-                <div fxLayout="column" class="dialogspacing">
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                        <!-- <mat-form-field fxFlex >
-                            <input matInput  type="number" placeholder="APPLICATION NO"
-                            [(ngModel)]=  "selectedStudy.applicationNo"
-                            name = "applicationNo"
-                            [matAutocomplete]="auto"
-                            >
-                            <mat-autocomplete #auto="matAutocomplete">
-                                <mat-option *ngFor="let state of filteredStates | async" [value]="state.name">
-                                  <img class="example-option-img" aria-hidden [src]="state.flag" height="25">
-                                  <span>{{state.name}}</span> |
-                                  <small>Population: {{state.population}}</small>
-                                </mat-option>
-                              </mat-autocomplete>
-                            <mat-hint>e.g. 1, 2</mat-hint>
-                            <mat-error>Insert APPLICATION NO!</mat-error>
-
-
-                            </mat-form-field> -->
-
-                            <mat-form-field fxFlex *ngIf="!isFoundation()">
-                                <input matInput  type="text" placeholder="JAMB NO"
-                                [(ngModel)]=  "selectedApplication" [matAutocomplete]="auto11"
-                                [formControl]="stateCtrl"
-                                name = "jambNo"
-                                >
-                                <button matSuffix mat-button mat-icon-button>
-
-                                  <mat-icon *ngIf =  "checkLoadedApplication()" (click)="clearFilter()">close</mat-icon>
-                                  <mat-icon *ngIf = "!checkLoadedApplication()" >search</mat-icon>
-                                </button>
-
-
-                                <mat-hint>e.g. JAMBNO 124567CF</mat-hint>
-                                <mat-error>Insert JAMB NO!</mat-error>
-
-                                <mat-autocomplete #auto11="matAutocomplete" [displayWith]="displayFn"
-                                (optionSelected)= "setStudyInfoPrompt()">
-                                    <mat-option
-                                    *ngFor= "let state of filteredStates | async"
-                                    [value]="state"
-
-                                    >
-
-                                      {{state.jambNo}} | {{state.lastName}} | {{state.department1}}
-                                    </mat-option>
-                                  </mat-autocomplete>
-                            </mat-form-field>
-
-                            <mat-form-field fxFlex *ngIf="isFoundation()" >
-                              <input matInput required type="text" placeholder="FOUNDATIONNO "
-                              [(ngModel)]=  "selectedFoundationNo"
-                              name = "foundationno"
-                              >
-                              <!-- <mat-hint>e.g. 08035555566</mat-hint> -->
-                              <!-- <mat-error>Phone number Required!</mat-error> -->
-
-
-                              </mat-form-field>
-                                <!-- <button mat-icon-button (click)= "getAPITUList()" fxFlex="5">
-                                  <mat-icon>
-                                    sync
-                                    </mat-icon>
-                                </button> -->
-                                <!-- fxFlex='5' class="arrange-pin" -->
-                                <!-- class="example-section" -->
-                                <!-- class="example-margin" -->
-                              <div class="container_row" flex="5" >
-                                <div class="layer1">
-                                  <button
-                                        matTooltip="click this to sync current applicants"
-                                        color ="primary"
-                                        (click)= "getAPITUList()"
-                                        [disabled]= "syncClicked"
-                                        mat-icon-button>
-                                    <mat-icon>sync</mat-icon>
-                                  </button>
-
-                                </div>
-                                <div class="layer2">
-                                  <div *ngIf= "!syncDone && syncClicked || syncedB4" >
-                                    <mat-progress-spinner
-                                    mode="indeterminate"
-                                    [color]="color"
-                                    [mode]="mode"
-                                    [value]="value"
-                                    diameter="40"></mat-progress-spinner>
-                                </div>
-
-                                </div>
-
-                              </div>
-
-
-
-                            <!-- <mat-progress-spinner  *ngIf = "!syncDone" fxFlex="5"
-                                class="example-margin"
-                                color="primary"
-                                >
-                            </mat-progress-spinner> -->
-
-
-
-
-
-                            <mat-form-field fxFlex = "35">
-                                <mat-label>STUDENT TYPE</mat-label>
-                                <mat-select [(ngModel)]="selectedStudy.studentType"
-                                required (selectionChange)="checkForFoundation()"
-                                name = "studentType" >
-                                    <mat-option>None</mat-option>
-                                    <mat-option *ngFor= "let stat of studentTypeList" [value]= "stat.sNo">
-                                        {{stat.stName}}
-                                        <!-- {{studentTypeList[stat].code}}: {{studentTypeList[stat].stName}} -->
-                                        </mat-option>
-                                    </mat-select>
-
-                            </mat-form-field>
-                </div>
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                        <mat-form-field fxFlex="20">
-                        <mat-label>STATUS</mat-label>
-                        <mat-select [(ngModel)]="selectedStudy.status" name = "title2" required>
-                            <mat-option *ngFor= "let stat of statusOfStudy" [value]= "stat">
-                                {{stat}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error>Status Required!</mat-error>
-
-                        </mat-form-field>
-
-
-
-                            <mat-form-field fxFlex>
-                                <mat-label>DEPARTMENT</mat-label>
-                                <mat-select [(ngModel)]= "selectedStudy.department"
-
-                                required
-                                name = "studyDepartment" >
-                                    <mat-option *ngFor="let stat of departmentList" [value]= "stat">
-                                        {{stat}}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>Department Required!</mat-error>
-
-                            </mat-form-field>
-
-                            <button fxFlex='5' class="arrange-pin"
-                            matTooltip="make this the current programme"
-                            color ="primary"
-                            (click)="pinDepartment()"
-                            mat-icon-button
-
-                            >
-                            <mat-icon>push_pin</mat-icon></button>
-
-                                </div>
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-
-                        <mat-form-field fxFlex (click)="pickerBD.open()">
-                            <mat-label>BEGIN DATE</mat-label>
-                            <input matInput  [matDatepicker]="pickerBD" class="displayName" disabled
-                            [(ngModel)]= "selectedStudy.beginDate" required
-                            name="beginDate">
-                            <mat-datepicker-toggle
-                            matSuffix [for]="pickerBD"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerBD disabled="false"></mat-datepicker>
-                            <mat-hint>e.g. 22-06-2000</mat-hint>
-
-                        </mat-form-field>
-
-                        <mat-form-field fxFlex (click)="pickerFD.open()">
-                            <mat-label>FINISH DATE</mat-label>
-                            <input matInput  [matDatepicker]="pickerFD" class="displayName" disabled
-                            [(ngModel)]= "selectedStudy.finishDate"
-                            name="finishDate">
-                            <mat-datepicker-toggle
-                            matSuffix [for]="pickerFD"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerFD disabled="false"></mat-datepicker>
-                            <mat-hint>e.g. 22-06-2000</mat-hint>
-
-                        </mat-form-field>
-
-                        <mat-form-field fxFlex (click)="pickerCD.open()">
-                            <mat-label>CERTIFICATE DATE</mat-label>
-                            <input matInput  [matDatepicker]="pickerCD"
-                            [(ngModel)]= "selectedStudy.certificateDate"
-                            name="certificateDate">
-                            <mat-datepicker-toggle
-                            matSuffix [for]="pickerCD"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerCD disabled="false"></mat-datepicker>
-                            <mat-hint>e.g. 22-06-2000</mat-hint>
-
-                        </mat-form-field>
-                    </div>
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-                    <mat-form-field fxFlex>
-                        <mat-label>BEGIN SESSION</mat-label>
-                        <mat-select [(ngModel)]= "selectedStudy.beginSession" name = "beginSession" required>
-                            <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
-                                {{stat}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error>Begin Session Required!</mat-error>
-
-                        </mat-form-field>
-
-                        <mat-form-field fxFlex>
-                            <mat-label>FINISH SESSION</mat-label>
-                            <mat-select [(ngModel)]= "selectedStudy.finishSession" name = "finishSession" >
-                                <mat-option>NONE</mat-option>
-                                <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
-                                    {{stat}}
-                                </mat-option>
-                            </mat-select>
-
-                            </mat-form-field>
-
-                        </div>
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                        <button mat-stroked-button  fxFlex
-                        [disabled]="!guestForm35.form.valid"
-                        (click)= "isAnUpdates ? updateStudy():addStudy()">
-                            <mat-icon color="primary">add_circle_outline</mat-icon>
-                            {{isAnUpdates ? buttonStatus[1] :buttonStatus[0]}}
-                        </button>
-
-                        <button mat-stroked-button  fxFlex
-                        (click)= " isAnUpdates ? toggleUpdate() : isAnUpdates">
-                            <mat-icon color="warn">restart_alt</mat-icon>
-
-                            {{isAnUpdates? buttonStatus[3] :buttonStatus[2]}}
-                        </button>
-                        <div fxFlex="40"></div>
-                    </div>
-
-
-
-
-
-                </div>
-            </form>
-            </mat-card>
-
-            <div class="mat-elevation-z8">
-
-                <mat-card>
-                    <h2>Study table </h2>
-
-
-
-                    <table mat-table [dataSource]="dataSource" class="full-width-table table-container" matSort aria-label="Elements">
-
-                        <ng-container matColumnDef="studentType">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Type</th>
-                        <td mat-cell *matCellDef="let row">
-                            {{row.studentType !== null ? studentTypeList[row.studentType].code : ''}}
-                        </td>
-                        </ng-container>
-
-
-
-
-
-                            <ng-container matColumnDef="jambNo">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>JAMB NO</th>
-                            <td mat-cell *matCellDef="let row">{{row.jambNo}}</td>
-                            </ng-container>
-
-                            <ng-container matColumnDef="applicationNo">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Application No </th>
-                                <td class= "make-smaller" mat-cell *matCellDef="let row">{{row.applicationNo }}</td>
-                            </ng-container>
-
-                                <ng-container matColumnDef="department">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
-                                    <td mat-cell *matCellDef="let row">{{row.department }}</td>
-                                    </ng-container>
-
-                                    <ng-container matColumnDef="beginDate">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Begin Date</th>
-                                        <td mat-cell *matCellDef="let row">
-                                            {{((row.beginDate === null) || (row.beginDate === '') || (row.beginDate === 'null')) ? '' : (row.beginDate | date : "dd-MM-y")}}
-                                        </td>
-                                        </ng-container>
-
-                                        <ng-container matColumnDef="finishDate">
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header>finish Date</th>
-                                            <td mat-cell *matCellDef="let row">
-                                                {{((row.finishDate === null) || (row.finishDate === '') || (row.finishDate === 'null')) ? '' : (row.finishDate | date : "dd-MM-y")}}
-
-                                            </td>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="certificateDate">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>certificate Date</th>
-                                                <td mat-cell *matCellDef="let row">{{row.certificateDate}}</td>
-                                                </ng-container>
-
-                                                <ng-container matColumnDef="status">
-                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>status</th>
-                                                    <td mat-cell *matCellDef="let row">{{row.status }}</td>
-                                                    </ng-container>
-
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef>Action
-
-                            </th>
-                            <td mat-cell *matCellDef="let row; let i = index">
-                            <button (click)= "editStudy(i, row)"
-                            mat-icon-button
-
-                            >
-                            <mat-icon>create</mat-icon></button>
-
-
-                            <button (click) = "removeStudy(i, row)"
-                            mat-icon-button color="warn"
-
-                            >
-                            <mat-icon>remove_circle</mat-icon></button>
-
-                            </td>
-        </ng-container>
-
-
-
-
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                        <tr mat-row  *matRowDef="let row; columns: displayedColumns;"></tr>
-                        <tr class="mat-row" *matNoDataRow>
-                            <td class="mat-cell" colspan="9">No data matching the filter</td>
-                        </tr>
-
-                    </table>
-
-                    <mat-paginator #paginator
-                        [length]="dataSource.data.length"
-                        [pageIndex]="0"
-                        [pageSize]="4"
-                        [pageSizeOptions]="[4,7]"
-                        >
-                    </mat-paginator>
-        </mat-card>
-            </div>
-
-
-        </mat-tab>
-
-
-        <mat-tab >
-            <ng-template mat-tab-label>
-                <mat-icon color = "primary" class="example-tab-icon">fingerprint</mat-icon>
-                BIO-DATA
-            </ng-template>
-            <mat-card>
-                <div fxLayout="column" class="dialogspacing">
-                    <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-
-                        <!-- <mat-form-field fxFlex >
-                            <input matInput required type="number" placeholder="JAMB/APPLICATION NO"
-                            [(ngModel)]=  "selectedStudent.applicationNo"
-                            name = "applicationNo"
-                            >
-                            <mat-hint>e.g. 1, 2</mat-hint>
-                            <mat-error>Insert JAMB/APPLICATION NO!</mat-error>
-
-
-                            </mat-form-field> -->
-
-                            <mat-form-field fxFlex="50" >
-                                <input matInput type="text" placeholder="STUDENT NO" class="displayName"
-                                name = "studentNo"
-                                [(ngModel)]=  "selectedStudent.studentNo" disabled
-                                required>
-                                </mat-form-field>
-                                <div fxFlex="40">
-
-                                </div>
-
-
-                    </div>
-
-                    <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                        <mat-form-field fxFlex = "30" >
-                            <input matInput required type="text" placeholder="PHONE NUMBER"
-                            [(ngModel)]=  "selectedStudent.phone"
-                            name = "Phone"
-                            >
-                            <mat-hint>e.g. 08035555566</mat-hint>
-                            <mat-error>Phone number Required!</mat-error>
-
-
-                            </mat-form-field>
-
-                        <mat-form-field fxFlex>
-                        <input matInput  type="email"  placeholder="EMAIL" [(ngModel)]=  "selectedStudent.email"
-
-
-                        name = "email" >
-                        <mat-hint>e.g. me@topfaith.sch.ng</mat-hint>
-                        </mat-form-field>
-
-                        <mat-form-field fxFlex = "20">
-                            <mat-label>GENDER</mat-label>
-                            <mat-select [(ngModel)]="selectedStudent.gender"
-
-                            required
-                            name = "gender" >
-                                <mat-option *ngFor="let stat of Genders" [value]= "stat">
-                                    {{stat}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error>Gender Required!</mat-error>
-
-                            </mat-form-field>
-
-                    </div>
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                        <mat-form-field fxFlex = "20">
-                        <mat-label>TITLE</mat-label>
-                        <mat-select [(ngModel)]="selectedStudent.title"
-
-                        required
-                        name = "title"
-
-                        >
-                            <mat-option *ngFor="let stat of Titles" [value]= "stat">
-                                {{stat}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error>Title Required!</mat-error>
-
-                        </mat-form-field>
-
-                        <mat-form-field fxFlex>
-                            <input matInput type="text" placeholder="SURNAME"
-                            [(ngModel)]=  "selectedStudent.lastName"
-
-                            required
-                            name = "surname" >
-                            <mat-error>Surname Required!</mat-error>
-
-                            </mat-form-field>
-
-                        <mat-form-field fxFlex>
-                        <input matInput type="text" placeholder="FIRSTNAME"
-                        [(ngModel)]=  "selectedStudent.firstName"
-
-                        required
-                        name = "firstName">
-                        <mat-error>Firstname Required!</mat-error>
-
-                        </mat-form-field>
-
-
-                    </div>
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-                        <mat-form-field fxFlex>
-                        <input matInput type="text" placeholder="MIDDLENAME"
-                        [(ngModel)]=  "selectedStudent.middleName"
-
-
-                        name = "middleName">
-
-                        </mat-form-field>
-
-                        <mat-form-field fxFlex >
-                            <input matInput required type="text" placeholder="NIN"
-                            [(ngModel)]=  "selectedStudent.nin"
-                            name = "nin"
-                            >
-                            <mat-hint>e.g. 1, 2</mat-hint>
-                            <mat-error>Insert NIN!</mat-error>
-
-
-                            </mat-form-field>
-
-
-                    </div>
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-
-                        <mat-form-field fxFlex (click)="picker3.open()" >
-                            <mat-label>DATE OF BIRTH</mat-label>
-                            <input matInput  [matDatepicker]="picker3" required class="displayName"
-                            disabled
-                            [(ngModel)]= "selectedStudent.dOB"
-                            name="dOB">
-                            <mat-datepicker-toggle
-                            matSuffix [for]="picker3"></mat-datepicker-toggle>
-                            <mat-datepicker #picker3 disabled="false" color="primary"></mat-datepicker>
-                            <mat-hint>e.g. 22-06-2000</mat-hint>
-
-                        </mat-form-field>
-
-                            <mat-form-field fxFlex = "40">
-                                <mat-label>MARITAL STATUS</mat-label>
-                                <mat-select [(ngModel)]="selectedStudent.maritalStatus"
-                                required
-                                name = "maritalStatus" >
-                                    <mat-option *ngFor="let stat of MaritalStats" [value]= "stat">
-                                        {{stat}}
-                                        </mat-option>
-                                    </mat-select>
-
-                            </mat-form-field>
-                        <mat-form-field fxFlex *ngIf = "checkMarried()">
-                        <input matInput type="text" placeholder="MAIDEN NAME"
-                        required
-                        [(ngModel)]=  "selectedStudent.maidenName"
-
-
-                        name = "maidenName">
-
-                        </mat-form-field>
-
-
-
-                    </div>
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-                        <mat-form-field fxFlex = "40">
-                            <mat-label>STUDENT TYPE</mat-label>
-                            <mat-select [(ngModel)]="selectedStudent.studentType"
-                            required
-                            name = "studentType" >
-                                <mat-option *ngFor="let stat of studentTypeList" [value]= "stat.sNo">
-                                    {{stat.code}}: {{stat.stName}}
-                                    </mat-option>
-                                </mat-select>
-
-                        </mat-form-field>
-
-
-                            <mat-form-field fxFlex = "20">
-                                <mat-label>LEVEL</mat-label>
-                                <mat-select [(ngModel)]="selectedStudent.level"
-                                required
-                                name = "level" >
-                                    <mat-option *ngFor="let stat of Levels" [value]= "stat">
-                                        {{stat}} LEVEL
-                                        </mat-option>
-                                    </mat-select>
-
-                            </mat-form-field>
-
-                            <mat-form-field fxFlex>
-                                <input matInput type="text" placeholder="DEPARTMENT"
-                                [disabled]= "true"
-                                [(ngModel)]=  "selectedStudent.department"
-
-                                required
-                                name = "department" >
-                                <mat-error>Department Required!</mat-error>
-
-                                </mat-form-field>
-
-
-
-
-
-                    </div>
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-
-
-
-
-
-                        <mat-form-field fxFlex>
-                            <input matInput type="text" placeholder="ADDRESS"
-                            [(ngModel)]=  "selectedStudent.address"
-
-                            required
-                            name = "address" >
-                            <mat-error>Address Required!</mat-error>
-
-                            </mat-form-field>
-
-
-
-
-
-                </div>
-
-                <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-
-                        <mat-form-field fxFlex>
-                            <mat-label>STATE OF ORIGIN</mat-label>
-                            <mat-select [(ngModel)]="selectedStudent.state"
-
-                            required
-                            name = "stateOfOrigin" >
-                                <mat-option *ngFor="let stat of StatesList" [value]= "stat">
-                                    {{stat}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error>State of Origin Required!</mat-error>
-
-                        </mat-form-field>
-
-                    <mat-form-field fxFlex>
-                        <mat-label>NATIONALITY</mat-label>
-                        <mat-select [(ngModel)]= "selectedStudent.nationality"
-
-                        required
-                        name = "nationality" >
-                            <mat-option *ngFor="let stat of NationalityList" [value]= "stat">
-                                {{stat}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error>Nationality Required!</mat-error>
-
-                    </mat-form-field>
-
-                    <mat-form-field fxFlex>
-                        <mat-label>RELIGION</mat-label>
-                        <mat-select [(ngModel)]="selectedStudent.religion"
-
-                        required
-                        name = "religion" >
-                            <mat-option *ngFor="let stat of ReligionList" [value]= "stat">
-                                {{stat}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error>Religion Required!</mat-error>
-
-                    </mat-form-field>
-
-                </div>
-                <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                    <mat-card fxFlex>
-                        <h2 fxFlex>Current Status Info</h2>
-
-                <mat-slide-toggle fxFlex
-                                [checked]="selectedStudent.activeStatus"
-                                [(ngModel)]="selectedStudent.activeStatus"
-                                name="status">
-                                    {{!selectedStudent.activeStatus ? 'INACTIVE' : 'ACTIVE'}}</mat-slide-toggle>
-                    </mat-card>
-            </div>
-
-
-
-                </div>
-                <!-- </form> -->
-            </mat-card>
-        </mat-tab>
-
-
-        <mat-tab>
-            <ng-template mat-tab-label>
-                <mat-icon color = "primary" class="example-tab-icon">groups</mat-icon>
-                NEXT OF KIN
-            </ng-template>
-
-            <div *ngIf = "!isUpdates22" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                <div fxFlex="70"></div>
-                <button mat-raised-button fxFlex class="typicalbutton typicalbutton2"
-                (click) = "readyUpdates22()"
-                >
-                <mat-icon color="primary" class="matIconSpacing" >add_circle</mat-icon> ADD NEXT OF KIN
-                </button>
-            </div>
-
-
-            <mat-card *ngIf = "isUpdates22">
-                <form #guestForm34="ngForm">
-                <div fxLayout="column" class="dialogspacing">
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                        <mat-form-field fxFlex="15">
-                        <mat-label>TiTLE</mat-label>
-                        <mat-select [(ngModel)]="selectedNextOfKin.title"
-                        required
-                        name = "title2" >
-                        <mat-option *ngFor="let stat of Titles" [value]= "stat">
-                            {{stat}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error>Title Required!</mat-error>
-
-                        </mat-form-field>
-
-                        <mat-form-field fxFlex>
-                            <input matInput type="text"  placeholder="FULL NAME"
-                            [(ngModel)]=  "selectedNextOfKin.fullName"
-
-                            required
-                            name = "fullName">
-                            <mat-hint>e.g. Obot Ikot</mat-hint>
-
-                            </mat-form-field>
-
-                            <mat-form-field fxFlex="20">
-                                <input matInput type="text" placeholder="PHONE"
-                                [(ngModel)]=  "selectedNextOfKin.phone"
-
-                                required
-                                name = "phone2">
-                                <mat-hint>e.g. 08012334321</mat-hint>
-
-                                </mat-form-field>
-                    </div>
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-                                <mat-form-field fxFlex>
-                                    <input matInput  type="email"  placeholder="EMAIL" [(ngModel)]=  "selectedNextOfKin.email"
-
-
-                                    name = "email2" >
-                                    <mat-hint>e.g. me@topfaith.edu.ng</mat-hint>
-                                    </mat-form-field>
-
-                                <mat-form-field fxFlex>
-                                    <input matInput type="text" placeholder="OCUPPATION"
-                                    [(ngModel)]=  "selectedNextOfKin.occupation"
-
-                                    required
-                                    name = "occupation">
-
-                                    </mat-form-field>
-                                    <mat-form-field fxFlex>
-                                        <mat-label>RELATIONSHIP</mat-label>
-                                        <mat-select [(ngModel)]= "selectedNextOfKin.relationship"
-                                        required
-                                        name = "relationship" >
-                                            <mat-option *ngFor="let stat of relationshipList" [value]= "stat">
-                                                {{stat}}
-                                                </mat-option>
-                                            </mat-select>
-                                            <!-- <mat-error>Title Required!</mat-error> -->
-
-                                    </mat-form-field>
-                    </div>
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-                                    <mat-form-field fxFlex>
-                                        <input matInput type="text" placeholder="ADDRESS"
-                                        [(ngModel)]=  "selectedNextOfKin.address"
-
-                                        required
-                                        name = "address2">
-
-                                        </mat-form-field>
-
-
-
-                    </div>
-
-                    <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                        <button mat-stroked-button  fxFlex  type="submit"
-                        [disabled]="!guestForm34.form.valid"
-                        (click)= "isAnUpdates22 ? updateNextOfKin():addNextOfKin(); ">
-                            <mat-icon color="primary">add_circle_outline</mat-icon>
-                            {{isAnUpdates22 ? buttonStatus[1] :buttonStatus[0]}}
-                        </button>
-
-                        <button mat-stroked-button  fxFlex  type="button"
-                        (click)= "guestForm34.form.reset(); isAnUpdates22 ? toggleUpdate22() : isAnUpdates22">
-                            <mat-icon color="warn">restart_alt</mat-icon>
-
-                            {{isAnUpdates22? buttonStatus[3] :buttonStatus[2]}}
-                        </button>
-                        <div fxFlex="40"></div>
-                    </div>
-
-
-
-
-
-                </div>
-            </form>
-            </mat-card>
-
-            <div class="mat-elevation-z8">
-
-                <mat-card>
-                    <h2>Next of Kin table (Maximum of Two people) </h2>
-
-
-
-
-
-                    <table mat-table [dataSource]= "dataSource2" class="full-width-table table-container" matSort aria-label="Elements">
-
-                        <ng-container matColumnDef="title">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
-                        <td mat-cell *matCellDef="let row">{{row.title }}</td>
-                        </ng-container>
-
-
-
-
-
-                            <ng-container matColumnDef="fullName">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Full Name</th>
-                            <td mat-cell *matCellDef="let row">{{row.fullName}}</td>
-                            </ng-container>
-
-                            <ng-container matColumnDef="relationship">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Relationship </th>
-                                <td mat-cell *matCellDef="let row">{{row.relationship }}</td>
-                                </ng-container>
-
-                                <ng-container matColumnDef="phone">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
-                                    <td mat-cell *matCellDef="let row">{{row.phone }}</td>
-                                    </ng-container>
-
-                                    <ng-container matColumnDef="email">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-                                        <td mat-cell *matCellDef="let row">{{row.email}}</td>
-                                        </ng-container>
-
-                                        <ng-container matColumnDef="address">
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
-                                            <td mat-cell *matCellDef="let row">{{row.address }}</td>
-                                            </ng-container>
-
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef>Action
-
-                            </th>
-                            <td mat-cell *matCellDef="let row; let i = index">
-                            <button (click)= "editNextOfKin(i, row)"
-                            mat-icon-button
-
-                            >
-                            <mat-icon>create</mat-icon></button>
-
-
-                            <button (click) = "removeNextOfKin(i, row)"
-                            mat-icon-button color="warn"
-
-                            >
-                            <mat-icon>remove_circle</mat-icon></button>
-
-                            </td>
-        </ng-container>
-
-
-
-
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: true"></tr>
-                        <tr mat-row  *matRowDef="let row; columns: displayedColumns2;"></tr>
-                        <tr class="mat-row" *matNoDataRow>
-                            <td class="mat-cell" colspan="6">No data matching the filter</td>
-                        </tr>
-
-                    </table>
-
-                    <mat-paginator #paginator2
-                        [length]="dataSource2.data.length"
-                        [pageIndex]="0"
-                        [pageSize]="4"
-                        [pageSizeOptions]="[4,7]"
-                        >
-                    </mat-paginator>
-        </mat-card>
-            </div>
-
-
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-              <mat-icon color = "primary" class="example-tab-icon">payments</mat-icon>
-              SPONSOR
-          </ng-template>
-          <!-- <form   #guestForm2="ngForm" > -->
-          <mat-card>
-              <div fxLayout="column" class="dialogspacing">
-
-                <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                  <mat-form-field fxFlex="15">
-                  <mat-label>TiTLE</mat-label>
-                  <mat-select [(ngModel)]= "selectedSponsorDetail.title"
-
-                  name = "title2" >
-                  <mat-option *ngFor="let stat of Titles" [value]= "stat">
-                      {{stat}}
-                      </mat-option>
-                  </mat-select>
-                  <mat-error>Title Required!</mat-error>
-
-                  </mat-form-field>
-
-
-                      <mat-form-field fxFlex="20">
-                          <input matInput type="text" placeholder="PHONE"
-                          [(ngModel)]=  "selectedSponsorDetail.phone"
-
-
-                          name = "phone2">
-                          <mat-hint>e.g. 08012334321</mat-hint>
-
-                          </mat-form-field>
-
-                          <mat-form-field fxFlex>
-                            <input matInput  type="email"  placeholder="EMAIL" [(ngModel)]=  "selectedSponsorDetail.email"
-
-
-                            name = "email2" >
-                            <mat-hint>e.g. me@topfaith.edu.ng</mat-hint>
-                            </mat-form-field>
-              </div>
+        <mat-card *ngIf = "isUpdates">
+          <form #guestForm35="ngForm">
+            <div fxLayout="column" class="dialogspacing">
 
               <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+                <mat-form-field fxFlex *ngIf="!isFoundation()">
+                  <input matInput  type="text" placeholder="JAMB NO"
+                         [(ngModel)]=  "selectedApplication" [matAutocomplete]="auto11"
+                         [formControl]="stateCtrl"
+                         name = "jambNo"
+                  >
+                  <button matSuffix mat-button mat-icon-button>
+
+                    <mat-icon *ngIf =  "checkLoadedApplication()" (click)="clearFilter()">close</mat-icon>
+                    <mat-icon *ngIf = "!checkLoadedApplication()" >search</mat-icon>
+                  </button>
+
+
+                  <mat-hint>e.g. JAMBNO 124567CF</mat-hint>
+                  <mat-error>Insert JAMB NO!</mat-error>
+
+                  <mat-autocomplete #auto11="matAutocomplete" [displayWith]="displayFn"
+                                    (optionSelected)= "setStudyInfoPrompt()">
+                    <mat-option
+                      *ngFor= "let state of filteredStates | async"
+                      [value]="state"
+
+                    >
+
+                      {{state.jambNo}} | {{state.lastName}} | {{state.department1}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <mat-form-field fxFlex *ngIf="isFoundation()" >
+                  <input matInput required type="text" placeholder="FOUNDATIONNO "
+                         [(ngModel)]=  "selectedFoundationNo"
+                         name = "foundationno"
+                  >
+                  <!-- <mat-hint>e.g. 08035555566</mat-hint> -->
+                  <!-- <mat-error>Phone number Required!</mat-error> -->
+
+
+                </mat-form-field>
+
+                <div class="container_row" flex="5" >
+                  <div class="layer1">
+                    <button
+                      matTooltip="click this to sync current applicants"
+                      color ="primary"
+                      (click)= "getAPITUList()"
+                      [disabled]= "syncClicked"
+                      mat-icon-button>
+                      <mat-icon>sync</mat-icon>
+                    </button>
+
+                  </div>
+                  <div class="layer2">
+                    <div *ngIf= "!syncDone && syncClicked || syncedB4" >
+                      <mat-progress-spinner
+                        mode="indeterminate"
+                        [color]="color"
+                        [mode]="mode"
+                        [value]="value"
+                        diameter="40"></mat-progress-spinner>
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+
+
+
+
+                <mat-form-field fxFlex = "35">
+                  <mat-label>STUDENT TYPE</mat-label>
+                  <mat-select [(ngModel)]="selectedStudy.studentType"
+                              required (selectionChange)="checkForFoundation()"
+                              name = "studentType" >
+                    <mat-option>None</mat-option>
+                    <mat-option *ngFor= "let stat of studentTypeList" [value]= "stat.sNo">
+                      {{stat.stName}}
+                      <!-- {{studentTypeList[stat].code}}: {{studentTypeList[stat].stName}} -->
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                <mat-form-field fxFlex="20">
+                  <mat-label>STATUS</mat-label>
+                  <mat-select [(ngModel)]="selectedStudy.status" name = "title2" required>
+                    <mat-option *ngFor= "let stat of statusOfStudy" [value]= "stat">
+                      {{stat}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>Status Required!</mat-error>
+
+                </mat-form-field>
+
 
 
                 <mat-form-field fxFlex>
-                    <input matInput type="text" placeholder="SPONSOR NAME"
-                    [(ngModel)]=  "selectedSponsorDetail.fullName"
+                  <mat-label>PROGRAMME</mat-label>
+                  <mat-select [(ngModel)]= "selectedStudy.programme"
+
+                              required
+                              name = "studyDepartment" >
+                    <mat-option *ngFor="let stat of departmentList" [value]= "stat">
+                      {{stat}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>programme Required!</mat-error>
+
+                </mat-form-field>
+
+                <button fxFlex='5' class="arrange-pin"
+                        matTooltip="make this the current programme"
+                        color ="primary"
+                        (click)="pinDepartment()"
+                        mat-icon-button
+
+                >
+                  <mat-icon>push_pin</mat-icon></button>
+
+              </div>
+
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
 
 
-                    name = "sponsorName" >
-                    <mat-hint>e.g. Mr Topfaith University</mat-hint>
+                <mat-form-field fxFlex (click)="pickerBD.open()">
+                  <mat-label>BEGIN DATE</mat-label>
+                  <input matInput  [matDatepicker]="pickerBD" class="displayName" disabled
+                         [(ngModel)]= "selectedStudy.beginDate" required
+                         name="beginDate">
+                  <mat-datepicker-toggle
+                    matSuffix [for]="pickerBD"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerBD disabled="false"></mat-datepicker>
+                  <mat-hint>e.g. 22-06-2000</mat-hint>
 
-                    </mat-form-field>
+                </mat-form-field>
+
+                <mat-form-field fxFlex (click)="pickerFD.open()">
+                  <mat-label>FINISH DATE</mat-label>
+                  <input matInput  [matDatepicker]="pickerFD" class="displayName" disabled
+                         [(ngModel)]= "selectedStudy.finishDate"
+                         name="finishDate">
+                  <mat-datepicker-toggle
+                    matSuffix [for]="pickerFD"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerFD disabled="false"></mat-datepicker>
+                  <mat-hint>e.g. 22-06-2000</mat-hint>
+
+                </mat-form-field>
+
+                <mat-form-field fxFlex (click)="pickerCD.open()">
+                  <mat-label>CERTIFICATE DATE</mat-label>
+                  <input matInput  [matDatepicker]="pickerCD"
+                         [(ngModel)]= "selectedStudy.certificateDate"
+                         name="certificateDate">
+                  <mat-datepicker-toggle
+                    matSuffix [for]="pickerCD"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerCD disabled="false"></mat-datepicker>
+                  <mat-hint>e.g. 22-06-2000</mat-hint>
+
+                </mat-form-field>
+              </div>
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+                <mat-form-field fxFlex>
+                  <mat-label>BEGIN SESSION</mat-label>
+                  <mat-select [(ngModel)]= "selectedStudy.beginSession" name = "beginSession" required>
+                    <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
+                      {{stat}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>Begin Session Required!</mat-error>
+
+                </mat-form-field>
+
+                <mat-form-field fxFlex>
+                  <mat-label>FINISH SESSION</mat-label>
+                  <mat-select [(ngModel)]= "selectedStudy.finishSession" name = "finishSession" >
+                    <mat-option>NONE</mat-option>
+                    <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
+                      {{stat}}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+
+              </div>
+
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                <button mat-stroked-button  fxFlex
+                        [disabled]="!guestForm35.form.valid"
+                        (click)= "isAnUpdates ? updateStudy():addStudy()">
+                  <mat-icon color="primary">add_circle_outline</mat-icon>
+                  {{isAnUpdates ? buttonStatus[1] :buttonStatus[0]}}
+                </button>
+
+                <button mat-stroked-button  fxFlex
+                        (click)= " isAnUpdates ? toggleUpdate() : isAnUpdates">
+                  <mat-icon color="warn">restart_alt</mat-icon>
+
+                  {{isAnUpdates? buttonStatus[3] :buttonStatus[2]}}
+                </button>
+                <div fxFlex="40"></div>
+              </div>
+
+
+
+
+
+            </div>
+          </form>
+        </mat-card>
+
+        <div class="mat-elevation-z8">
+
+          <mat-card>
+            <h2>Study table </h2>
+
+
+
+            <table mat-table [dataSource]="dataSource" class="full-width-table table-container" matSort aria-label="Elements">
+
+              <ng-container matColumnDef="studentType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Type</th>
+                <td mat-cell *matCellDef="let row">
+                  {{row.studentType !== null ? studentTypeList[row.studentType].code : ''}}
+                </td>
+              </ng-container>
+
+
+
+
+
+              <ng-container matColumnDef="jambNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>JAMB NO</th>
+                <td mat-cell *matCellDef="let row">{{row.jambNo}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="applicationNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Application No </th>
+                <td class= "make-smaller" mat-cell *matCellDef="let row">{{row.applicationNo }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="programme">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Programme</th>
+                <td mat-cell *matCellDef="let row">{{row.programme }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="beginDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Begin Date</th>
+                <td mat-cell *matCellDef="let row">
+                  {{((row.beginDate === null) || (row.beginDate === '') || (row.beginDate === 'null')) ? '' : (row.beginDate | date : "dd-MM-y")}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="finishDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>finish Date</th>
+                <td mat-cell *matCellDef="let row">
+                  {{((row.finishDate === null) || (row.finishDate === '') || (row.finishDate === 'null')) ? '' : (row.finishDate | date : "dd-MM-y")}}
+
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="certificateDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>certificate Date</th>
+                <td mat-cell *matCellDef="let row">{{row.certificateDate}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>status</th>
+                <td mat-cell *matCellDef="let row">{{row.status }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action
+
+                </th>
+                <td mat-cell *matCellDef="let row; let i = index">
+                  <button (click)= "editStudy(i, row)"
+                          mat-icon-button
+
+                  >
+                    <mat-icon>create</mat-icon></button>
+
+
+                  <button (click) = "removeStudy(i, row)"
+                          mat-icon-button color="warn"
+
+                  >
+                    <mat-icon>remove_circle</mat-icon></button>
+
+                </td>
+              </ng-container>
+
+
+
+
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr mat-row  *matRowDef="let row; columns: displayedColumns;"></tr>
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="9">No data matching the filter</td>
+              </tr>
+
+            </table>
+
+            <mat-paginator #paginator
+                           [length]="dataSource.data.length"
+                           [pageIndex]="0"
+                           [pageSize]="4"
+                           [pageSizeOptions]="[4,7]"
+            >
+            </mat-paginator>
+          </mat-card>
+        </div>
+
+
+      </mat-tab>
+
+
+      <mat-tab >
+        <ng-template mat-tab-label>
+          <mat-icon color = "primary" class="example-tab-icon">fingerprint</mat-icon>
+          BIO-DATA
+        </ng-template>
+        <mat-card>
+          <div fxLayout="column" class="dialogspacing">
+            <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+              <!-- <mat-form-field fxFlex >
+                  <input matInput required type="number" placeholder="JAMB/APPLICATION NO"
+                  [(ngModel)]=  "selectedStudent.applicationNo"
+                  name = "applicationNo"
+                  >
+                  <mat-hint>e.g. 1, 2</mat-hint>
+                  <mat-error>Insert JAMB/APPLICATION NO!</mat-error>
+
+
+                  </mat-form-field> -->
+
+              <mat-form-field fxFlex="50" >
+                <input matInput type="text" placeholder="STUDENT NO" class="displayName"
+                       name = "studentNo"
+                       [(ngModel)]=  "selectedStudent.studentNo" disabled
+                       required>
+              </mat-form-field>
+              <div fxFlex="40">
+
+              </div>
+
+
+            </div>
+
+            <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+              <mat-form-field fxFlex = "30" >
+                <input matInput required type="text" placeholder="PHONE NUMBER"
+                       [(ngModel)]=  "selectedStudent.phone"
+                       name = "Phone"
+                >
+                <mat-hint>e.g. 08035555566</mat-hint>
+                <mat-error>Phone number Required!</mat-error>
+
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <input matInput  type="email"  placeholder="EMAIL" [(ngModel)]=  "selectedStudent.email"
+
+
+                       name = "email" >
+                <mat-hint>e.g. me@topfaith.sch.ng</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field fxFlex = "20">
+                <mat-label>GENDER</mat-label>
+                <mat-select [(ngModel)]="selectedStudent.gender"
+
+                            required
+                            name = "gender" >
+                  <mat-option *ngFor="let stat of Genders" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Gender Required!</mat-error>
+
+              </mat-form-field>
+
+            </div>
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+              <mat-form-field fxFlex = "20">
+                <mat-label>TITLE</mat-label>
+                <mat-select [(ngModel)]="selectedStudent.title"
+
+                            required
+                            name = "title"
+
+                >
+                  <mat-option *ngFor="let stat of Titles" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Title Required!</mat-error>
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="SURNAME"
+                       [(ngModel)]=  "selectedStudent.lastName"
+
+                       required
+                       name = "surname" >
+                <mat-error>Surname Required!</mat-error>
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="FIRSTNAME"
+                       [(ngModel)]=  "selectedStudent.firstName"
+
+                       required
+                       name = "firstName">
+                <mat-error>Firstname Required!</mat-error>
+
+              </mat-form-field>
+
+
+            </div>
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="MIDDLENAME"
+                       [(ngModel)]=  "selectedStudent.middleName"
+
+
+                       name = "middleName">
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex >
+                <input matInput required type="text" placeholder="NIN"
+                       [(ngModel)]=  "selectedStudent.nin"
+                       name = "nin"
+                >
+                <mat-hint>e.g. 1, 2</mat-hint>
+                <mat-error>Insert NIN!</mat-error>
+
+
+              </mat-form-field>
+
+
+            </div>
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+              <mat-form-field fxFlex (click)="picker3.open()" >
+                <mat-label>DATE OF BIRTH</mat-label>
+                <input matInput  [matDatepicker]="picker3" required class="displayName"
+                       disabled
+                       [(ngModel)]= "selectedStudent.dOB"
+                       name="dOB">
+                <mat-datepicker-toggle
+                  matSuffix [for]="picker3"></mat-datepicker-toggle>
+                <mat-datepicker #picker3 disabled="false" color="primary"></mat-datepicker>
+                <mat-hint>e.g. 22-06-2000</mat-hint>
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex = "40">
+                <mat-label>MARITAL STATUS</mat-label>
+                <mat-select [(ngModel)]="selectedStudent.maritalStatus"
+                            required
+                            name = "maritalStatus" >
+                  <mat-option *ngFor="let stat of MaritalStats" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+              <mat-form-field fxFlex *ngIf = "checkMarried()">
+                <input matInput type="text" placeholder="MAIDEN NAME"
+                       required
+                       [(ngModel)]=  "selectedStudent.maidenName"
+
+
+                       name = "maidenName">
+
+              </mat-form-field>
+
+
+
+            </div>
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+              <mat-form-field fxFlex = "40">
+                <mat-label>STUDENT TYPE</mat-label>
+                <mat-select [(ngModel)]="selectedStudent.studentType"
+                            required
+                            name = "studentType" >
+                  <mat-option *ngFor="let stat of studentTypeList" [value]= "stat.sNo">
+                    {{stat.code}}: {{stat.stName}}
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+
+
+              <mat-form-field fxFlex = "20">
+                <mat-label>LEVEL</mat-label>
+                <mat-select [(ngModel)]="selectedStudent.level"
+                            required
+                            name = "level" >
+                  <mat-option *ngFor="let stat of Levels" [value]= "stat">
+                    {{stat}} LEVEL
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="PROGRAMME"
+                       [disabled]= "true"
+                       [(ngModel)]=  "selectedStudent.programme"
+
+                       required
+                       name = "programme" >
+                <mat-error>Programme Required!</mat-error>
+
+              </mat-form-field>
+
+
+
+
+
+            </div>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+
+
+
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="ADDRESS"
+                       [(ngModel)]=  "selectedStudent.address"
+
+                       required
+                       name = "address" >
+                <mat-error>Address Required!</mat-error>
+
+              </mat-form-field>
+
 
 
 
 
             </div>
 
-              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+              <mat-form-field fxFlex>
+                <mat-label>STATE OF ORIGIN</mat-label>
+                <mat-select [(ngModel)]="selectedStudent.state"
+
+                            required
+                            name = "stateOfOrigin" >
+                  <mat-option *ngFor="let stat of StatesList" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>State of Origin Required!</mat-error>
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <mat-label>NATIONALITY</mat-label>
+                <mat-select [(ngModel)]= "selectedStudent.nationality"
+
+                            required
+                            name = "nationality" >
+                  <mat-option *ngFor="let stat of NationalityList" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Nationality Required!</mat-error>
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <mat-label>RELIGION</mat-label>
+                <mat-select [(ngModel)]="selectedStudent.religion"
+
+                            required
+                            name = "religion" >
+                  <mat-option *ngFor="let stat of ReligionList" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Religion Required!</mat-error>
+
+              </mat-form-field>
+
+            </div>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+              <mat-card fxFlex>
+                <h2 fxFlex>Current Status Info</h2>
+
+                <mat-slide-toggle fxFlex
+                                  [checked]="selectedStudent.activeStatus"
+                                  [(ngModel)]="selectedStudent.activeStatus"
+                                  name="status">
+                  {{!selectedStudent.activeStatus ? 'INACTIVE' : 'ACTIVE'}}</mat-slide-toggle>
+              </mat-card>
+            </div>
 
 
 
-                          <mat-form-field fxFlex>
-                              <input matInput type="text" placeholder="OCUPPATION"
-                              [(ngModel)]=  "selectedSponsorDetail.occupation"
-
-
-                              name = "occupation">
-
-                              </mat-form-field>
-                              <mat-form-field fxFlex>
-                                <mat-label>RELATIONSHIP</mat-label>
-                                <mat-select
-                                [(ngModel)]= "selectedSponsorDetail.relationship"
-                                name = "sponsorRelationship" >
-                                    <mat-option *ngFor="let stat of relationshipList2" [value]= "stat">
-                                        {{stat}}
-                                        </mat-option>
-                                    </mat-select>
-
-                            </mat-form-field>
-              </div>
-              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-                              <mat-form-field fxFlex>
-                                  <input matInput type="text" placeholder="ADDRESS"
-                                  [(ngModel)]=  "selectedSponsorDetail.address"
-
-
-                                  name = "address2">
-
-                                  </mat-form-field>
-
-
-
-              </div>
-
-
-
-
-                  <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                      <mat-form-field fxFlex >
-                          <input matInput  type="text" placeholder="SPONSOR ACCOUNT NUMBER"
-                          [(ngModel)]=  "selectedSponsorDetail.accountNumber"
-                          name = "bAccNo" #accountNo="ngModel"
-
-                          >
-
-                          </mat-form-field>
-
-                          <mat-form-field fxFlex>
-                              <mat-label>BANK</mat-label>
-                              <mat-select
-                              [(ngModel)]= "selectedSponsorDetail.bank"
-                              #accountName="ngModel"
-                              name = "sponsorBank"
-                              >
-                                  <mat-option *ngFor="let stat of bankList" [value]= "stat.properties.shortName">
-                                      <span class="make-bold">{{stat.properties.shortName}}</span>
-                                      |
-                                      <small>{{stat.properties.longName}}</small>
-                                      </mat-option>
-                                  </mat-select>
-
-                          </mat-form-field>
-                  </div>
-
-                  <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                      <mat-form-field fxFlex >
-                          <input matInput  type="text" placeholder="ACCOUNT NAME" [(ngModel)]=  "selectedSponsorDetail.accountName"
-                          name = "accountName" #accountName="ngModel"
-                          >
-
-                          </mat-form-field>
-
-
-                  </div>
-
-
-
-
-
-              </div>
-          </mat-card>
+          </div>
           <!-- </form> -->
+        </mat-card>
+      </mat-tab>
+
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon color = "primary" class="example-tab-icon">groups</mat-icon>
+          NEXT OF KIN
+        </ng-template>
+
+        <div *ngIf = "!isUpdates22" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+          <div fxFlex="70"></div>
+          <button mat-raised-button fxFlex class="typicalbutton typicalbutton2"
+                  (click) = "readyUpdates22()"
+          >
+            <mat-icon color="primary" class="matIconSpacing" >add_circle</mat-icon> ADD NEXT OF KIN
+          </button>
+        </div>
+
+
+        <mat-card *ngIf = "isUpdates22">
+          <form #guestForm34="ngForm">
+            <div fxLayout="column" class="dialogspacing">
+
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                <mat-form-field fxFlex="15">
+                  <mat-label>TiTLE</mat-label>
+                  <mat-select [(ngModel)]="selectedNextOfKin.title"
+                              required
+                              name = "title2" >
+                    <mat-option *ngFor="let stat of Titles" [value]= "stat">
+                      {{stat}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>Title Required!</mat-error>
+
+                </mat-form-field>
+
+                <mat-form-field fxFlex>
+                  <input matInput type="text"  placeholder="FULL NAME"
+                         [(ngModel)]=  "selectedNextOfKin.fullName"
+
+                         required
+                         name = "fullName">
+                  <mat-hint>e.g. Obot Ikot</mat-hint>
+
+                </mat-form-field>
+
+                <mat-form-field fxFlex="20">
+                  <input matInput type="text" placeholder="PHONE"
+                         [(ngModel)]=  "selectedNextOfKin.phone"
+
+                         required
+                         name = "phone2">
+                  <mat-hint>e.g. 08012334321</mat-hint>
+
+                </mat-form-field>
+              </div>
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+                <mat-form-field fxFlex>
+                  <input matInput  type="email"  placeholder="EMAIL" [(ngModel)]=  "selectedNextOfKin.email"
+
+
+                         name = "email2" >
+                  <mat-hint>e.g. me@topfaith.edu.ng</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field fxFlex>
+                  <input matInput type="text" placeholder="OCUPPATION"
+                         [(ngModel)]=  "selectedNextOfKin.occupation"
+
+                         required
+                         name = "occupation">
+
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                  <mat-label>RELATIONSHIP</mat-label>
+                  <mat-select [(ngModel)]= "selectedNextOfKin.relationship"
+                              required
+                              name = "relationship" >
+                    <mat-option *ngFor="let stat of relationshipList" [value]= "stat">
+                      {{stat}}
+                    </mat-option>
+                  </mat-select>
+                  <!-- <mat-error>Title Required!</mat-error> -->
+
+                </mat-form-field>
+              </div>
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+                <mat-form-field fxFlex>
+                  <input matInput type="text" placeholder="ADDRESS"
+                         [(ngModel)]=  "selectedNextOfKin.address"
+
+                         required
+                         name = "address2">
+
+                </mat-form-field>
+
+
+
+              </div>
+
+              <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                <button mat-stroked-button  fxFlex  type="submit"
+                        [disabled]="!guestForm34.form.valid"
+                        (click)= "isAnUpdates22 ? updateNextOfKin():addNextOfKin(); ">
+                  <mat-icon color="primary">add_circle_outline</mat-icon>
+                  {{isAnUpdates22 ? buttonStatus[1] :buttonStatus[0]}}
+                </button>
+
+                <button mat-stroked-button  fxFlex  type="button"
+                        (click)= "guestForm34.form.reset(); isAnUpdates22 ? toggleUpdate22() : isAnUpdates22">
+                  <mat-icon color="warn">restart_alt</mat-icon>
+
+                  {{isAnUpdates22? buttonStatus[3] :buttonStatus[2]}}
+                </button>
+                <div fxFlex="40"></div>
+              </div>
+
+
+
+
+
+            </div>
+          </form>
+        </mat-card>
+
+        <div class="mat-elevation-z8">
+
+          <mat-card>
+            <h2>Next of Kin table (Maximum of Two people) </h2>
+
+
+
+
+
+            <table mat-table [dataSource]= "dataSource2" class="full-width-table table-container" matSort aria-label="Elements">
+
+              <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+                <td mat-cell *matCellDef="let row">{{row.title }}</td>
+              </ng-container>
+
+
+
+
+
+              <ng-container matColumnDef="fullName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Full Name</th>
+                <td mat-cell *matCellDef="let row">{{row.fullName}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="relationship">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Relationship </th>
+                <td mat-cell *matCellDef="let row">{{row.relationship }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="phone">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
+                <td mat-cell *matCellDef="let row">{{row.phone }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+                <td mat-cell *matCellDef="let row">{{row.email}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="address">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+                <td mat-cell *matCellDef="let row">{{row.address }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action
+
+                </th>
+                <td mat-cell *matCellDef="let row; let i = index">
+                  <button (click)= "editNextOfKin(i, row)"
+                          mat-icon-button
+
+                  >
+                    <mat-icon>create</mat-icon></button>
+
+
+                  <button (click) = "removeNextOfKin(i, row)"
+                          mat-icon-button color="warn"
+
+                  >
+                    <mat-icon>remove_circle</mat-icon></button>
+
+                </td>
+              </ng-container>
+
+
+
+
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: true"></tr>
+              <tr mat-row  *matRowDef="let row; columns: displayedColumns2;"></tr>
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="6">No data matching the filter</td>
+              </tr>
+
+            </table>
+
+            <mat-paginator #paginator2
+                           [length]="dataSource2.data.length"
+                           [pageIndex]="0"
+                           [pageSize]="4"
+                           [pageSizeOptions]="[4,7]"
+            >
+            </mat-paginator>
+          </mat-card>
+        </div>
+
+
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon color = "primary" class="example-tab-icon">payments</mat-icon>
+          SPONSOR
+        </ng-template>
+        <!-- <form   #guestForm2="ngForm" > -->
+        <mat-card>
+          <div fxLayout="column" class="dialogspacing">
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+              <mat-form-field fxFlex="15">
+                <mat-label>TiTLE</mat-label>
+                <mat-select [(ngModel)]= "selectedSponsorDetail.title"
+
+                            name = "title2" >
+                  <mat-option *ngFor="let stat of Titles" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Title Required!</mat-error>
+
+              </mat-form-field>
+
+
+              <mat-form-field fxFlex="20">
+                <input matInput type="text" placeholder="PHONE"
+                       [(ngModel)]=  "selectedSponsorDetail.phone"
+
+
+                       name = "phone2">
+                <mat-hint>e.g. 08012334321</mat-hint>
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <input matInput  type="email"  placeholder="EMAIL" [(ngModel)]=  "selectedSponsorDetail.email"
+
+
+                       name = "email2" >
+                <mat-hint>e.g. me@topfaith.edu.ng</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="SPONSOR NAME"
+                       [(ngModel)]=  "selectedSponsorDetail.fullName"
+
+
+                       name = "sponsorName" >
+                <mat-hint>e.g. Mr Topfaith University</mat-hint>
+
+              </mat-form-field>
+
+
+
+
+            </div>
+
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="OCUPPATION"
+                       [(ngModel)]=  "selectedSponsorDetail.occupation"
+
+
+                       name = "occupation">
+
+              </mat-form-field>
+              <mat-form-field fxFlex>
+                <mat-label>RELATIONSHIP</mat-label>
+                <mat-select
+                  [(ngModel)]= "selectedSponsorDetail.relationship"
+                  name = "sponsorRelationship" >
+                  <mat-option *ngFor="let stat of relationshipList2" [value]= "stat">
+                    {{stat}}
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+            </div>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+              <mat-form-field fxFlex>
+                <input matInput type="text" placeholder="ADDRESS"
+                       [(ngModel)]=  "selectedSponsorDetail.address"
+
+
+                       name = "address2">
+
+              </mat-form-field>
+
+
+
+            </div>
+
+
+
+
+            <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+              <mat-form-field fxFlex >
+                <input matInput  type="text" placeholder="SPONSOR ACCOUNT NUMBER"
+                       [(ngModel)]=  "selectedSponsorDetail.accountNumber"
+                       name = "bAccNo" #accountNo="ngModel"
+
+                >
+
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <mat-label>BANK</mat-label>
+                <mat-select
+                  [(ngModel)]= "selectedSponsorDetail.bank"
+                  #accountName="ngModel"
+                  name = "sponsorBank"
+                >
+                  <mat-option *ngFor="let stat of bankList" [value]= "stat.properties.shortName">
+                    <span class="make-bold">{{stat.properties.shortName}}</span>
+                    |
+                    <small>{{stat.properties.longName}}</small>
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+            </div>
+
+            <div   class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+              <mat-form-field fxFlex >
+                <input matInput  type="text" placeholder="ACCOUNT NAME" [(ngModel)]=  "selectedSponsorDetail.accountName"
+                       name = "accountName" #accountName="ngModel"
+                >
+
+              </mat-form-field>
+
+
+            </div>
+
+
+
+
+
+          </div>
+        </mat-card>
+        <!-- </form> -->
 
       </mat-tab>
 
 
     </mat-tab-group>
-</mat-dialog-content>
-<mat-progress-bar *ngIf = "progressMarker"
-          [mode]="'query'">
-</mat-progress-bar>
+  </mat-dialog-content>
+  <mat-progress-bar *ngIf = "progressMarker"
+                    [mode]="'query'">
+  </mat-progress-bar>
 
 
-<mat-dialog-actions>
+  <mat-dialog-actions>
     <button fxFlex mat-button (click)= "doSave()"
-    [disabled]= "!guestForm.form.valid"
-    *ngIf= "!editingDoneMarker">SAVE</button>
+            [disabled]= "!guestForm.form.valid"
+            *ngIf= "!editingDoneMarker">SAVE</button>
     <button fxFlex mat-button [mat-dialog-close]= "editingDoneMarker"
-    class="typicalbutton">{{editingDoneMarker ? 'CLOSE' : 'CANCEL' }}</button>
+            class="typicalbutton">{{editingDoneMarker ? 'CLOSE' : 'CANCEL' }}</button>
     <!-- <button fxFlex mat-button mat-dialog-close class="typicalbutton">CANCEL</button> -->
 
 
-</mat-dialog-actions>
+  </mat-dialog-actions>
 </form>
 

@@ -3,7 +3,6 @@ import { AsyncSubject } from 'rxjs/internal/AsyncSubject';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { NextKin, SearchPara, SponsorDetails, Student, StudentType, Study, TempStudent } from '../interfaces/student';
 import { KLoginService } from './klogin.service';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -13,67 +12,32 @@ export class StudentService {
 
   constructor(public angularS1: KLoginService) { }
 
-  // getStudentsList_old(department?: string, level?: number): BehaviorSubject<Student[]> {
-  //   // this.angularS1.doConnect();
-  //   const answer: BehaviorSubject<Student[]> = new BehaviorSubject <Student[]>([]);
-  //
-  //   const myQualificationList : Student[] = [] ;
-  //   let query = '';
-  //   if (!department && !level)
-  //   {
-  //     query = `MATCH (n:Student) `;
-  //   }
-  //   else {
-  //     if (department && level) {
-  //       query = `MATCH (n:Student) where n.department = '${department}' and n.level = '${level}' `;
-  //
-  //     }
-  //     else
-  //     {
-  //       if (department) {
-  //         query = `MATCH (n:Student) where n.department = '${department}' `;
-  //     }
-  //       else {
-  //         query = `MATCH (n:Student) where n.level = '${level}' `;
-  //
-  //       }
-  //     }
-  //
-  //   }
-  //
-  //   query += ` return n  order by n.studentNo`
-  //   this.angularS1.angularS.run(query).then((res: any) => {
-  //     for (const r of res) {
-  //       myQualificationList.push(r[0].properties as Student);
-  //     }
-  //     answer.next(myQualificationList);
-  //
-  //     });
-  //
-  //   return answer;
-  // }
-
 
   getStudentsList(searchPara?: SearchPara ): BehaviorSubject<Student[]> {
-    // this.angularS1.doConnect();
+    // try {
+    //   this.angularS1.doConnect();
+    // } catch (error) {
+    //   console.log('issues with connectingto DB',error)
+    // }
     const answer: BehaviorSubject<Student[]> = new BehaviorSubject <Student[]>([]);
 
     const myQualificationList : Student[] = [] ;
     let query = `MATCH (f:Faculty)<-[:IN_FACULTY]-(p:Programme)<-[:A_STUDENT_OF]-(n:Student)-[:COMMENCED_STUDY]->(st:Study) `;
-    let tempquery = '' ; // `MATCH (f:Faculty)<-[:IN_FACULTY]-(p:Programme)<-[:A_STUDENT_OF]-(n:Student)-[:COMMENCED_STUDY]->(st:Study) `;
+    let tempquery = "" ; // `MATCH (f:Faculty)<-[:IN_FACULTY]-(p:Programme)<-[:A_STUDENT_OF]-(n:Student)-[:COMMENCED_STUDY]->(st:Study) `;
     // console.log("serch para::", searchPara)
 
-    if(searchPara && (searchPara.fName || searchPara.lName || searchPara.programme || searchPara.level || searchPara.faculty || searchPara.gender || searchPara.studyStatus || (searchPara.status !== undefined)   )) {
+    // tslint:disable-next-line:max-line-length
+    if (searchPara && (searchPara.fName || searchPara.lName || searchPara.programme || searchPara.level || searchPara.faculty || searchPara.gender || searchPara.studyStatus || (searchPara.status !== undefined)   )) {
       query += ' where ';
       tempquery = query;
 
-      query += searchPara.programme ? `p.dName = '${searchPara.programme}' ` : ''
+      query += searchPara.programme ? `p.pName = '${searchPara.programme}' ` : ''
 
       query += searchPara.level ? (query.trimEnd() !== tempquery.trimEnd() ? ` and n.level = ${searchPara.level} ` : ` n.level = ${searchPara.level} `) : '' ;
 
       query += searchPara.faculty ? (query.trimEnd() !== tempquery.trimEnd() ? ` and f.dCode = '${searchPara.faculty}' ` : ` f.dCode = '${searchPara.faculty}' `) : '' ;
 
-      query += searchPara.fName ? (query.trimEnd() !== tempquery.trimEnd()? ` and toUpper(n.firstName = '${searchPara.fName}') ` : ` n.firstName = '${searchPara.fName}' `) : '' ;
+      query += searchPara.fName ? (query.trimEnd() !== tempquery.trimEnd() ? ` and toUpper(n.firstName = '${searchPara.fName}') ` : ` n.firstName = '${searchPara.fName}' `) : '' ;
 
       query += searchPara.lName ? (query.trimEnd() !== tempquery.trimEnd() ? ` and toUpper(n.lastName = '${searchPara.lName}') ` : ` n.lastName = '${searchPara.lName}' `) : '' ;
 
@@ -87,33 +51,19 @@ export class StudentService {
     }
 
 
-    query += ` return n  order by n.studentNo`;
+    query += ` return distinct(n)  order by n.studentNo`;
 
     console.log('QUERY get student::', query);
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     myQualificationList.push(r[0].properties as Student);
-    //   }
-    //   answer.next(myQualificationList);
-
-    //   });
 
     this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
-        if (data) {
+        console.log('stuuddata', data);
+        if (data.results) {
           let count = 0;
           for (let i = 0; i < data.results.length; i++) {
             const tempStudent = data.results[i];
-            // if (count === 0) {
-            //   console.log('tempstudent::',this.getStringDate(tempStudent.dOB) )
-
-            // }
-
-            // const dateObject = tempStudent.dOB ?
-            // (`${tempStudent.dOB.year}-${this.getStringDigits(tempStudent.dOB.month-1)}-${this.getStringDigits(tempStudent.dOB.day)}T00:00+01:00`).toString()
-            // : null;
-
-            const dateObject = tempStudent.dOB ? this.getStringDate(tempStudent.dOB): null;
+            console.log('studemts::', tempStudent);
+            const dateObject = tempStudent.dOB ? this.getStringDate(tempStudent.dOB) : null;
 
             tempStudent.dOB = dateObject ? (dateObject) : null;
             if (count === 0) {
@@ -148,9 +98,9 @@ export class StudentService {
     return answer;
   }
 
-  getStringDate(items: {year: number, month: number, day: number, hour: number, minute: number, second: number, nanosecond: number, timeZoneOffsetSeconds:number}): string{
+  getStringDate(items: {year: number, month: number, day: number, hour: number, minute: number, second: number, nanosecond: number, timeZoneOffsetSeconds: number}): string{
 
-    const dateObject = new Date(Date.UTC(items.year, (items.month-1), items.day, items.hour, items.minute, items.second, items.nanosecond/ 1000000));
+    const dateObject = new Date(Date.UTC(items.year, (items.month - 1), items.day, items.hour, items.minute, items.second, items.nanosecond / 1000000));
 
     const timeZoneOffsetSeconds = 3600;
     dateObject.setUTCMinutes(dateObject.getUTCMinutes() - timeZoneOffsetSeconds / 60);
@@ -166,7 +116,7 @@ export class StudentService {
     // this.angularS1.doConnect();
     const answer: AsyncSubject<SponsorDetails> = new AsyncSubject <SponsorDetails>();
 
-    let myQualificationList: SponsorDetails ;
+    let myQualificationList : SponsorDetails ;
     const query = `MATCH (n: Student{studentNo: "${aStudentNo}"})-[:HAS_SPONSOR]->(sp) return sp`;
     // console.log("AT GET SPONSOR::", query);
     // this.angularS1.angularS.run(query).then((res: any) => {
@@ -180,7 +130,7 @@ export class StudentService {
 
     //   });
 
-      this.angularS1.queryDB(query, '2')
+    this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
         for (let i = 0; i < data.results.length; i++) {
           myQualificationList = data.results[i] as SponsorDetails;
@@ -197,10 +147,9 @@ export class StudentService {
   }
 
   getSponsorList(): AsyncSubject<any[]> {
-    // this.angularS1.doConnect();
     const answer: AsyncSubject<any[]> = new AsyncSubject <any[]>();
 
-    let myQualificationList : any[] = [];
+    const myQualificationList : any[] = [];
     const query = `MATCH (n:Student) with n
     OPTIONAL MATCH (s:Sponsor)- []-(n) with n, s
     OPTIONAL MATCH (n)-[]-(nk:NextKin)
@@ -208,24 +157,14 @@ export class StudentService {
 
     return  studentNo, gd, spons`;
     // console.log("AT GET SPONSOR::", query);
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     myQualificationList.push(r)
-    //   }
-    //   //console.log("AT GET SPONSOR::", query, myQualificationList);
 
-    //   answer.next(myQualificationList);
-    //   answer.complete();
-    //   // console.log('tis is answer', myQualificationList)
-    //   });
-
-      this.angularS1.queryDB(query,'0')
+    this.angularS1.queryDB(query, '0')
           .subscribe((data) => {
-            for (var i = 0; i < data.results.length; i++) {
+            for (let i = 0; i < data.results.length; i++) {
               // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
               myQualificationList.push(data.results[i]);
             }
-            //answer.next(new Date(isDate(data.results[i][0])));
+            // answer.next(new Date(isDate(data.results[i][0])));
 
             answer.next(myQualificationList);
             answer.complete();
@@ -238,14 +177,14 @@ export class StudentService {
   setStudent(aStudent: Student, aStudy: Study, aNOKList: NextKin[],
              aSponsorDetail?: SponsorDetails): BehaviorSubject<number> {
     // this.angularS1.doConnect();
-    const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    let responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     let response = false ;
     let aAnswer: string;
 
     const a = aStudent.dOB ?
-              new Date(aStudent.dOB).toLocaleDateString('en-GB').split('/') :
-              null;
+      new Date(aStudent.dOB).toLocaleDateString('en-GB').split('/') :
+      null;
     const b = aStudy.beginDate ? new Date(aStudy.beginDate).toLocaleDateString('en-GB').split('/')  : null;
     //           null;
     // try {
@@ -262,10 +201,10 @@ export class StudentService {
     // console.log('robo::', aStudy.beginDate.toLocaleDateString('en-GB').split('/'))
     // console.log('split time DOB::', a)
     // console.log('split time StudyBegin::', b)
-
+    let query0 = ['','', '','','',''];
     let query ="";
     let query2 = "";
-    query = `MERGE (n:Student
+    query0[0] = `MERGE (n:Student
       {studentNo: "${aStudent.studentNo}"})
 
       set n.title= "${aStudent.title ? aStudent.title : ''}"
@@ -280,19 +219,19 @@ export class StudentService {
       set n.nin= "${aStudent.nin ? aStudent.nin : ''}"
       set n.activeStatus= ${aStudent.activeStatus}
       set n.studentType= ${aStudent.studentType}
-      set n.department= "${aStudent.department ? aStudent.department : ''}"
+      set n.programme= "${aStudent.programme ? aStudent.programme : ''}"
 
       set n.maritalStatus= "${aStudent.maritalStatus}"
       set n.state= "${aStudent.state}"
       set n.nationality= "${aStudent.nationality}"
       set n.religion= "${aStudent.religion}"
       set n.staffIn= "${aStudent.staffIn}"
-      set n.creationStamp= toString(datetime({ timezone:'+01:00' }))
+      set n.creationStamp= toString(datetime({ timezone:"+01:00" }))
         `
-      if (a && a !== undefined && a !== null && a[0] !== 'Invalid Date') {
-          query += `set n.dOB = datetime({ year:${Number(a![2])},
-            month:${Number(a![1])}, day:${Number(a![0])}, timezone:'+01:00' })`
-        }
+    if (a && a !== undefined && a !== null && a[0] !== 'Invalid Date') {
+      query += `set n.dOB = datetime({ year:${Number(a![2])},
+            month:${Number(a![1])}, day:${Number(a![0])}, timezone:"+01:00" })`
+    }
 
 
 
@@ -314,7 +253,7 @@ export class StudentService {
         nin: "${aStudent.nin ? aStudent.nin : ''}",
         activeStatus: ${aStudent.activeStatus},
         studentType: ${aStudent.studentType},
-        department: "${aStudent.department ? aStudent.department : ''}",
+        programme: "${aStudent.programme ? aStudent.programme : ''}",
 
         maritalStatus: "${aStudent.maritalStatus}",
         state: "${aStudent.state}",
@@ -328,33 +267,35 @@ export class StudentService {
 
 
         staffIn: "${aStudent.staffIn}", `;
-        // console.log('THIS IS A::', a);
+    // console.log('THIS IS A::', a);
 
 
-         query2 +=
-        ` creationStamp: toString(datetime({ timezone:'+01:00' })) })`;
+    query2 +=
+      ` creationStamp: toString(datetime({ timezone:"+01:00" })) })`;
 
+    // query0[0] += `return n`
+    // query += ` with n MERGE (n)`
+    // query0[1] += ` with n MERGE (q:Study{jambNo: toUpper(trim("${aStudy.jambNo}"))}) with n, q`
+    query0[1] += ` with n MERGE (q:Study{jambNo: toUpper(trim("${aStudy.jambNo}"))}) `
 
-        // query += ` with n MERGE (n)`
-        query += ` with n MERGE (q:Study{jambNo: toUpper(trim("${aStudy.jambNo}"))}) with n, q`
-        query+= ` MERGE (n)-[:COMMENCED_STUDY]->(q) `;
-        query += `set q.beginDate= datetime({ year:${Number(b![2])},
-            month:${Number(b![1])}, day:${Number(b![0])}, timezone:'+01:00' })
+    query0[2]+= ` with n, q MERGE (n)-[:COMMENCED_STUDY]->(q) `;
+    query0[2] += `set q.beginDate= datetime({ year:${Number(b![2])},
+            month:${Number(b![1])}, day:${Number(b![0])}, timezone:"+01:00" })
             set q.beginSession= "${aStudy.beginSession ? aStudy.beginSession : ''}"
             set q.studentType= ${aStudy.studentType}
-            set q.department= "${aStudy.department ? aStudy.department : ''}"
+            set q.programme= "${aStudy.programme ? aStudy.programme : ''}"
             set q.status= "${aStudy.status ? aStudy.status : ''}"
             set q.staffIn= "${aStudy.staffIn ? aStudy.staffIn : ''}"
 
             set q.applicationNo= "${aStudy.applicationNo ? aStudy.applicationNo : ''}"
-            set q.creationStamp= toString(datetime({ timezone:'+01:00' }))
+            set q.creationStamp= toString(datetime({ timezone:"+01:00" }))
             set q.isDeleted= false
         `;
     if (aNOKList.length > 0) {
 
       if (aNOKList[0].fullName && aNOKList[0].fullName !== 'phone') {
-        query += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(qk:NextKin {
-          creationStamp: toString(datetime({ timezone:'+01:00' })-duration('PT60S'))
+        query0[3] += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(qk:NextKin {
+          creationStamp: toString(datetime({ timezone:"+01:00" })-duration("PT60S"))
         })
         set qk.title= "${aNOKList[0].title ? aNOKList[0].title : ''}"
       set qk.relationship= "${aNOKList[0].relationship ? aNOKList[0].relationship : ''}"
@@ -376,8 +317,8 @@ export class StudentService {
 
       if (aNOKList.length > 1) {
         if (aNOKList[1].fullName && aNOKList[1].fullName !== 'phone') {
-          query += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(q2:NextKin {
-            creationStamp: toString(datetime({ timezone:'+01:00' }))
+          query0[3] += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(q2:NextKin {
+            creationStamp: toString(datetime({ timezone:"+01:00" }))
           })
           set q2.title= "${aNOKList[1].title ? aNOKList[1].title : ''}"
         set q2.relationship= "${aNOKList[1].relationship ? aNOKList[1].relationship : ''}"
@@ -398,36 +339,37 @@ export class StudentService {
 
       }
 
-
+      // query0[3] += `return n`;
     }
 
     if (aSponsorDetail) {
-      query += `
+      query0[4] += `
       with n MERGE (n)-[:HAS_SPONSOR]->(sp: Sponsor{
-        creationStamp: toString(datetime({ timezone:'+01:00' }))
+        creationStamp: toString(datetime({ timezone:"+01:00" }))
       })
     set sp.relationship= "${aSponsorDetail?.relationship}"
     set sp.fullName= toUpper(trim("${aSponsorDetail.fullName ? aSponsorDetail.fullName: ''}"))
   set sp.bank= toUpper(trim("${aSponsorDetail.bank ? aSponsorDetail.bank : '' }"))
   set sp.accountNumber= toUpper(trim("${aSponsorDetail.accountNumber ? aSponsorDetail.accountNumber : '' }"))
   set sp.accountName= toUpper(trim("${aSponsorDetail.accountName ? aSponsorDetail.accountName : '' }"))
+
   `;
     }
 
-    if (aStudent.department)
+    if (aStudent.programme)
     {
-      query +=
+      query0[5] +=
         `
       with n
       optional match (n)-[p:A_STUDENT_OF]-(qq) with n, p
       delete p
       with n
-      MERGE (d: Programme{dName:"${aStudent.department}"}) with n, d
+      MERGE (d: Programme{pName:"${aStudent.programme}"}) with n, d
       MERGE (n)-[:A_STUDENT_OF]-> (d)
       with n
       MERGE (ll:Level{lCode:n.level}) with n, ll
       MATCH (ses:SessionInformation{currentSession:true}) with n,ll, ses
-      MERGE (n)-[r:IN_LEVEL {datePromoted:datetime({ timezone:'+01:00' }), activeStatus: 1, session: ses.sName}]->(ll)
+      MERGE (n)-[r:IN_LEVEL {datePromoted:datetime({ timezone:"+01:00" }), activeStatus: 1, session: ses.sName}]->(ll)
 
       `;
 
@@ -435,27 +377,32 @@ export class StudentService {
     }
 
 
-    query += ` return 1`;
+    query0[5] += ` return 1`;
+//     let query00 =  `CALL apoc.periodic.iterate(`
+// for (let i=0; i < 6; i++) {
+//   query00 += query0[i] != '' ? `'${query0[i]}',` : '';
+// }
+// query00 += ` {batchSize:100,parallel:true}
+// )`;
 
+    let query01 = '';
+    for (let i = 0; i < 6; i++) {
+      query01 += query0[i] !== '' ? query0[i] : '';
+    }
 
-//console.log("THIS IS QUERY AT SETSTUDENT::", query);
+    //   let query00 = `CALL apoc.periodic.iterate(
+    //     '${query0[0]}','${query0[1]}', '${query0[2]}','${query0[3]}','${query0[4]}', '${query0[5]}',
+    //     ,{batchSize:100,parallel:false}
+    // )`
 
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     aAnswer = r[0];
-    //
-    //   }
-    //   responseQuali.next(parseFloat(aAnswer));
-    //
-    //
-    //   });
-
+    console.log("THIS IS QUERY AT SETSTUDENT::", query01);
     this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
         for (let i = 0; i < data.results.length; i++) {
           aAnswer = (data.results[i][0]);
         }
         responseQuali.next(parseFloat(aAnswer));
+        responseQuali.complete();
 
       });
 
@@ -463,7 +410,7 @@ export class StudentService {
   }
 
   async setStudent2(aStudent: Student, aStudy: Study, aNOKList: NextKin[],
-    aSponsorDetail?: SponsorDetails) {
+                    aSponsorDetail?: SponsorDetails) {
     // this.angularS1.doConnect();
     let responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
@@ -472,15 +419,16 @@ export class StudentService {
     let aAnswer2: number = 0;
 
     const a = aStudent.dOB ?
-              new Date(aStudent.dOB).toLocaleDateString('en-GB').split('/') :
-              null;
+      new Date(aStudent.dOB).toLocaleDateString('en-GB').split('/') :
+      null;
     const b = aStudy.beginDate ? new Date(aStudy.beginDate).toLocaleDateString('en-GB').split('/')  : null;
 
     // console.log('split time StudyBegin::', b)
+    let query0 = ['','', '','','',''];
 
     let query ="";
     let query2 = "";
-    query = `MERGE (n:Student
+    query0[0] = `MERGE (n:Student
       {studentNo: "${aStudent.studentNo}"})
 
       set n.title= "${aStudent.title ? aStudent.title : ''}"
@@ -495,21 +443,21 @@ export class StudentService {
       set n.nin= "${aStudent.nin ? aStudent.nin : ''}"
       set n.activeStatus= ${aStudent.activeStatus}
       set n.studentType= ${aStudent.studentType}
-      set n.department= "${aStudent.department ? aStudent.department : ''}"
+      set n.programme= "${aStudent.programme ? aStudent.programme : ''}"
 
       set n.maritalStatus= "${aStudent.maritalStatus}"
       set n.state= "${aStudent.state}"
       set n.nationality= "${aStudent.nationality}"
       set n.religion= "${aStudent.religion}"
       set n.staffIn= "${aStudent.staffIn}"
-      set n.creationStamp= toString(datetime({ timezone:'+01:00' }))
+      set n.creationStamp= toString(datetime({ timezone:"+01:00" }))
         `
-      if (a && a !== undefined && a !== null && a[0] !== 'Invalid Date') {
-          query += `set n.dOB = datetime({ year:${Number(a![2])},
-            month:${Number(a![1])}, day:${Number(a![0])}, timezone:'+01:00' })`
-        }
+    if (a && a !== undefined && a !== null && a[0] !== 'Invalid Date') {
+      query0[0] += `set n.dOB = datetime({ year:${Number(a![2])},
+            month:${Number(a![1])}, day:${Number(a![0])}, timezone:"+01:00" })`
+    }
 
-
+    // query0[0] += `return n`
 
 
 
@@ -529,7 +477,7 @@ export class StudentService {
         nin: "${aStudent.nin ? aStudent.nin : ''}",
         activeStatus: ${aStudent.activeStatus},
         studentType: ${aStudent.studentType},
-        department: "${aStudent.department ? aStudent.department : ''}",
+        programme: "${aStudent.programme ? aStudent.programme : ''}",
 
         maritalStatus: "${aStudent.maritalStatus}",
         state: "${aStudent.state}",
@@ -543,33 +491,33 @@ export class StudentService {
 
 
         staffIn: "${aStudent.staffIn}", `;
-        // console.log('THIS IS A::', a);
+    // console.log('THIS IS A::', a);
 
 
-         query2 +=
-        ` creationStamp: toString(datetime({ timezone:'+01:00' })) })`;
+    query2 +=
+      ` creationStamp: toString(datetime({ timezone:"+01:00" })) })`;
 
 
-        // query += ` with n MERGE (n)`
-        query += ` with n MERGE (q:Study{jambNo: toUpper(trim("${aStudy.jambNo}"))}) with n, q`
-        query+= ` MERGE (n)-[:COMMENCED_STUDY]->(q) `;
-        query += `set q.beginDate= datetime({ year:${Number(b![2])},
-            month:${Number(b![1])}, day:${Number(b![0])}, timezone:'+01:00' })
+    // query += ` with n MERGE (n)`
+    query0[1] += ` with n MERGE (q:Study{jambNo: toUpper(trim("${aStudy.jambNo}"))})  `
+    query0[2] += ` with n,q MERGE (n)-[:COMMENCED_STUDY]->(q) `;
+    query0[2] += `set q.beginDate= datetime({ year:${Number(b![2])},
+            month:${Number(b![1])}, day:${Number(b![0])}, timezone:"+01:00" })
             set q.beginSession= "${aStudy.beginSession ? aStudy.beginSession : ''}"
             set q.studentType= ${aStudy.studentType}
-            set q.department= "${aStudy.department ? aStudy.department : ''}"
+            set q.programme= "${aStudy.programme ? aStudy.programme : ''}"
             set q.status= "${aStudy.status ? aStudy.status : ''}"
             set q.staffIn= "${aStudy.staffIn ? aStudy.staffIn : ''}"
 
             set q.applicationNo= "${aStudy.applicationNo ? aStudy.applicationNo : ''}"
-            set q.creationStamp= toString(datetime({ timezone:'+01:00' }))
+            set q.creationStamp= toString(datetime({ timezone:"+01:00" }))
             set q.isDeleted= false
         `;
     if (aNOKList.length > 0) {
 
       if (aNOKList[0].fullName && aNOKList[0].fullName !== 'phone') {
-        query += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(qk:NextKin {
-          creationStamp: toString(datetime({ timezone:'+01:00' })-duration('PT60S'))
+        query0[3] += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(qk:NextKin {
+          creationStamp: toString(datetime({ timezone:"+01:00" })-duration("PT60S"))
         })
         set qk.title= "${aNOKList[0].title ? aNOKList[0].title : ''}"
       set qk.relationship= "${aNOKList[0].relationship ? aNOKList[0].relationship : ''}"
@@ -591,8 +539,8 @@ export class StudentService {
 
       if (aNOKList.length > 1) {
         if (aNOKList[1].fullName && aNOKList[1].fullName !== 'phone') {
-          query += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(q2:NextKin {
-            creationStamp: toString(datetime({ timezone:'+01:00' }))
+          query0[3] += ` with n MERGE (n)-[:HAS_NEXTOFKIN]->(q2:NextKin {
+            creationStamp: toString(datetime({ timezone:"+01:00" }))
           })
           set q2.title= "${aNOKList[1].title ? aNOKList[1].title : ''}"
         set q2.relationship= "${aNOKList[1].relationship ? aNOKList[1].relationship : ''}"
@@ -613,13 +561,13 @@ export class StudentService {
 
       }
 
-
+      query0[3] += ` `
     }
 
     if (aSponsorDetail) {
-      query += `
+      query0[4] += `
       with n MERGE (n)-[:HAS_SPONSOR]->(sp: Sponsor{
-        creationStamp: toString(datetime({ timezone:'+01:00' }))
+        creationStamp: toString(datetime({ timezone:"+01:00" }))
       })
     set sp.relationship= "${aSponsorDetail?.relationship}"
     set sp.fullName= toUpper(trim("${aSponsorDetail.fullName ? aSponsorDetail.fullName: ''}"))
@@ -629,20 +577,20 @@ export class StudentService {
   `;
     }
 
-    if (aStudent.department)
+    if (aStudent.programme)
     {
-      query +=
+      query0[5] +=
         `
       with n
       optional match (n)-[p:A_STUDENT_OF]-(qq) with n, p
       delete p
       with n
-      MERGE (d: Programme{dName:"${aStudent.department}"}) with n, d
+      MERGE (d: Programme{pName:"${aStudent.programme}"}) with n, d
       MERGE (n)-[:A_STUDENT_OF]-> (d)
       with n
       MERGE (ll:Level{lCode:n.level}) with n, ll
       MATCH (ses:SessionInformation{currentSession:true}) with n,ll, ses
-      MERGE (n)-[r:IN_LEVEL {datePromoted:datetime({ timezone:'+01:00' }), activeStatus: 1, session: ses.sName}]->(ll)
+      MERGE (n)-[r:IN_LEVEL {datePromoted:datetime({ timezone:"+01:00" }), activeStatus: 1, session: ses.sName}]->(ll)
 
       `;
 
@@ -650,22 +598,19 @@ export class StudentService {
     }
 
 
-    query += ` return 1`;
+    query0[5] += ` return 1`;
+    let query01 = ''
+    // let query00 =  `CALL apoc.periodic.iterate('${query0[0]}',`
+    for (let i=0; i < 6; i++) {
+      query01 += query0[i] != '' ? query0[i] : '';
+    }
+// query00 = query00 + query01+ `,{batchSize:100,parallel:false})`;
+// query00 = `CALL apoc.periodic.iterate(
+//       '${query0[0]}','${query0[1]}', '${query0[2]}','${query0[3]}','${query0[4]}', '${query0[5]}',
+//       ,{batchSize:100,parallel:false}
+//   )`
 
-
-// console.log("THIS IS QUERY AT SETSTUDENT::", query);
-
-    // await this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     aAnswer = r[0];
-    //
-    //   }
-    //   aAnswer2 = parseFloat(aAnswer)
-    //   responseQuali.next(parseFloat(aAnswer));
-    //
-    //
-    //   });
-
+    console.log("THIS IS QUERY AT SETSTUDENT::", query01);
     await this.angularS1.writeDB(query, '0')
       .subscribe((data) => {
         for (let i = 0; i < data.results.length; i++) {
@@ -725,15 +670,15 @@ export class StudentService {
     return responseQuali;
   }
 
-  async setStudentGender(gender:string, studentNo:string) {
+  async setStudentGender(gender: string, studentNo: string) {
     // this.angularS1.doConnect();
     // const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-    let aAnswer: string = '0';
+    let aAnswer = '0';
 
     const query = `MATCH (n:Student)
     where  n.studentNo = trim("${studentNo}") set n.gender = '${gender}'
-    set n.title = '${gender === 'M' ? 'MR' : (gender === 'F'? 'MS' : '')}'
+    set n.title = '${gender === 'M' ? 'MR' : (gender === 'F' ? 'MS' : '')}'
      return "1"`;
 
     // console.log('set GENDER query:: ', query);
@@ -765,36 +710,22 @@ export class StudentService {
     return (parseFloat(aAnswer));
   }
 
-  promoteStudent(): BehaviorSubject<number> {
+  promoteStudent(): AsyncSubject<number> {
     // this.angularS1.doConnect();
-    const responseQuali: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    const responseQuali: AsyncSubject<number> = new AsyncSubject<number>();
 
     let aAnswer: string;
 
     const query = `
-    MATCH (st:Study{status: 'Ongoing'})<-[:COMMENCED_STUDY]-(n:Student)-[r:IN_LEVEL]->() set r.activeStatus = 0
-     set n.level = n.level + 100
-    with n
-    MERGE (ll:Level{lCode:n.level}) with n, ll
-    MATCH (ses:SessionInformation{currentSession:true}) with n,ll, ses
-    MERGE (n)-[r:IN_LEVEL {datePromoted:datetime({ timezone:'+01:00' }), activeStatus: 1, session: ses.sName}]->(ll)
+    MATCH (st:Study{status: 'Ongoing'})<-[:COMMENCED_STUDY]-(n:Student)-[r:IN_LEVEL]->()
+    set r.activeStatus = 0 with distinct(n) as nn
 
+    with nn
+    MERGE (ll:Level{lCode:nn.level+100}) with nn, ll
+    MATCH (ses:SessionInformation{currentSession:true}) with nn,ll, ses
+    MERGE (nn)-[rr:IN_LEVEL {datePromoted:datetime({ timezone:"+01:00" }), activeStatus: 1, session: ses.sName}]->(ll)
+    set nn.level = ll.lCode
       return "1"`;
-
-
-    // console.log('promote query:: ', query);
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     aAnswer = r[0];
-    //     // console.log('r at the set temp student:: ', r[0]);
-    //     // console.log('response at the set staff quali:: ', response);
-    //   }
-    //
-    //
-    //   responseQuali.next(parseFloat(aAnswer));
-    //
-    //
-    //   });
 
 
     this.angularS1.writeDB(query, '0')
@@ -811,6 +742,49 @@ export class StudentService {
   }
 
 
+  async updateStudy(aStudy: Study, aStudentNo: string): Promise<AsyncSubject<number> > {
+    // this.angularS1.doConnect();
+    let responseQuali2: AsyncSubject<number> = new AsyncSubject();
+    let aAnswer: string;
+
+    const b = new Date(aStudy.beginDate).toLocaleDateString('en-GB').split('/');
+    const bb = aStudy.finishDate ? new Date(aStudy.finishDate).toLocaleDateString('en-GB' ).split('/'): null;
+    let query = `match (s:Student{studentNo: '${aStudentNo}'})`;
+    query += `with s
+    merge (s)-[:COMMENCED_STUDY]->(q:Study{jambNo: '${aStudy.jambNo}'}) `;
+
+    query += `set q.beginDate= datetime({ year:${Number(b![2])},
+            month:${Number(b![1])}, day:${Number(b![0])}, timezone:"+01:00" })
+            set q.beginSession= "${aStudy.beginSession ? aStudy.beginSession : ''}"
+            set q.studentType= ${aStudy.studentType}
+            set q.programme= "${aStudy.programme ? aStudy.programme : ''}"
+            set q.status= "${aStudy.status ? aStudy.status : ''}"
+            set q.staffIn= "${aStudy.staffIn ? aStudy.staffIn : ''}"
+
+            set q.applicationNo= "${aStudy.applicationNo ? aStudy.applicationNo : ''}"
+            set q.isDeleted= ${aStudy.IsDeleted ? true : false}
+        `;
+    if (!aStudy.creationStamp) {query += `  set q.creationStamp = toString(datetime({ timezone:"+01:00" })) `}
+    if (aStudy.finishDate) {query += ` set q.finishDate = datetime({ year:${Number(bb![2])},
+  month:${Number(bb![1])}, day:${Number(bb![0])}, timezone:"+01:00" })`;}
+    query += ` return "1"`;
+
+    // console.log("AT UPDATE STUDY:::", query);
+
+    this.angularS1.writeDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          aAnswer = (data.results[i][0]);
+        }
+        // aAnswer2 = parseFloat(aAnswer);
+        responseQuali2.next(parseFloat(aAnswer));
+
+      });
+
+    return responseQuali2;
+
+  }
+
 
   updateStudent(aStudent: Student, aSponsorDetail?: SponsorDetails): AsyncSubject<number> {
     // this.angularS1.doConnect();
@@ -818,7 +792,7 @@ export class StudentService {
 
     const a = new Date(aStudent.dOB).toLocaleDateString('en-GB').split('/');
     // const b =  new Date(aStudy.beginDate).toLocaleDateString('en-GB').split('/');
-    let response = false ;
+    // let response = false ;
     let aAnswer: string;
 
     let query = `MATCH (n:Student{studentNo: "${aStudent.studentNo}"})
@@ -836,26 +810,26 @@ export class StudentService {
       set n.nin= "${aStudent.nin}"
       set n.activeStatus= ${aStudent.activeStatus}
       set n.studentType= ${aStudent.studentType}
-      set n.department= "${aStudent.department}"
+      set n.programme= "${aStudent.programme}"
       set n.dOB= datetime({ year:${a[2]},
-          month:${Number(a[1])}, day:${Number(a[0])}, timezone:'+01:00' })
+          month:${Number(a[1])}, day:${Number(a[0])}, timezone:"+01:00" })
 
       set n.maritalStatus = "${aStudent.maritalStatus}"
       set n.state= "${aStudent.state}"
       set n.nationality = "${aStudent.nationality}"
       set n.religion = "${aStudent.religion}" `;
 
-      if (aSponsorDetail) {
-        query += aSponsorDetail.creationStamp ? `
+    if (aSponsorDetail) {
+      query += aSponsorDetail.creationStamp ? `
         with n MERGE (n)-
         [:HAS_SPONSOR]->(sp:Sponsor{creationStamp:
           "${aSponsorDetail.creationStamp }"}) ` :
-          `
+        `
         with n MERGE (n)-
         [:HAS_SPONSOR]->(sp:Sponsor{creationStamp:
-            toString(datetime({ timezone:'+01:00' }))})`;
+            toString(datetime({ timezone:"+01:00" }))})`;
 
-            query += `
+      query += `
       set sp.relationship= "${aSponsorDetail?.relationship}"
       set sp.fullName= toUpper(trim("${aSponsorDetail.fullName ? aSponsorDetail.fullName: ''}"))
     set sp.bank= toUpper(trim("${aSponsorDetail.bank ? aSponsorDetail.bank : '' }"))
@@ -870,17 +844,17 @@ export class StudentService {
 
 
     `;
-      }
+    }
 
-    if (aStudent.department)
-      {
-        query +=
-          `
+    if (aStudent.programme)
+    {
+      query +=
+        `
         with n
         optional match (n)-[p:A_STUDENT_OF]-(q) with n, p
         delete p
         with n
-        MERGE (d: Programme{dName:"${aStudent.department}"}) with n, d
+        MERGE (d: Programme{pName:"${aStudent.programme}"}) with n, d
         MERGE (n)-[:A_STUDENT_OF]-> (d)
 
 
@@ -888,33 +862,22 @@ export class StudentService {
 
         `;
 
-      }
+    }
 
-      // with n
-      //   match (n)-[pp:IN_LEVEL]->(qq:Level{lCode: n.level}) with n,pp
-      //   set pp.activeStatus = 0
-      // with n
-      // MERGE (ll:Level{lCode:n.level}) with n, ll
+    // with n
+    //   match (n)-[pp:IN_LEVEL]->(qq:Level{lCode: n.level}) with n,pp
+    //   set pp.activeStatus = 0
+    // with n
+    // MERGE (ll:Level{lCode:n.level}) with n, ll
 
 
-      // MATCH (ses:SessionInformation{currentSession:true}) with n,ll, ses
-      // MERGE (n)-[r:IN_LEVEL {datePromoted:datetime({ timezone:'+01:00' }), activeStatus: 1, session: ses.sName}]->(ll)
+    // MATCH (ses:SessionInformation{currentSession:true}) with n,ll, ses
+    // MERGE (n)-[r:IN_LEVEL {datePromoted:datetime({ timezone:'+01:00' }), activeStatus: 1, session: ses.sName}]->(ll)
 
 
     query += ` return "1"`;
 
     // console.log("AT UPDATE STUDENT:::", query, aStudent,aSponsorDetail);
-
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     aAnswer = r[0];
-    //
-    //   }
-    //   responseQuali2.next(parseFloat(aAnswer));
-    //   responseQuali2.complete();
-    //
-    //
-    //   });
 
 
     this.angularS1.writeDB(query, '0')
@@ -935,8 +898,8 @@ export class StudentService {
     // this.angularS1.doConnect();
     const responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
-    let response = false ;
-    let aAnswer: string ="";
+    const response = false ;
+    let aAnswer = '';
 
     const query = `MATCH (n:Student)-[]-(s:Study{jambNo: "${jambNo}"})
       return n.studentNo`;
@@ -966,12 +929,13 @@ export class StudentService {
     return responseQuali2;
   }
 
-  async checkIfStudentExists2(jambNo:string) {
+  // tslint:disable-next-line:typedef
+  async checkIfStudentExists2(jambNo: string) {
     // this.angularS1.doConnect();
     // let responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
-    let response = false ;
-    let aAnswer: string ="";
+    const response = false ;
+    let aAnswer = '';
 
     const query = `MATCH (n:Student)-[]-(s:Study{jambNo: "${jambNo}"})
       return n.studentNo`;
@@ -1003,10 +967,10 @@ export class StudentService {
 
   checkIfStudentExistsRegNo(jambNo: string): AsyncSubject<string> {
     // this.angularS1.doConnect();
-    let responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
+    const responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
-    let response = false ;
-    let aAnswer: string ="";
+    const response = false ;
+    let aAnswer = '';
 
     const query = `MATCH (n:Student{studentNo: "${jambNo}"})
       return n.studentNo`;
@@ -1037,12 +1001,13 @@ export class StudentService {
     return responseQuali2;
   }
 
+  // tslint:disable-next-line:typedef
   async checkIfStudentExistsRegNo2(jambNo: string)  {
     // this.angularS1.doConnect();
     const responseQuali2: AsyncSubject<string> = new AsyncSubject<string>();
 
-    let response = false ;
-    let aAnswer: string = "" ;
+    const response = false ;
+    let aAnswer = '' ;
 
     const query = `MATCH (n:Student{studentNo: "${jambNo}"})
       return n.studentNo`;
@@ -1077,7 +1042,7 @@ export class StudentService {
     const responseQuali3: AsyncSubject<number> = new AsyncSubject();
 
 
-    let response = false ;
+    const response = false ;
     let aAnswer: string;
 
     const query = `MATCH (n:Student{studentNo: "${aStudent.studentNo}"})
@@ -1111,7 +1076,7 @@ export class StudentService {
     const responseQuali3: AsyncSubject<number> = new AsyncSubject();
 
 
-    let response = false ;
+    const response = false ;
     let aAnswer: string;
 
     const query = `MATCH (n:TempStudent{studentNo: "${aStudent.studentNo}"})
@@ -1156,7 +1121,7 @@ export class StudentService {
 
     //   });
 
-      this.angularS1.queryDB(query, '2')
+    this.angularS1.queryDB(query, '2')
       .subscribe((data) => {
         if (data) {
           for (let i = 0; i < data.results.length; i++) {
@@ -1175,48 +1140,65 @@ export class StudentService {
     const responseQuali3: AsyncSubject<string> = new AsyncSubject();
 
 
-    let response = false ;
+    // let response = false ;
     let aAnswer: string = '';
 
-    const query = `MATCH (n) WHERE (n.studentNo) is not null RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
+    const query = `MATCH (n) WHERE EXISTS(n.studentNo) RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
     max(n.studentNo) END`;
-    console.log('query::', query);
-
-    // this.angularS1.angularS.run(query).then((res: any) => {
-    //   for (const r of res) {
-    //     aAnswer = r[0];
-    //
-    //   }
-    //   responseQuali3.next(aAnswer);
-    //   responseQuali3.complete();
-    //
-    //
-    //
-    //   });
-
     this.angularS1.queryDB(query, '0')
       .subscribe((data) => {
-        for (let i = 0; i < data.results.length; i++) {
-          aAnswer = data.results[i][0];
-          console.log('student number found::', data.results[i]);
+        if (data) {
+          for (let i = 0; i < data.results.length; i++) {
+            aAnswer = data.results[i][0];
+            console.log('student number found::', data.results[i]);
+          }
+          responseQuali3.next((aAnswer));
+          responseQuali3.complete();
         }
-        responseQuali3.next((aAnswer));
-        responseQuali3.complete();
-
       });
 
     return responseQuali3;
   }
 
-  async getStudentNumber2(): Promise<string> {
-    //this.angularS1.doConnect();
-    let responseQuali3: AsyncSubject<string> = new AsyncSubject();
+  async getStudentNumber2(): Promise<string>  {
+    // this.angularS1.doConnect();
+    const responseQuali3: AsyncSubject<string> = new AsyncSubject();
 
 
-    let response = false ;
+    // let response = false ;
     let aAnswer: string = '' ;
 
     const query = `MATCH (n) WHERE EXISTS(n.studentNo) RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
+    max(n.studentNo) END`;
+    await this.angularS1.queryDB(query, '0')
+      .subscribe((data) => {
+        for (let i = 0; i < data.results.length; i++) {
+          console.log('student no gotten::', data.results[i][0] );
+          console.log('student no gotten::', data.results[i] );
+          aAnswer = data.results[i][0];
+        }
+        // responseQuali3.next((aAnswer));
+        // responseQuali3.complete();
+
+      });
+
+
+
+
+    return aAnswer;
+
+
+  }
+
+  async getStudentNumber22(): Promise<string>  {
+    // this.angularS1.doConnect();
+    const responseQuali3: AsyncSubject<string> = new AsyncSubject();
+
+
+    const response = false ;
+    let aAnswer = '' ;
+
+    const query = `MATCH (n) WHERE n.studentNo is not null RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
     max(n.studentNo) END`;
 
     // await this.angularS1.angularS.run(query).then((res: any) => {
@@ -1233,6 +1215,8 @@ export class StudentService {
     await this.angularS1.queryDB(query, '0')
       .subscribe((data) => {
         for (let i = 0; i < data.results.length; i++) {
+          console.log('student no gotten::', data.results[i][0] );
+          console.log('student no gotten::', data.results[i] );
           aAnswer = data.results[i][0];
         }
         // responseQuali3.next((aAnswer));
@@ -1243,10 +1227,36 @@ export class StudentService {
 
 
 
-      return aAnswer;
+    return aAnswer;
 
 
   }
+
+
+  // async getStudentNumber3(): Promise<string> {
+  //   return from ((async () =>
+  //   {
+  //     // let aAnswer: string = '' ;
+  //     const query = `MATCH (n) WHERE n.studentNo is not null RETURN CASE max(n.studentNo) WHEN null THEN '0' ELSE
+  //   max(n.studentNo) END`;
+  //     await this.angularS1.queryDB(query, '0')
+  //       .subscribe((data) => {
+  //         for (let i = 0; i < data.results.length; i++) {
+  //           console.log('student no gotten::', data.results[i][0] );
+  //           console.log('student no gotten::', data.results[i] );
+  //           aAnswer = data.results[i][0];
+  //         }
+  //
+  //       });
+  //
+  //
+  //
+  //
+  //     return aAnswer;
+  //   }
+  //   )());
+  //
+  // }
 
 
 }

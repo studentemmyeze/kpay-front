@@ -6,13 +6,14 @@
 export const environment = {
   production: true,
   apiUrl: 'http://localhost:3000',
+  apiUrl3: 'https://kpay-api.onrender.com',
   loginUrl: 'http://localhost:7474',
   loginUrl2: 'http://localhost:7474',
   // loginUrl2: 'http://192.168.92.222:7474',
   dropboxKEY: 'pd8hvwf9oc0zpfg',
   dropboxUrl: 'http://localhost:4200/nav/studentinfo',
-  // neo4jAPI: 'http://localhost:3000',
-  neo4jAPI: 'https://kpay-api.onrender.com',
+  neo4jAPI: 'http://localhost:3000',
+  // neo4jAPI: 'https://kpay-api.onrender.com',
 
   dropboxToken: '' ,
   send2Reg: false,

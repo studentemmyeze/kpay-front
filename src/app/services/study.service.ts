@@ -122,6 +122,29 @@ export class StudyService {
     return answer;
   }
 
+  checkUniqueIDNo(generatedNo: string): AsyncSubject<number> {
+    // this.angularS1.doConnect();
+    const answer: AsyncSubject<number> = new AsyncSubject<number>();
+
+    const myQualificationList: Study[] = [] ;
+    const query = `MATCH (n:Study{jambNo: "${generatedNo}"}) return n`;
+    this.angularS1.queryDB(query, '2')
+      .subscribe((data) => {
+        if (data) {
+          for (let i = 0; i < data.results.length; i++) {
+        // console.log("CHECK IF STUDY EXISTS:::", r);myQualificationList.push(data.results[i] as StudentType);
+        myQualificationList.push(data.results[i] as Study);
+      }
+          console.log('checkUniqueIDNo:::', myQualificationList);
+          answer.next(myQualificationList ? 1 : 0);
+          answer.complete();
+
+    }});
+
+    // this.angularS1.doDisConnect();
+    return answer;
+  }
+
   getStudyStatus(): AsyncSubject<string[]> {
     // this.angularS1.doConnect();
     const answer: AsyncSubject<string[]> = new AsyncSubject<string[]>();
@@ -172,7 +195,7 @@ export class StudyService {
         month:${Number(b[1])}, day:${Number(b[0])}, timezone:'+01:00' }),
         beginSession: "${aStudy.beginSession ? aStudy.beginSession : ''}",
         studentType: ${aStudy.studentType},
-        department: "${aStudy.department ? aStudy.department : ''}",
+        programme: "${aStudy.programme ? aStudy.programme : ''}",
         status: "${aStudy.status ? aStudy.status : ''}",
         jambNo: "${aStudy.jambNo ? aStudy.jambNo : ''}",
         staffIn: "${aStudy.staffIn ? aStudy.staffIn : ''}",
@@ -240,16 +263,16 @@ export class StudyService {
         month:${Number(b[1])}, day:${Number(b[0])}, timezone:'+01:00' })
       set q.beginSession= "${aStudy.beginSession ? aStudy.beginSession : ''}"
         set q.studentType = ${aStudy.studentType}
-        set q.department = "${aStudy.department ? aStudy.department : ''}"
+        set q.programme = "${aStudy.programme ? aStudy.programme : ''}"
         set q.status= "${aStudy.status ? aStudy.status : ''}"
         set q.jambNo= "${aStudy.jambNo ? aStudy.jambNo : ''}"
 
         `;
     query += aStudy.status === 'Ongoing' ? `
 with n
-match (n)-[r:A_STUDENT_OF]-(p) where p.dName <> "${aStudy.department ? aStudy.department : ''}"
+match (n)-[r:A_STUDENT_OF]-(p) where p.dName <> "${aStudy.programme ? aStudy.programme : ''}"
  delete r with n
-  match (pp: Programme) where pp.dName = "${aStudy.department ? aStudy.department : ''}"
+  match (pp: Programme) where pp.dName = "${aStudy.programme ? aStudy.programme : ''}"
    merge (n)-[:A_STUDENT_OF]->(pp)
 
 

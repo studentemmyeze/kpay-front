@@ -142,7 +142,7 @@ export class MakePaymentsComponent implements OnInit {
         return state.studentNo.toLocaleLowerCase().includes(filterValue)
       || state.lastName.toLocaleLowerCase().includes(filterValue)
       || state.firstName.toLocaleLowerCase().includes(filterValue)
-      || state.department.toLowerCase().includes(filterValue);
+      || state.programme.toLowerCase().includes(filterValue);
         // state.jambNo.toLowerCase().includes(filterValue)
         // || state.lastName.toLowerCase().includes(filterValue);
 

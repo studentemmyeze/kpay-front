@@ -50,7 +50,7 @@ export class StudentpostingComponent implements OnInit {
   newLedgerEntryList: StudentLedgerEntry[] = [];
   selectedConcession: Partial <Concession> = {};
   productList: StudentProduct[] = [];
-  paymentModeList = ['Cash', 'Transfer' , 'Bank', 'PayStack', 'Concessions', 'Error Correct']
+  paymentModeList = ['Cash', 'Transfer' , 'Bank', 'PayStack', 'Concessions', 'Error Correct'];
   semesterList = [1, 2];
   sessionList: string[] = [];
   concessionList: Concession[] = [];
@@ -73,7 +73,7 @@ export class StudentpostingComponent implements OnInit {
   tellerNoMarker = true;
   debitMarker = false;
   paymentModeMarker = true;
-  resumptionDate:Date;
+  resumptionDate: Date;
   transactionType = '1';
 
   // transactionType = "2";
@@ -104,9 +104,9 @@ export class StudentpostingComponent implements OnInit {
     this.progressMessage2 = 0;
     this.transactionType = '1';
     this.selectedLedgerEntry.product = (this.selectedLedgerEntry.product ?
-      this.selectedLedgerEntry.product : "" );
-      this.selectedLedgerEntry.qty = 1;
-      this.filteredStates = this.stateCtrl.valueChanges
+      this.selectedLedgerEntry.product : '' );
+    this.selectedLedgerEntry.qty = 1;
+    this.filteredStates = this.stateCtrl.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.product),
@@ -122,7 +122,7 @@ export class StudentpostingComponent implements OnInit {
       {
         this.childMessage = message;
         if (message !== '' && message !== '-1' && message !== '-2'){
-        this.paymentsService.getBalance(this.childMessage);}
+        this.paymentsService.getBalance(this.childMessage); }
         if ( message === '-1' && this.progressMessage2 === 0){    this.doAutoPaystackPosting();
         }
         if ( message === '-2' && this.progressMessage === 0){    this.doAutoReconPosting();
@@ -130,7 +130,7 @@ export class StudentpostingComponent implements OnInit {
 
       });
 
-    this.balanceSubsciption = this.paymentsService.Balance.subscribe(message => this.balance = message[0])
+    this.balanceSubsciption = this.paymentsService.Balance.subscribe(message => this.balance = message[0]);
     this.progressSubsciption = this.dataService.currentProgressMessage
     .subscribe(message => this.progressMessage = message);
 
@@ -169,18 +169,18 @@ export class StudentpostingComponent implements OnInit {
     this.bankService.getAllBanks().subscribe(
       (data) => {
         if (data && data.length > 0 )
-        {this.bankList = data}
+        {this.bankList = data; }
 
       }
     );
 
-    console.log("VIEW STUDENT ", this.childMessage);
+    console.log('VIEW STUDENT ', this.childMessage);
     this.clearAll();
 
     this.korotePayService.getNextSessionResumptionDate()
-      .subscribe((data)=> {
-        if(data) {
-          console.log('data from resumption date::', data.toLocaleDateString('en-GB'))
+      .subscribe((data) => {
+        if (data) {
+          console.log('data from resumption date::', data.toLocaleDateString('en-GB'));
           this.resumptionDate  = data;
 
         }
@@ -193,7 +193,7 @@ export class StudentpostingComponent implements OnInit {
 
   viewCheckbox(): void {
 
-    console.log("PAYMENT MODE FALSE", this.paymentModeMarker, this.dMarker);
+    console.log('PAYMENT MODE FALSE', this.paymentModeMarker, this.dMarker);
 
 
   }
@@ -217,16 +217,16 @@ export class StudentpostingComponent implements OnInit {
       if (recon){
         const limitOfPay = recon.length;
 
-        for (let i=0 ; i < limitOfPay ; i++)
+        for (let i = 0 ; i < limitOfPay ; i++)
         {
-          const progress = ((i+1)/limitOfPay)*100;
+          const progress = ((i + 1) / limitOfPay) * 100;
           console.log('progressCalculation:::', progress);
           this.dataService.changeProgressMessage2(progress);
           const r = recon[i];
           // console.log("PAYSTACK PAYMENTS", r);
 
           this.paymentsService.checkLedgerEntry(r).subscribe((data8) => {
-            console.log("get the status::", data8, r )
+            console.log('get the status::', data8, r );
             if (!data8)
             {
               r.transactionType = 'Transfer';
@@ -240,14 +240,14 @@ export class StudentpostingComponent implements OnInit {
 
                 if (data && data !== undefined && data !== '')
 
-                {let tempBal =0.0;
-                   console.log("student exists::",data);
-                  this.paymentsService.getBalance_auto(data).subscribe(
-                    async (bal) =>{
-                      console.log("student existsin::",data,bal);
+                {let tempBal = 0.0;
+                 console.log('student exists::', data);
+                 this.paymentsService.getBalance_auto(data).subscribe(
+                    async (bal) => {
+                      console.log('student existsin::', data, bal);
 
-                      if(bal){
-                        tempBal =bal;
+                      if (bal){
+                        tempBal = bal;
                         await this.doLedgerEntry(data, tempBal, r);
 
                       }}
@@ -261,7 +261,7 @@ export class StudentpostingComponent implements OnInit {
 
                 else {
                   // balance is zero and student doesnt exist
-                  console.log("student doesnt exists::",data);
+                  console.log('student doesnt exists::', data);
 
                   await this.doLedgerEntry(data, 0, r);
 
@@ -274,9 +274,9 @@ export class StudentpostingComponent implements OnInit {
               // get balance
               // this.doLedgerEntry(r);
             }
-            else {console.log("ledger exists")}
+            else {console.log('ledger exists'); }
 
-          })
+          });
           await new Promise<void>(done => setTimeout(() => done(), 2500));
           // setTimeout(()=> {
 
@@ -287,8 +287,8 @@ export class StudentpostingComponent implements OnInit {
 
         }
 
-          this.dataService.changeMessage2('');
-          this.dataService.changeProgressMessage2(0);
+        this.dataService.changeMessage2('');
+        this.dataService.changeProgressMessage2(0);
       }
     });
   }
@@ -322,25 +322,25 @@ export class StudentpostingComponent implements OnInit {
           await this.payStackService.getPayStackPayments2();
           let count1 = 0;
           const pp = this.payStackService.PayStackPayments;
-          pp.pipe(skipWhile(val => val.length < 1))
+          pp.pipe(skipWhile(val => val.length < 1));
           pp.subscribe( async (data19) => {
 
           if (data19 && data19.length > 0 && count1 < 1) {
-            count1++
-            console.log("B")
-            const data9: PaystackAndPayments[] = []; //filtered payStackList
+            count1++;
+            console.log('B');
+            const data9: PaystackAndPayments[] = []; // filtered payStackList
             for (let j = 0; j < data19.length; j++) {
               if (!presPaystackList.includes(data19[j].reference) && data19[j].jambNo.toLowerCase() !== 'nil') {
                 data9.push(data19[j]);
               }
               // console.log(`JS-${j}`)
             }
-            console.log(`C-${data19.length}`)
+            console.log(`C-${data19.length}`);
 
             const limitOfPay = data9.length;
-            this.totalNumberFound = 0
-            let startE = new Date();
-            for (let i= 0 ; i < limitOfPay ; i++) {
+            this.totalNumberFound = 0;
+            const startE = new Date();
+            for (let i = 0 ; i < limitOfPay ; i++) {
               const startDate = new Date();
 
               const r = data9[i];
@@ -362,10 +362,10 @@ export class StudentpostingComponent implements OnInit {
               else {
                 // console.log('@doPayStackStuff::Sub1_1::student regNo does not exists::', data2, r.jambNo.trim().toUpperCase())
                 // check if this jamb no exists in study node
-                const data4rmJ = await this.studentService.checkIfStudentExists2(r.jambNo.trim().toUpperCase())
+                const data4rmJ = await this.studentService.checkIfStudentExists2(r.jambNo.trim().toUpperCase());
                 // .subscribe((data4rmJ) => {
 
-                  if (data4rmJ) {studentNoFromJamb = data4rmJ}
+                if (data4rmJ) {studentNoFromJamb = data4rmJ; }
                   // console.log("student exists uestion::", data);
 
                   // console.log(`@doPayStackStuff::Sub1_1.1::JAMB could exists associated with study- ${data4rmJ}`)
@@ -382,31 +382,34 @@ export class StudentpostingComponent implements OnInit {
               {
                 this.totalNumberFound++;
                 let tempBal = 0.0;
-                console.log("student exists::",studentNoFromJamb, studentNoPayment);
+                console.log('student exists::', studentNoFromJamb, studentNoPayment);
                 const newStudentNo = studentNoPayment !== '' ? studentNoPayment : studentNoFromJamb ;
-                const bal = await this.paymentsService.getBalance_auto2(newStudentNo)
-                console.log("E-bal", bal)
+                const bal = await this.paymentsService.getBalance_auto2(newStudentNo);
+                console.log('E-bal', bal);
 
-                if(bal !== undefined){
-                  console.log('@doPayStackStuff::Sub1_2')
+                if (bal !== undefined){
+                  console.log('@doPayStackStuff::Sub1_2');
 
-                  console.log("student existsin-balance=::",newStudentNo,bal);
+                  console.log('student existsin-balance=::', newStudentNo, bal);
 
                   tempBal = bal;
                   await this.doLedgerEntry2(newStudentNo, tempBal, r);
-                  console.log("_E1")
+                  console.log('_E1');
 
+                  await new Promise<void>(done => setTimeout(() => done(), 2500));
 
                 }
 
                 else {
-                  console.log('@doPayStackStuff::Sub1_2.1')
+                  console.log('@doPayStackStuff::Sub1_2.1');
 
-                  console.log("student existsin-balance =::",newStudentNo,bal);
+                  console.log('student existsin-balance =::', newStudentNo, bal);
 
                   tempBal = 0.0;
                   await this.doLedgerEntry2(newStudentNo, tempBal, r);
-                  console.log("_E2", bal)
+                  console.log('_E2', bal);
+                  await new Promise<void>(done => setTimeout(() => done(), 2500));
+
 
                 }
                   // }
@@ -425,29 +428,23 @@ export class StudentpostingComponent implements OnInit {
                 // console.log("\n\nMARKKKKKKKK- next do ledgeentry\n\n", r)
                 await this.doLedgerEntry2(studentNoFromJamb, 0, r);
                 // console.log("_F")
+                await new Promise<void>(done => setTimeout(() => done(), 2500));
 
 
               }
 
               ///////////////
-
+              await this.doPreFinalStuff(i, limitOfPay);
               // console.log("G")
-              const progress = ((i+1)/limitOfPay)*100;
-              this.dataService.changeProgressMessage(progress);
+              // const progress = ((i + 1) / limitOfPay) * 100;
+              // this.dataService.changeProgressMessage(progress);
               // console.log(`FOR LOOP END- ${i}`)
-              await this.waitFor(5);
+              // await this.waitFor(5);
+              await new Promise<void>(done => setTimeout(() => done(), 2500));
 
             }
             // console.log('end');
-              if (this.newStudentsForEmailList.length > 0) {
-                this.utilityService.marker.next(2)
-                this.emailService.sendNewStudentData(this.newStudentsForEmailList); //forward to create
-                this.newStudentsForEmailList = []
-              }
-                this.dataService.changeMessage('');
-                this.dataService.changeProgressMessage(0);
-                this.payStackService.setLastChecked();
-                this.payStackService.getLastChecked();
+            await this.doFinalStuff();
 
           }
 
@@ -455,13 +452,28 @@ export class StudentpostingComponent implements OnInit {
 
         }
       // });
-    console.log("H")
+    console.log('H');
 
   }
+async doPreFinalStuff(i: number, limitOfPay: number){
+  const progress = ((i + 1) / limitOfPay) * 100;
+  this.dataService.changeProgressMessage(progress);
+}
 
+async doFinalStuff() {
+  if (this.newStudentsForEmailList.length > 0) {
+    this.utilityService.marker.next(2);
+    this.emailService.sendNewStudentData(this.newStudentsForEmailList); // forward to create
+    this.newStudentsForEmailList = [];
+  }
+  this.dataService.changeMessage('');
+  this.dataService.changeProgressMessage(0);
+  this.payStackService.setLastChecked();
+  this.payStackService.getLastChecked();
+}
 
   doAutoPaystackPosting_old() {
-    console.log("START AUTO PAYSTACK")
+    console.log('START AUTO PAYSTACK');
     let presPaystackList: string[] = [];
     // get postings that may have been used already
     this.paymentsService.PayStackPostings.subscribe(
@@ -472,7 +484,7 @@ export class StudentpostingComponent implements OnInit {
           this.payStackService.PayStackPayments.subscribe( async (data19) => {
 
           if (data19) {
-          const data9: PaystackAndPayments[] = []; //filtered payStackList
+          const data9: PaystackAndPayments[] = []; // filtered payStackList
           for (let j = 0; j < data19.length; j++) {
             if (!presPaystackList.includes(data19[j].reference) && data19[j].jambNo.toLowerCase() != 'nil') {
               data9.push(data19[j]);
@@ -484,27 +496,27 @@ export class StudentpostingComponent implements OnInit {
           }
 
           const limitOfPay = data9.length;
-              this.totalNumberFound = 0
+          this.totalNumberFound = 0;
               // for (let i=limitOfPay-1 ; i >= 0 ; i--)
-              let promises = [];
-              let startE = new Date();
-              for (let i=0 ; i < limitOfPay ; i++)
+          const promises = [];
+          let startE = new Date();
+          for (let i = 0 ; i < limitOfPay ; i++)
 
               {
-                console.log(`FOR LOOP START- ${i} - ${Date.now()}`)
+                console.log(`FOR LOOP START- ${i} - ${Date.now()}`);
 
-                  await this.doPayStackStuff(i,limitOfPay,data9[i]).then(async () =>{console.log(`@then::DO PAYSTACK STUFF DONE- ${i} -- ${Date.now()}`)})
-                  let endE = new Date()
+                await this.doPayStackStuff(i, limitOfPay, data9[i]).then(async () => {console.log(`@then::DO PAYSTACK STUFF DONE- ${i} -- ${Date.now()}`); });
+                const endE = new Date();
 
-                  const timeTaken = endE.getTime() - startE.getTime()
-                  startE = endE
-                  console.log(`\nDONEEEEEE\n- ${timeTaken} \n `);
-                  console.log(data9[i]);
+                const timeTaken = endE.getTime() - startE.getTime();
+                startE = endE;
+                console.log(`\nDONEEEEEE\n- ${timeTaken} \n `);
+                console.log(data9[i]);
 
-                  const progress = ((i+1)/limitOfPay)*100;
-                  this.dataService.changeProgressMessage(progress);
-                  console.log(`FOR LOOP END- ${i}`)
-                  await this.waitFor(5);
+                const progress = ((i + 1) / limitOfPay) * 100;
+                this.dataService.changeProgressMessage(progress);
+                console.log(`FOR LOOP END- ${i}`);
+                await this.waitFor(5);
 
 
               // });
@@ -514,15 +526,15 @@ export class StudentpostingComponent implements OnInit {
 
               // await Promise.all(promises);
 
-              console.log('end');
-              if (this.newStudentsForEmailList.length > 0) {
-                this.emailService.sendNewStudentData(this.newStudentsForEmailList); //forward to create
-                this.newStudentsForEmailList = []
+          console.log('end');
+          if (this.newStudentsForEmailList.length > 0) {
+                this.emailService.sendNewStudentData(this.newStudentsForEmailList); // forward to create
+                this.newStudentsForEmailList = [];
               }
-                this.dataService.changeMessage('');
-                this.dataService.changeProgressMessage(0);
-                this.payStackService.setLastChecked();
-                this.payStackService.getLastChecked();
+          this.dataService.changeMessage('');
+          this.dataService.changeProgressMessage(0);
+          this.payStackService.setLastChecked();
+          this.payStackService.getLastChecked();
 
 
 
@@ -575,20 +587,20 @@ export class StudentpostingComponent implements OnInit {
     .subscribe( async data2 =>
       {
             if (data2 && data2 !== undefined && data2 !== '') {
-              console.log('@doPayStackStuff::Sub1::student exists::', data2)
+              console.log('@doPayStackStuff::Sub1::student exists::', data2);
               studentNoPayment = data2;
             }
 
             else {
-              console.log('@doPayStackStuff::Sub1_1::student exists::')
+              console.log('@doPayStackStuff::Sub1_1::student exists::');
               // check if this jamb no exists in study node
-            this.studentService.checkIfStudentExists(r.jambNo.trim().toUpperCase())
+              this.studentService.checkIfStudentExists(r.jambNo.trim().toUpperCase())
             .subscribe((data4rmJ) => {
 
-              if (data4rmJ) {studentNoFromJamb = data4rmJ}
+              if (data4rmJ) {studentNoFromJamb = data4rmJ; }
               // console.log("student exists uestion::", data);
 
-              console.log(`@doPayStackStuff::Sub1_1.1::JAMB could exists associated with study- ${data4rmJ}`)
+              console.log(`@doPayStackStuff::Sub1_1.1::JAMB could exists associated with study- ${data4rmJ}`);
 
 
 
@@ -600,16 +612,16 @@ export class StudentpostingComponent implements OnInit {
               {
                 this.totalNumberFound++;
                 let tempBal = 0.0;
-                 console.log("student exists::",studentNoFromJamb, studentNoPayment);
-                 const newStudentNo = studentNoPayment !== '' ? studentNoPayment : studentNoFromJamb ;
-                 const bal = await this.paymentsService.getBalance_auto2(newStudentNo)
+                console.log('student exists::', studentNoFromJamb, studentNoPayment);
+                const newStudentNo = studentNoPayment !== '' ? studentNoPayment : studentNoFromJamb ;
+                const bal = await this.paymentsService.getBalance_auto2(newStudentNo);
                 //  .subscribe(
                   //  async (bal: number) =>{
 
-                    if(bal !== undefined){
-                      console.log('@doPayStackStuff::Sub1_2')
+                if (bal !== undefined){
+                      console.log('@doPayStackStuff::Sub1_2');
 
-                      console.log("student existsin-balance=::",newStudentNo,bal);
+                      console.log('student existsin-balance=::', newStudentNo, bal);
 
                       tempBal = bal;
                       await this.doLedgerEntry(newStudentNo, tempBal, r);
@@ -617,9 +629,9 @@ export class StudentpostingComponent implements OnInit {
                     }
 
                     else {
-                      console.log('@doPayStackStuff::Sub1_2.1')
+                      console.log('@doPayStackStuff::Sub1_2.1');
 
-                      console.log("student existsin-balance =::",newStudentNo,bal);
+                      console.log('student existsin-balance =::', newStudentNo, bal);
 
                       tempBal = 0.0;
                       await this.doLedgerEntry(newStudentNo, tempBal, r);
@@ -635,9 +647,9 @@ export class StudentpostingComponent implements OnInit {
 
               else {
                 // balance is zero and student doesnt exist
-                console.log("student doesnt exist::-",studentNoFromJamb);
+                console.log('student doesnt exist::-', studentNoFromJamb);
                 this.totalNumberFound++;
-                console.log("\n\nMARKKKKKKKK- next do ledgeentry\n\n", r)
+                console.log('\n\nMARKKKKKKKK- next do ledgeentry\n\n', r);
                 await this.doLedgerEntry(studentNoFromJamb, 0, r);
 
 
@@ -686,20 +698,20 @@ export class StudentpostingComponent implements OnInit {
     .subscribe( async data2 =>
       {
             if (data2 && data2 !== undefined && data2 !== '') {
-              console.log('@doPayStackStuff::Sub1::student exists::', data2)
+              console.log('@doPayStackStuff::Sub1::student exists::', data2);
               studentNoPayment = data2;
             }
 
             else {
-              console.log('@doPayStackStuff::Sub1_1::student exists::')
+              console.log('@doPayStackStuff::Sub1_1::student exists::');
               // check if this jamb no exists in study node
-            this.studentService.checkIfStudentExists(r.jambNo.trim().toUpperCase())
+              this.studentService.checkIfStudentExists(r.jambNo.trim().toUpperCase())
             .subscribe((data4rmJ) => {
 
-              if (data4rmJ) {studentNoFromJamb = data4rmJ}
+              if (data4rmJ) {studentNoFromJamb = data4rmJ; }
               // console.log("student exists uestion::", data);
 
-              console.log(`@doPayStackStuff::Sub1_1.1::JAMB could exists associated with study- ${data4rmJ}`)
+              console.log(`@doPayStackStuff::Sub1_1.1::JAMB could exists associated with study- ${data4rmJ}`);
 
 
 
@@ -710,16 +722,16 @@ export class StudentpostingComponent implements OnInit {
 
               {
                 this.totalNumberFound++;
-                let tempBal =0.0;
-                 console.log("student exists::",studentNoFromJamb, studentNoPayment);
-                 const newStudentNo = studentNoPayment !== '' ? studentNoPayment : studentNoFromJamb ;
-                 this.paymentsService.getBalance_auto(newStudentNo).subscribe(
-                   async (bal: number) =>{
+                let tempBal = 0.0;
+                console.log('student exists::', studentNoFromJamb, studentNoPayment);
+                const newStudentNo = studentNoPayment !== '' ? studentNoPayment : studentNoFromJamb ;
+                this.paymentsService.getBalance_auto(newStudentNo).subscribe(
+                   async (bal: number) => {
 
-                    if(bal !== undefined){
-                      console.log('@doPayStackStuff::Sub1_2')
+                    if (bal !== undefined){
+                      console.log('@doPayStackStuff::Sub1_2');
 
-                      console.log("student existsin-balance=::",newStudentNo,bal);
+                      console.log('student existsin-balance=::', newStudentNo, bal);
 
                       tempBal = bal;
                       await this.doLedgerEntry(newStudentNo, tempBal, r);
@@ -727,9 +739,9 @@ export class StudentpostingComponent implements OnInit {
                     }
 
                     else {
-                      console.log('@doPayStackStuff::Sub1_2.1')
+                      console.log('@doPayStackStuff::Sub1_2.1');
 
-                      console.log("student existsin-balance =::",newStudentNo,bal);
+                      console.log('student existsin-balance =::', newStudentNo, bal);
 
                       tempBal = 0.0;
                       await this.doLedgerEntry(newStudentNo, tempBal, r);
@@ -745,9 +757,9 @@ export class StudentpostingComponent implements OnInit {
 
               else {
                 // balance is zero and student doesnt exist
-                console.log("student doesnt exist::-",studentNoFromJamb);
+                console.log('student doesnt exist::-', studentNoFromJamb);
                 this.totalNumberFound++;
-                console.log("\n\nMARKKKKKKKK- next do ledgeentry\n\n", r)
+                console.log('\n\nMARKKKKKKKK- next do ledgeentry\n\n', r);
                 await this.doLedgerEntry(studentNoFromJamb, 0, r);
 
 
@@ -788,7 +800,7 @@ export class StudentpostingComponent implements OnInit {
   }
 
   async doLedgerEntry2(aStudentNo: string, aBalance: number,
-    aPayStackEntry: PaystackAndPayments) {
+                       aPayStackEntry: PaystackAndPayments) {
 
     const selectedLedgerEntry: Partial <StudentLedgerEntry> = {};
     if (aPayStackEntry !== undefined) {
@@ -799,7 +811,7 @@ export class StudentpostingComponent implements OnInit {
       selectedLedgerEntry.balance = (aBalance) + aPayStackEntry.amount;
       selectedLedgerEntry.paymentMode = aPayStackEntry.transactionType;
 
-      if(aPayStackEntry.transactionType !== "PayStack" ) {
+      if (aPayStackEntry.transactionType !== 'PayStack' ) {
         selectedLedgerEntry.receiptNo =
         aPayStackEntry.receiptNo;
         selectedLedgerEntry.details =
@@ -807,19 +819,19 @@ export class StudentpostingComponent implements OnInit {
           aPayStackEntry.detail) : '';
         selectedLedgerEntry.bank = 'ZENITH';
         selectedLedgerEntry.product = (aPayStackEntry &&
-          (aPayStackEntry.reference.includes("topfaithuniacceptancefees") ||
-          aPayStackEntry.reference.includes("Acpt Fee") ) )
-        ? "ACCEPTANCE_FEES" : "FEES PAYMENT";
+          (aPayStackEntry.reference.includes('topfaithuniacceptancefees') ||
+          aPayStackEntry.reference.includes('Acpt Fee') ) )
+        ? 'ACCEPTANCE_FEES' : 'FEES PAYMENT';
       }
 
       else {
-        console.log(' PAYSTACK ENTRY:::')
+        console.log(' PAYSTACK ENTRY:::');
         const a = aPayStackEntry.detail !== undefined ? aPayStackEntry.detail.split('/') : [];
         // console.log("DETAILS2::", aPayStackEntry?.detail, aPayStackEntry?.detail.split('/'));
-        selectedLedgerEntry.product = (aPayStackEntry && a[a.length-1] === "topfaithuniacceptancefees")
-        ? "ACCEPTANCE_FEES" : "FEES PAYMENT";
+        selectedLedgerEntry.product = (aPayStackEntry && a[a.length - 1] === 'topfaithuniacceptancefees')
+        ? 'ACCEPTANCE_FEES' : 'FEES PAYMENT';
         selectedLedgerEntry.details =
-        aPayStackEntry.detail !== undefined  ? ('AUTO CREDITS: ' + a[a.length-1]) : '';
+        aPayStackEntry.detail !== undefined  ? ('AUTO CREDITS: ' + a[a.length - 1]) : '';
 
       }
 
@@ -829,10 +841,10 @@ export class StudentpostingComponent implements OnInit {
 
       if (aStudentNo !== undefined && aStudentNo !== '') {
 
-        if (selectedLedgerEntry.paymentMode === "PayStack") {
+        if (selectedLedgerEntry.paymentMode === 'PayStack') {
             const aList = this.payStackService.NewLedgerEntries.getValue();
             aList.push(selectedLedgerEntry as StudentLedgerEntry);
-            console.log("COUNT OF FOUND LEDGERS", aList.length);
+            console.log('COUNT OF FOUND LEDGERS', aList.length);
             this.payStackService.NewLedgerEntries.next(aList);
             await this.paymentsService.makePosting2(aStudentNo, selectedLedgerEntry as StudentLedgerEntry);
 
@@ -846,12 +858,12 @@ export class StudentpostingComponent implements OnInit {
         const tempanswer = this.applicationPipe
         .transform(this.applicationList, aPayStackEntry.jambNo.toString().trim().toUpperCase());
 
-        const answer = tempanswer.filter(app => app.jambNo.toString().trim().toUpperCase() === aPayStackEntry.jambNo.toString().trim().toUpperCase())
+        const answer = tempanswer.filter(app => app.jambNo.toString().trim().toUpperCase() === aPayStackEntry.jambNo.toString().trim().toUpperCase());
         console.log('the applications::', answer[0], this.selectedLedgerEntry);
         let max = 0;
         let maxIndex = 0;
         for (let i = 0; i < answer.length; i++) {
-          const temp = this.getCountOfKeys(answer[i])
+          const temp = this.getCountOfKeys(answer[i]);
           if (temp > max){
             max = temp;
             maxIndex = i;
@@ -870,9 +882,9 @@ export class StudentpostingComponent implements OnInit {
   }
 
   async doLedgerEntry(aStudentNo: string, aBalance: number,
-    aPayStackEntry: PaystackAndPayments) {
+                      aPayStackEntry: PaystackAndPayments) {
     let aResponse = false;
-    let testForNewStud = false;
+    const testForNewStud = false;
     const selectedLedgerEntry: Partial <StudentLedgerEntry> = {};
     const selectedApplication: Partial <Applications> = {};
 
@@ -890,14 +902,14 @@ export class StudentpostingComponent implements OnInit {
     //   }
     // });
     //  this.korotePayService.getCurrentSession();
-    selectedLedgerEntry.semester = this.korotePayService.getCurrentSemester();
+        selectedLedgerEntry.semester = this.korotePayService.getCurrentSemester();
 
-    selectedLedgerEntry.qty = 1;
-    selectedLedgerEntry.cr = aPayStackEntry.amount;
-    selectedLedgerEntry.balance = (aBalance) + aPayStackEntry.amount;
-    selectedLedgerEntry.paymentMode = aPayStackEntry.transactionType;
+        selectedLedgerEntry.qty = 1;
+        selectedLedgerEntry.cr = aPayStackEntry.amount;
+        selectedLedgerEntry.balance = (aBalance) + aPayStackEntry.amount;
+        selectedLedgerEntry.paymentMode = aPayStackEntry.transactionType;
 
-      if(aPayStackEntry.transactionType !== "PayStack" ) {
+        if (aPayStackEntry.transactionType !== 'PayStack' ) {
         selectedLedgerEntry.receiptNo =
         aPayStackEntry.receiptNo;
 
@@ -906,36 +918,36 @@ export class StudentpostingComponent implements OnInit {
           aPayStackEntry.detail) : '';
         selectedLedgerEntry.bank = 'ZENITH';
         selectedLedgerEntry.product = (aPayStackEntry &&
-          (aPayStackEntry.reference.includes("topfaithuniacceptancefees") ||
-          aPayStackEntry.reference.includes("Acpt Fee") ) )
-        ? "ACCEPTANCE_FEES" : "FEES PAYMENT";
+          (aPayStackEntry.reference.includes('topfaithuniacceptancefees') ||
+          aPayStackEntry.reference.includes('Acpt Fee') ) )
+        ? 'ACCEPTANCE_FEES' : 'FEES PAYMENT';
       }
 
     else {
-      console.log(' PAYSTACK ENTRY:::')
+      console.log(' PAYSTACK ENTRY:::');
       const a = aPayStackEntry.detail ? aPayStackEntry.detail.split('/') : [];
-    console.log("DETAILS2::", aPayStackEntry.detail, aPayStackEntry.detail.split('/'));
-    selectedLedgerEntry.product = (aPayStackEntry && a[a.length-1] === "topfaithuniacceptancefees")
-    ? "ACCEPTANCE_FEES" : "FEES PAYMENT";
-    selectedLedgerEntry.details =
-    aPayStackEntry.detail   ? ('AUTO CREDITS: ' + a[a.length-1]) : '';
+      console.log('DETAILS2::', aPayStackEntry.detail, aPayStackEntry.detail.split('/'));
+      selectedLedgerEntry.product = (aPayStackEntry && a[a.length - 1] === 'topfaithuniacceptancefees')
+    ? 'ACCEPTANCE_FEES' : 'FEES PAYMENT';
+      selectedLedgerEntry.details =
+    aPayStackEntry.detail   ? ('AUTO CREDITS: ' + a[a.length - 1]) : '';
 
     }
 
-    selectedLedgerEntry.tellerDate = aPayStackEntry.tellerDate;
-    selectedLedgerEntry.tellerNo = aPayStackEntry.reference;
-    selectedLedgerEntry.staffIn = this.userService.getUser();
+        selectedLedgerEntry.tellerDate = aPayStackEntry.tellerDate;
+        selectedLedgerEntry.tellerNo = aPayStackEntry.reference;
+        selectedLedgerEntry.staffIn = this.userService.getUser();
 
-    if (aStudentNo && aStudentNo !== undefined && aStudentNo !== '') {
+        if (aStudentNo && aStudentNo !== undefined && aStudentNo !== '') {
 
-        if (selectedLedgerEntry.paymentMode === "PayStack") {
+        if (selectedLedgerEntry.paymentMode === 'PayStack') {
             const aList = this.payStackService.NewLedgerEntries.getValue();
             aList.push(selectedLedgerEntry as StudentLedgerEntry);
-            console.log("COUNT OF FOUND LEDGERS", aList.length);
+            console.log('COUNT OF FOUND LEDGERS', aList.length);
             this.payStackService.NewLedgerEntries.next(aList);
 
         }
-      await this.paymentsService.makePosting2(aStudentNo, selectedLedgerEntry as StudentLedgerEntry);
+        await this.paymentsService.makePosting2(aStudentNo, selectedLedgerEntry as StudentLedgerEntry);
 
     }
     else {
@@ -944,24 +956,24 @@ export class StudentpostingComponent implements OnInit {
       .transform(this.applicationList, aPayStackEntry.jambNo.toString().trim().toUpperCase());
 
 
-      console.log('the applications::', answer[0], this.selectedLedgerEntry);
-      let max = 0;
-      let maxIndex = 0;
-      for (let i = 0; i < answer.length; i++) {
-        const temp = this.getCountOfKeys(answer[i])
+        console.log('the applications::', answer[0], this.selectedLedgerEntry);
+        let max = 0;
+        let maxIndex = 0;
+        for (let i = 0; i < answer.length; i++) {
+        const temp = this.getCountOfKeys(answer[i]);
         if (temp > max){
           max = temp;
           maxIndex = i;
         }
       }
-      console.log('the applications::', answer[maxIndex], this.selectedLedgerEntry);
-      await this.getStudentFromApplication(answer[maxIndex], selectedLedgerEntry as StudentLedgerEntry);
+        console.log('the applications::', answer[maxIndex], this.selectedLedgerEntry);
+        await this.getStudentFromApplication(answer[maxIndex], selectedLedgerEntry as StudentLedgerEntry);
       }
 
 
     }
 
-    aResponse = true;
+        aResponse = true;
 
 
     }
@@ -970,7 +982,7 @@ export class StudentpostingComponent implements OnInit {
 
   getCountOfKeys(anApplication: Applications): number {
 
-    let count =
+    const count =
       [
         'dateCreated',
         'firstName',
@@ -995,15 +1007,15 @@ export class StudentpostingComponent implements OnInit {
         'beginSession',
         'bloodGroup',
         'disability' ].filter(
-          //@ts-ignore
+          // @ts-ignore
           (k) => k in anApplication && anApplication[k] != null
         ).length;
-    return count
+    return count;
   }
-  async getStudentFromApplication(anApplication:Applications, selectedLedgerEntry:StudentLedgerEntry) {
+  async getStudentFromApplication(anApplication: Applications, selectedLedgerEntry: StudentLedgerEntry) {
     // console.log('SET STUDY INFO TRIGGERED');
 
-    let acceptanceFee = 0.0;
+    const acceptanceFee = 0.0;
     const detail = 'ACCEPTANCE FEE';
 
     if (anApplication )
@@ -1011,10 +1023,10 @@ export class StudentpostingComponent implements OnInit {
       const selectedStudy: Partial <Study> = {};
       const selectedStudent: Partial <Student> = {};
       const selectedLedgerDebit: Partial <StudentLedgerEntry> = {};
-      const price = await this.productService.getProductPrice2('ACCEPTANCE_FEES')
-      console.log("PRICE::: ", price)
+      const price = await this.productService.getProductPrice2('ACCEPTANCE_FEES');
+      console.log('PRICE::: ', price);
       selectedLedgerDebit.dr = price;
-      selectedLedgerDebit.balance = 0 - price
+      selectedLedgerDebit.balance = 0 - price;
       selectedLedgerDebit.datePosted = selectedLedgerEntry.datePosted;
       selectedLedgerDebit.session = selectedLedgerEntry.session;
       selectedLedgerDebit.semester = selectedLedgerEntry.semester;
@@ -1025,13 +1037,13 @@ export class StudentpostingComponent implements OnInit {
       const nextOfKinList: NextKin[] = [];
       selectedStudy.applicationNo =
       anApplication.applicationNo ? anApplication.applicationNo : '';
-      selectedStudy.department =
+      selectedStudy.programme =
       anApplication.department1 ? anApplication.department1.toString().toUpperCase() : '';
       selectedStudy.studentType = 0;
       selectedStudy.status = 'Applicant';
       selectedStudy.beginSession = anApplication.beginSession;
       selectedStudy.finishSession = '';
-      selectedStudy.jambNo = anApplication.jambNo.trim().toUpperCase()
+      selectedStudy.jambNo = anApplication.jambNo.trim().toUpperCase();
 
 
       // student info loading
@@ -1042,8 +1054,8 @@ export class StudentpostingComponent implements OnInit {
       selectedStudent.nin = anApplication.nin;
       selectedStudent.phone = anApplication.phone;
       selectedStudent.level = 100;
-     selectedStudent.studentType = selectedStudy.studentType;
-      selectedStudent.department = selectedStudy.department;
+      selectedStudent.studentType = selectedStudy.studentType;
+      selectedStudent.programme = selectedStudy.programme;
 
       selectedStudent.firstName = anApplication.firstName?.toString().toUpperCase();
       selectedStudent.lastName = anApplication.lastName?.toString().toUpperCase();
@@ -1059,45 +1071,72 @@ export class StudentpostingComponent implements OnInit {
       selectedStudy.beginDate = this.resumptionDate;
       selectedStudent.staffIn = this.userService.getUser();
       selectedStudy.staffIn = this.userService.getUser();
-      const lastNo = await this.studentService.getStudentNumber2()
-      console.log("NUMBER GOT::", lastNo)
-      selectedStudent.studentNo = this.utilityService.prepareNewID2(lastNo, 9);
+      // const lastNo = await this.studentService.getStudentNumber2()
+      //   .then(async (regNo) => {
+      //     const checkAnswer = await this.setStudentFinisher(selectedStudent, regNo);
+      //     console.log('NUMBER GOT::', regNo);
+      //   });
+      // console.log('NUMBER GOT::', lastNo);
+      this.studentService.getStudentNumber()
+        .subscribe(async (lastNumber: string) => {
+            const checkAnswer = await this.setStudentFinisher(selectedStudent, lastNumber);
+            console.log('NUMBER GOT::', lastNumber);
+            if (anApplication.guardians1?.fullName && anApplication.guardians1?.fullName !== '') {
 
-      if (anApplication.guardians1?.fullName && anApplication.guardians1?.fullName !== '') {
+            anApplication.guardians1.title = anApplication.guardians1.title ?
+              anApplication.guardians1.title : '';
+            anApplication.guardians1.address = anApplication.guardians1.address ?
+              anApplication.guardians1.address : '';
 
-        anApplication.guardians1.title = anApplication.guardians1.title ?
-        anApplication.guardians1.title : '';
-        anApplication.guardians1.address = anApplication.guardians1.address ?
-        anApplication.guardians1.address : '';
+            anApplication.guardians1.email = anApplication.guardians1.email ?
+              anApplication.guardians1.email : '';
 
-        anApplication.guardians1.email = anApplication.guardians1.email ?
-        anApplication.guardians1.email : '';
+            anApplication.guardians1.relationship = anApplication.guardians1.relationship ?
+              anApplication.guardians1.relationship : '';
 
-        anApplication.guardians1.relationship = anApplication.guardians1.relationship ?
-        anApplication.guardians1.relationship : '';
+            anApplication.guardians1.occupation = anApplication.guardians1.occupation ?
+              anApplication.guardians1.occupation : '';
+            nextOfKinList.push(anApplication.guardians1 as NextKin);
 
-        anApplication.guardians1.occupation = anApplication.guardians1.occupation ?
-        anApplication.guardians1.occupation : '';
-        nextOfKinList.push(anApplication.guardians1 as NextKin);
+          }
 
-      }
+            if (anApplication.guardians2?.fullName && anApplication.guardians2?.fullName !== '') {
 
-      if (anApplication.guardians2?.fullName && anApplication.guardians2?.fullName !== '') {
+            anApplication.guardians2.title = anApplication.guardians2.title ?
+              anApplication.guardians2.title : '';
+            anApplication.guardians2.address = anApplication.guardians2.address ?
+              anApplication.guardians2.address : '';
+            anApplication.guardians2.email = anApplication.guardians2.email ?
+              anApplication.guardians2.email : '';
+            anApplication.guardians2.relationship = anApplication.guardians2.relationship ?
+              anApplication.guardians2.relationship : '';
 
-        anApplication.guardians2.title = anApplication.guardians2.title ?
-        anApplication.guardians2.title : '';
-        anApplication.guardians2.address = anApplication.guardians2.address ?
-        anApplication.guardians2.address : '';
-        anApplication.guardians2.email = anApplication.guardians2.email ?
-        anApplication.guardians2.email : '';
-        anApplication.guardians2.relationship = anApplication.guardians2.relationship ?
-        anApplication.guardians2.relationship : '';
+            anApplication.guardians2.occupation = anApplication.guardians2.occupation ?
+              anApplication.guardians2.occupation : '';
+            nextOfKinList.push(anApplication.guardians2 as NextKin);
 
-        anApplication.guardians2.occupation = anApplication.guardians2.occupation ?
-        anApplication.guardians2.occupation : '';
-        nextOfKinList.push(anApplication.guardians2 as NextKin);
+          }
 
-      }
+            // const setStudent = await this.studentService.setStudent2(selectedStudent as Student, selectedStudy as Study, nextOfKinList)
+            //   .then(
+            //     async (setStudent2) => {
+            //       await this.finalStudentFinisher(setStudent2, selectedStudent, selectedLedgerDebit, selectedLedgerEntry);
+            //     }
+            //   );
+
+            this.studentService.setStudent(selectedStudent as Student, selectedStudy as Study, nextOfKinList)
+              .subscribe(async (setStud) => {
+                // async (setStudent2) => {
+                await this.finalStudentFinisher(setStud, selectedStudent, selectedLedgerDebit, selectedLedgerEntry);
+                // }
+              });
+
+        }
+        );
+      // const checkAnswer = await this.setStudentFinisher(selectedStudent, lastNo);
+      // selectedStudent.studentNo = this.utilityService.prepareNewID2(lastNo, 9);
+
+
 
 
       // console.log("STUDENT DATA:::", selectedStudent);
@@ -1105,38 +1144,73 @@ export class StudentpostingComponent implements OnInit {
 
       // console.log("AT SET STUDENT::", selectedLedgerEntry);
 
-      const setStudent = await this.studentService.setStudent2(selectedStudent as Student, selectedStudy as Study, nextOfKinList)
-      if (setStudent === 1) {
-        this.newStudentsForEmailList.push(selectedStudent as Student);
-        const debPost = await this.paymentsService.makePosting2(selectedStudent.studentNo,
-          selectedLedgerDebit as StudentLedgerEntry)
-          const aBal = selectedLedgerDebit.balance as number;
-          const cr = selectedLedgerEntry.cr as number;
-          const newBal = aBal + cr;
-          selectedLedgerEntry.balance = newBal;
-          if (debPost === 1) {
-            const debPost2 = await this.paymentsService.makePosting2(selectedStudent.studentNo, selectedLedgerEntry)
-            if (debPost2 === 1) {
 
-
-
-            }
-
-          }
-          const aList = this.payStackService.NewLedgerEntries.getValue();
-          aList.push(selectedLedgerEntry);
-          if (selectedLedgerEntry.paymentMode === "PayStack") {
-            this.payStackService.NewLedgerEntries.next(aList);
-
-          }
-
-      }
                   // debit acceptance fee
 
 
 
   }
   }
+  async setStudentFinisher(selectedStudent: Partial<Student>, lastNo: string ){
+    selectedStudent.studentNo = this.utilityService.prepareNewID2(lastNo, 9);
+    return selectedStudent;
+  }
+
+  async finalStudentFinisher(setStudent: number, selectedStudent: Partial<Student>,
+                             selectedLedgerDebit: Partial<StudentLedgerEntry>,
+                             selectedLedgerEntry: StudentLedgerEntry ) {
+    if (setStudent === 1) {
+      this.newStudentsForEmailList.push(selectedStudent as Student);
+      // const debPost = await this.paymentsService.makePosting2(selectedStudent.studentNo,
+      //   selectedLedgerDebit as StudentLedgerEntry);
+
+      this.paymentsService.makePosting(selectedStudent.studentNo,
+        selectedLedgerDebit as StudentLedgerEntry)
+        .subscribe(async (debPost1) => {
+          const aBal = selectedLedgerDebit.balance as number;
+          const cr = selectedLedgerEntry.cr as number;
+          const newBal = aBal + cr;
+          selectedLedgerEntry.balance = newBal;
+          if (debPost1 === 1) {
+            this.paymentsService.makePosting(selectedStudent.studentNo, selectedLedgerEntry).subscribe((debPost2) => {
+              if (debPost2 === 1) {
+
+                const aList = this.payStackService.NewLedgerEntries.getValue();
+                aList.push(selectedLedgerEntry);
+                if (selectedLedgerEntry.paymentMode === 'PayStack') {
+                  this.payStackService.NewLedgerEntries.next(aList);
+
+                }
+              }
+
+            });
+
+          }
+
+        });
+      // const aBal = selectedLedgerDebit.balance as number;
+      // const cr = selectedLedgerEntry.cr as number;
+      // const newBal = aBal + cr;
+      // selectedLedgerEntry.balance = newBal;
+      // if (debPost === 1) {
+      //   const debPost2 = await this.paymentsService.makePosting2(selectedStudent.studentNo, selectedLedgerEntry);
+      //   if (debPost2 === 1) {
+      //
+      //
+      //
+      //   }
+      //
+      // }
+      // const aList = this.payStackService.NewLedgerEntries.getValue();
+      // aList.push(selectedLedgerEntry);
+      // if (selectedLedgerEntry.paymentMode === 'PayStack') {
+      //   this.payStackService.NewLedgerEntries.next(aList);
+      //
+      // }
+
+    }
+  }
+
 
   clearAll(): void {
     this.selectedLedgerEntry.bank = undefined;
@@ -1164,7 +1238,7 @@ export class StudentpostingComponent implements OnInit {
     if (this.selectedLedgerEntry.paymentMode === 'PayStack' ||
     this.selectedLedgerEntry.paymentMode === 'Transfer')
     {
-      answer = true
+      answer = true;
     }
 
     // else answer = "TELLER NO"
@@ -1173,12 +1247,12 @@ export class StudentpostingComponent implements OnInit {
 
   validateQty(): void {
     if (this.selectedLedgerEntry.qty !== undefined && this.selectedLedgerEntry.qty < 1)
-    {this.selectedLedgerEntry.qty = 1;}
+    {this.selectedLedgerEntry.qty = 1; }
     this.calcTotal();
   }
 
   paymentModeChange(): void {
-    console.log("PAYMENT MODE::", this.selectedLedgerEntry.paymentMode );
+    console.log('PAYMENT MODE::', this.selectedLedgerEntry.paymentMode );
     if (this.selectedLedgerEntry.paymentMode === 'Cash') {
       this.cashPaymentMode();
     }
@@ -1267,19 +1341,19 @@ export class StudentpostingComponent implements OnInit {
 
   checkDebOrCr(): void {
     console.log('TRANSACTION TYPE::', this.transactionType);
-    if (this.transactionType === "1" ) {
+    if (this.transactionType === '1' ) {
       // this.selectedLedgerEntry.paymentMode='';
       this.paymentModeMarker = false;
       this.selectedLedgerEntry.paymentMode = undefined;
       this.bankMarker = true;  this.concessionMarker = true;
 
-    this.receiptNoMarker = true; this.tellerDepositMarker = true; this.tellerDateMarker = true;
-    this.tellerNoMarker = true;
-    this.detailsMarker = true;
-    this.debitMarker = true;
+      this.receiptNoMarker = true; this.tellerDepositMarker = true; this.tellerDateMarker = true;
+      this.tellerNoMarker = true;
+      this.detailsMarker = true;
+      this.debitMarker = true;
       // this.bankMarker = false;
 
-      console.log("PAYMENT MODE FALSE", this.paymentModeMarker, this.detailsMarker);
+      console.log('PAYMENT MODE FALSE', this.paymentModeMarker, this.detailsMarker);
 
 
       // setTimeout(()=>{
@@ -1292,7 +1366,7 @@ export class StudentpostingComponent implements OnInit {
     else{
       this.debitMarker = false;
       this.paymentModeMarker = true;
-      console.log("PAYMENT MODE FALSE", this.paymentModeMarker, this.detailsMarker);
+      console.log('PAYMENT MODE FALSE', this.paymentModeMarker, this.detailsMarker);
 
     }
 
@@ -1308,7 +1382,7 @@ export class StudentpostingComponent implements OnInit {
 
   Pay() {
     // const answer: AsyncSubject<boolean> = new AsyncSubject<boolean>();
-    if (this.transactionType === "2"){
+    if (this.transactionType === '2'){
       this.selectedLedgerEntry.cr = this.amount;
       this.selectedLedgerEntry.balance = this.amount + this.balance;
     }
@@ -1317,9 +1391,9 @@ export class StudentpostingComponent implements OnInit {
       this.selectedLedgerEntry.balance = this.balance - this.amount;
 
     }
-    const answerLedger = this.selectedLedgerEntry as StudentLedgerEntry
+    const answerLedger = this.selectedLedgerEntry as StudentLedgerEntry;
     answerLedger.balance = answerLedger.balance ? answerLedger.balance : 0.0  ;
-    if (this.transactionType === "2"){
+    if (this.transactionType === '2'){
       answerLedger.cr = answerLedger.cr ? answerLedger.cr : 0.0  ;
     }
     else {
@@ -1329,10 +1403,10 @@ export class StudentpostingComponent implements OnInit {
     answerLedger.staffIn = this.userService.getUser();
     // console.log('LEDGER INFO:::', this.selectedLedgerEntry);
 
-                  if (answerLedger.paymentMode === "PayStack") {
+    if (answerLedger.paymentMode === 'PayStack') {
                     const aList = this.payStackService.NewLedgerEntries.getValue();
-                  aList.push(answerLedger);
-                  console.log("COUNT OF FOUND LEDGERS", aList.length);
+                    aList.push(answerLedger);
+                    console.log('COUNT OF FOUND LEDGERS', aList.length);
                     this.payStackService.NewLedgerEntries.next(aList);
 
                   }
@@ -1356,8 +1430,8 @@ export class StudentpostingComponent implements OnInit {
 
 
 
-        this.clearAll()
-        this.disable2and3()
+    this.clearAll();
+    this.disable2and3();
         // this.selectedLedgerEntry = {}
       }
 
@@ -1367,8 +1441,9 @@ export class StudentpostingComponent implements OnInit {
 
   calcTotal(): void {
     this.selectedLedgerEntry.product = this.selectedProduct.prodCode;
-    if (this.selectedProduct.price !== undefined && this.selectedLedgerEntry.qty !== undefined)
+    if (this.selectedProduct.price !== undefined && this.selectedLedgerEntry.qty !== undefined) {
       this.tempTotal = this.selectedProduct.price * this.selectedLedgerEntry.qty;
+    }
   }
 
   checkProductSelection(): boolean {
@@ -1377,7 +1452,7 @@ export class StudentpostingComponent implements OnInit {
   }
 
   correctAnomalies(): void {
-    this.selectedLedgerEntry = {}
+    this.selectedLedgerEntry = {};
     this.selectedLedgerEntry.datePosted = new Date();
     this.selectedLedgerEntry.session = undefined;
     this.selectedLedgerEntry.semester = undefined;
@@ -1392,9 +1467,9 @@ export class StudentpostingComponent implements OnInit {
   }
 
   displayFn(applicant: StudentProduct): string {
-    console.log("THE INDEX::", applicant);
+    console.log('THE INDEX::', applicant);
     // this.selectedApplication = applicant;
-    console.log("THE APP::", this.selectedProduct);
+    console.log('THE APP::', this.selectedProduct);
 
     return applicant && applicant.prodCode ? applicant.prodCode : '';
   }

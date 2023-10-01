@@ -1,6 +1,6 @@
 <div class="login-page" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="50px">
   <div class="logo-container" fxFlexAlign="center">
-      <!-- <app-logo></app-logo> -->
+    <!-- <app-logo></app-logo> -->
   </div>
   <div class="input-row mat-elevation-z8 login-section" fxLayout="row" fxFlexAlign="center">
     <div fxFlex="30" >
@@ -11,24 +11,29 @@
     <div fxFlex="60">
       <form (keyup.enter)="login5(email, password)" class="input-row aheader"   fxLayout="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
         <h1 fxFlex>
-            TOPFAITH UNIVERSITY
+          TOPFAITH UNIVERSITY
         </h1>
         <!-- <div fxFlex> -->
-          <!-- <form (keyup.enter)="login5(email, password)"> -->
+        <!-- <form (keyup.enter)="login5(email, password)"> -->
 
-                <mat-form-field fxFlex >
-                    <input  matInput placeholder="USER ID" name="email" [(ngModel)]="email" type="email" autocomplete="username email"/>
-                </mat-form-field>
-                <mat-form-field fxFlex >
-                    <input  matInput placeholder="PASSWORD" name="password" [(ngModel)]="password" type="password" autocomplete="current-password"/>
-                </mat-form-field>
-            <mat-error [textContent]="errorMessage"></mat-error>
-          <!-- </div> -->
+        <mat-form-field fxFlex >
+          <input  matInput placeholder="USER ID" name="email" [(ngModel)]="email" type="email" autocomplete="username email"/>
+          <mat-icon matSuffix >face</mat-icon>
+
+        </mat-form-field>
+        <mat-form-field fxFlex >
+          <input  matInput placeholder="PASSWORD" name="password" [(ngModel)]="password"  [type]="hide ? 'password' : 'text'"  autocomplete="current-password"/>
+
+          <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}} </mat-icon>
+
+        </mat-form-field>
+        <mat-error [textContent]="errorMessage"></mat-error>
+        <!-- </div> -->
         <!-- </form> -->
 
         <button fxFlex mat-raised-button color="primary"
-                    (click)="login5(email, password)" type="submit">
-                Logins
+                (click)="login5(email, password)" type="submit">
+          Login
         </button>
 
       </form>

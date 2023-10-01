@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {AsyncSubject, BehaviorSubject} from 'rxjs';
 import { PaystackAndPayments, StudentLedgerEntry } from '../interfaces/student';
 import { DataService } from './data.service';
 import { KLoginService } from './klogin.service';
@@ -87,11 +87,11 @@ export class PaystackService {
 
   }
 
-   setLastChecked(): boolean {
+   setLastChecked(): AsyncSubject<boolean> {
     let aD :boolean = false;
 
     // this.angularS1.doConnect();
-    // const answer: BehaviorSubject<StudentLedgerEntry[]> = new BehaviorSubject <StudentLedgerEntry[]>([]);
+    const answer: AsyncSubject<boolean> = new AsyncSubject <boolean>();
 
     // const myQualificationList : StudentLedgerEntry[] = [] ;
     const query = `MATCH (n:PayStackDetails) set n.lastCheck = datetime({ timezone:'+01:00' }) return true`;
@@ -106,15 +106,21 @@ export class PaystackService {
     this.angularS1.writeDB(query, '0')
        .subscribe((data) => {
          for (let i = 0; i < data.results.length; i++) {
-           aD = (data.results[i][0]);
+           // aD = (data.results[i][0]);
+            aD = true;
+
+
          }
+         answer.next(aD);
+         answer.complete();
        });
 
-    return aD;
+    return answer;
    }
 
-   getPayStackPayments(): void {
-    let payStackFind = ''
+   getPayStackPayments(): AsyncSubject<PaystackAndPayments[]> {
+    let payStackFind = '';
+    const answer: AsyncSubject<PaystackAndPayments[]> = new AsyncSubject<PaystackAndPayments[]>();
     const payStackPayments: PaystackAndPayments[] = [];
     this.https.get(`https://api.paystack.co/transaction/`, this.httpOptions)// {params: params1})
     .subscribe((data: any) => {
@@ -126,19 +132,22 @@ export class PaystackService {
             reference: r.reference,
               jambNo: (r.metadata.custom_fields[0]).value.trim().toUpperCase(),
               detail: r.metadata.referrer,
-              amount: (r.requested_amount/100) - 300,
+              amount: (r.requested_amount / 100) - 300,
               tellerDate: r.paidAt
             } as unknown as PaystackAndPayments);
             // if ((r.metadata.custom_fields[0]).value.trim().toUpperCase() === '10046696ED') {
             //   console.log("FOUND::: 10046696ED")
             // }
         }
-        console.log("PayStack gotten:::", payStackPayments);
+        console.log('PayStack gotten:::', payStackPayments);
         // console.log('\nXXXXXXXXXXFOUND PAYMENTSXXXXXXXXXXXXX\n', payStackFind)
         this.PayStackPayments.next(payStackPayments);
+        answer.next(payStackPayments);
+        answer.complete();
 
       }
     });
+    return answer;
    }
 
   // tslint:disable-next-line:typedef

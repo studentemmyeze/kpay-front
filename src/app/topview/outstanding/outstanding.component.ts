@@ -16,14 +16,14 @@ import { AppDateAdapter, APP_DATE_FORMATS } from 'src/app/utilities/format-datep
   providers: [
     {provide: DateAdapter, useClass: AppDateAdapter},
     {provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS}
-]
+  ]
 })
 export class OutstandingComponent implements OnInit {
   selectedLedgerInfo: Partial <OutstandingInfo> = {};
   DCol: any[] = [];
   displayedColumns = [
 
-  'studentNo', 'lastName', 'firstName', 'middleName','balance','gender', 'level', 'department'];
+    'studentNo', 'lastName', 'firstName', 'middleName','balance','gender', 'level', 'programme'];
   paidList = ['>', '<', '=' ];
   Genders = [ 'M', 'F' ];
   OutstandingList: BehaviorSubject<any[]> = new BehaviorSubject <any[]>([]);
@@ -52,8 +52,9 @@ export class OutstandingComponent implements OnInit {
   studentMarker = false;
   facultyMarker = false;
   departmentMarker = false;
-
-
+  outOrCred = false;
+  OutstandingText = 'Outstanding';
+  Outcredcolor = 'warn';
   constructor(
     private utilityService: UtilityService,
     private paymentsService: PaymentsService,
@@ -71,7 +72,13 @@ export class OutstandingComponent implements OnInit {
     this.DCol.push(this.OutstandingList);
     this.departmentList =  this.applicationService.getProgrammes();
     this.facultyList =  this.applicationService.getFaculties();
+    this.Outcredcolor = this.outOrCred ? 'primary' : 'warn';
+  }
 
+  swap(): void {
+    this.outOrCred = !this.outOrCred
+    this.OutstandingText = this.outOrCred ? 'Creditors' : 'Outstandings';
+    this.Outcredcolor = this.outOrCred ? 'primary' : 'warn';
   }
   postingsTest(): void {
     // if (this.dateMarker && this.range.value)
@@ -92,8 +99,10 @@ export class OutstandingComponent implements OnInit {
     this.paymentsService.getBalanceBulkClearance(this.selectedLedgerInfo as OutstandingInfo);
     this.paymentsService.BalanceBulk.subscribe((tempData) => {
       if (tempData) {
-        const data = this.selectedLedgerInfo.amount ?
-        this.filterOutstanding((-1 * this.selectedLedgerInfo.amount), tempData) : tempData ;
+        this.selectedLedgerInfo.amount = this.selectedLedgerInfo.amount ? this.selectedLedgerInfo.amount : 0
+        const data =
+          this.filterOutstanding((this.selectedLedgerInfo.amount), tempData)  ;
+
         if (this.DCol.length > 1) {
 
           this.OutstandingList.next(data);
@@ -111,15 +120,30 @@ export class OutstandingComponent implements OnInit {
 
   filterOutstanding(cutOff: number, sourceData: OutstandingInfoData[]): OutstandingInfoData[] {
     const tempObj: any[] = [];
-    sourceData.forEach(
-      e => {
-      // var tempObj = [];
-      if ((e.balance < cutOff) ) {
-        // console.log('THIS IS LESS THAN CUTOFF:::', cutOff, e.balance);
-        tempObj.push(e);
-      }
+    if (this.outOrCred) {
+      sourceData.forEach(
+        e => {
+          // var tempObj = [];
+          if ((e.balance >= cutOff) ) {
+            // console.log('THIS IS LESS THAN CUTOFF:::', cutOff, e.balance);
+            tempObj.push(e);
+          }
 
-    });
+        });
+    }
+    else {
+      cutOff = -1*cutOff;
+      sourceData.forEach(
+        e => {
+          // var tempObj = [];
+          if ((e.balance < cutOff) ) {
+            // console.log('THIS IS LESS THAN CUTOFF:::', cutOff, e.balance);
+            tempObj.push(e);
+          }
+
+        });
+    }
+
     return tempObj;
   }
 
@@ -145,16 +169,16 @@ export class OutstandingComponent implements OnInit {
 
 
     if (aString === 'faculty' && !this.facultyMarker) {this.selectedLedgerInfo.faculty = undefined}
-    if (aString === 'department' && !this.departmentMarker) {this.selectedLedgerInfo.department = undefined}
+    if (aString === 'programme' && !this.departmentMarker) {this.selectedLedgerInfo.programme = undefined}
 
     if (aString === 'transacType' && !this.transacTypeMarker) {
       this.selectedLedgerInfo.status = 0;
     }
 
 
-   if (aString === 'gender' && !this.genderMarker) {
-     this.selectedLedgerInfo.gender = undefined;
-   }
+    if (aString === 'gender' && !this.genderMarker) {
+      this.selectedLedgerInfo.gender = undefined;
+    }
 
 
 

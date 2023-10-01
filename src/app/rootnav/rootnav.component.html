@@ -1,111 +1,106 @@
 <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer class="sidenav mat-elevation-z8" fixedInViewport
-        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-        [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        [opened]="(isHandset$ | async) === false">
+  <mat-sidenav #drawer class="sidenav mat-elevation-z8" fixedInViewport
+               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+               [mode]="(isHandset$ | async) ? 'over' : 'side'"
+               [opened]="(isHandset$ | async) === false">
 
-        <div class = "profile-card">
-          <div class = "header">
-<!--            <h4 class="name">MARGARET LAWRENCE UNIVERSITY BURSARY</h4>-->
-<!--            <p class="designation">Galilee</p>-->
-<!--            <img class="avatar mat-elevation-z8" src="/assets/mluLogo.jpg" alt="licencee logo"/>-->
+    <div class = "profile-card">
+      <div class = "header">
+        <h4 class="name">TOPFAITH UNIVERSITY BURSARY</h4>
+        <p class="designation">Mkpatak, Essien Udim</p>
+        <img class="avatar mat-elevation-z8" src="/assets/tu_logo.jpg" alt="licencee logo"/>
 
-
-                        <h4 class="name">TOPFAITH UNIVERSITY BURSARY</h4>
-            <p class="designation">Mkpatak, Essien Udim</p>
-<!--            <img class="avatar mat-elevation-z8" src="/assets/tu_logo.jpg" alt="licencee logo"/>-->
-
-             <img class="avatar mat-elevation-z8" src="https://www.dropbox.com/s/ll6g9p3s7f3bomb/Logo.png?dl=1" />
-          </div>
-        </div>
-        <mat-divider></mat-divider>
-
-        <!-- <mat-toolbar>Menu</mat-toolbar> -->
-      <!-- <mat-divider></mat-divider> -->
-      <mat-nav-list>
-        <a mat-list-item [routerLink] ="['home']">Home</a>
-
-
-        <a mat-list-item [routerLink] ="['studentinfo']">Student Information</a>
-        <mat-divider></mat-divider>
-        <a mat-list-item [routerLink] ="['makepay']" *ngIf= "isAllowed('makepay')">Make Payments/Debits</a>
-
-
-        <!-- <a mat-list-item [routerLink] ="['payroll']">New Students</a> -->
-        <a mat-list-item [routerLink] ="['paymentinfo']" *ngIf= "isAllowed('paymentinfo')">Find Payments/Debits</a>
-        <a mat-list-item [routerLink] ="['outstandingandcreditors']">View Outstanding/Creditors</a>
-        <a mat-list-item [routerLink] ="['advancedposting']" *ngIf= "isAllowed('bills')">Advanced Posts</a>
-        <a mat-list-item [routerLink] ="['bills']" *ngIf= "isAllowed('bills')">Bills</a>
-        <!-- <a mat-list-item [routerLink] ="['settings']">Settings</a> -->
-        <mat-divider></mat-divider>
-        <a mat-list-item [routerLink] ="['settings']" *ngIf= "isAllowed('settings')">Settings</a>
-
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content>
-      <div class="mat-elevation-z8">
-        <mat-toolbar color="primary">
-          <button
-            type="button"
-            aria-label="Toggle sidenav"
-            mat-icon-button
-            (click)="drawer.toggle()"
-            *ngIf="isHandset$ | async">
-            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-          </button>
-          <span class="spacer2">TU Bursary App KPay v3.0 </span>
-
-
-            <button mat-icon-button [matMenuTriggerFor]="menu"> <mat-icon>person_outline</mat-icon></button>
-            <mat-menu #menu="matMenu" >
-              <button mat-menu-item class="card-menu">
-                <mat-card class="example-card" >
-                  <mat-card-header>
-                    <div mat-card-avatar class="example-header-image"></div>
-                    <mat-card-title>{{User}}</mat-card-title>
-                    <mat-card-subtitle>{{Name}}</mat-card-subtitle>
-                  </mat-card-header>
-                  <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
-                  <mat-card-content>
-                    <p>LEVEL: {{Level}}
-                    </p>
-                  </mat-card-content>
-
-                </mat-card>
-              </button>
-              <button mat-menu-item (click) = aLogOut()>
-                <mat-icon>exit_to_app</mat-icon>
-                Sign Out
-              </button>
-
-  <!--
-              <button mat-menu-item (click) = aHandOver()>
-                <mat-icon>timer_off</mat-icon>
-                Hand Over
-              </button> -->
-              <button mat-menu-item (click) = aLogOutError()>
-                <mat-icon color="warn">error</mat-icon>
-
-                <mat-icon>exit_to_app</mat-icon>
-                Issues with Sign Out?
-              </button>
-
-            </mat-menu>
-
-
-
-          <a>Notifications</a>
-          <a>
-            <button mat-icon-button> <mat-icon>help_out</mat-icon></button>
-          </a>
-
-
-
-        </mat-toolbar>
-        <router-outlet></router-outlet>
+        <!-- <img class="avatar mat-elevation-z8" src="https://www.dropbox.com/s/ll6g9p3s7f3bomb/Logo.png?dl=1" /> -->
       </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <!-- <mat-toolbar>Menu</mat-toolbar> -->
+    <!-- <mat-divider></mat-divider> -->
+    <mat-nav-list>
+      <a mat-list-item [routerLink] ="['home']">Home</a>
 
 
-    </mat-sidenav-content>
+      <a mat-list-item [routerLink] ="['studentinfo']">Student Information</a>
+      <mat-divider></mat-divider>
+      <a mat-list-item [routerLink] ="['makepay']" *ngIf= "isAllowed('makepay')">Make Payments/Debits</a>
 
-  </mat-sidenav-container>
+
+      <!-- <a mat-list-item [routerLink] ="['payroll']">New Students</a> -->
+      <a mat-list-item [routerLink] ="['paymentinfo']" *ngIf= "isAllowed('paymentinfo')">Find Payments/Debits</a>
+      <a mat-list-item [routerLink] ="['outstandingandcreditors']">View Outstanding/Creditors</a>
+      <a mat-list-item [routerLink] ="['advancedposting']" *ngIf= "isAllowed('bills')">Advanced Posts</a>
+      <a mat-list-item [routerLink] ="['bills']" *ngIf= "isAllowed('bills')">Bills</a>
+      <!-- <a mat-list-item [routerLink] ="['settings']">Settings</a> -->
+      <mat-divider></mat-divider>
+      <a mat-list-item [routerLink] ="['settings']" *ngIf= "isAllowed('settings')">Settings</a>
+
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="mat-elevation-z8">
+      <mat-toolbar color="primary">
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        <span class="spacer2">TU Bursary App KPay v3.12 </span>
+
+
+        <button mat-icon-button [matMenuTriggerFor]="menu"> <mat-icon>person_outline</mat-icon></button>
+        <mat-menu #menu="matMenu" >
+          <button mat-menu-item class="card-menu">
+            <mat-card class="example-card" >
+              <mat-card-header>
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>{{User}}</mat-card-title>
+                <mat-card-subtitle>{{Name}}</mat-card-subtitle>
+              </mat-card-header>
+              <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+              <mat-card-content>
+                <p>LEVEL: {{Level}}
+                </p>
+              </mat-card-content>
+
+            </mat-card>
+          </button>
+          <button mat-menu-item (click) = aLogOut()>
+            <mat-icon>exit_to_app</mat-icon>
+            Sign Out
+          </button>
+
+          <!--
+                      <button mat-menu-item (click) = aHandOver()>
+                        <mat-icon>timer_off</mat-icon>
+                        Hand Over
+                      </button> -->
+          <button mat-menu-item (click) = aLogOutError()>
+            <mat-icon color="warn">error</mat-icon>
+
+            <mat-icon>exit_to_app</mat-icon>
+            Issues with Sign Out?
+          </button>
+
+        </mat-menu>
+
+
+
+        <a>Notifications</a>
+        <a>
+          <button mat-icon-button> <mat-icon>help_out</mat-icon></button>
+        </a>
+
+
+
+      </mat-toolbar>
+      <router-outlet></router-outlet>
+    </div>
+
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

@@ -1,10 +1,10 @@
 <form #guestForm="ngForm">
-<div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+  <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
 
-  <mat-card fxFlex="20" fxLayout="column">
+    <mat-card fxFlex="20" fxLayout="column">
       <!-- <div fxLayout="column" fxFlex> -->
 
-          <mat-toolbar>ADVANCED POSTING</mat-toolbar>
+      <mat-toolbar>ADVANCED POSTING</mat-toolbar>
 
 
 
@@ -15,41 +15,41 @@
 
 
       <div class="postingdetail">
-          <!-- <mat-checkbox (change)= "checkStat('session')" class="example-margin" [(ngModel)]= "sessionMarker">
+        <!-- <mat-checkbox (change)= "checkStat('session')" class="example-margin" [(ngModel)]= "sessionMarker">
 
-          </mat-checkbox> -->
-          <mat-form-field fxFlex>
-              <mat-label>SESSION</mat-label>
-              <mat-select [(ngModel)]= "selectedLedgerInfo.session" name = "session"
-              required="sessionMarker"
+        </mat-checkbox> -->
+        <mat-form-field fxFlex>
+          <mat-label>SESSION</mat-label>
+          <mat-select [(ngModel)]= "selectedLedgerInfo.session" name = "session"
+                      required="sessionMarker"
 
-              >
-                  <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
-                      {{stat}}
-                  </mat-option>
-              </mat-select>
-              <mat-error>Session Required!</mat-error>
+          >
+            <mat-option *ngFor= "let stat of sessionList" [value]= "stat">
+              {{stat}}
+            </mat-option>
+          </mat-select>
+          <mat-error>Session Required!</mat-error>
 
-          </mat-form-field>
+        </mat-form-field>
       </div>
 
       <div class="postingdetail">
-          <!-- <mat-checkbox (change)= "checkStat('semester')" class="example-margin" [(ngModel)]= "semesterMarker">
-          </mat-checkbox> -->
+        <!-- <mat-checkbox (change)= "checkStat('semester')" class="example-margin" [(ngModel)]= "semesterMarker">
+        </mat-checkbox> -->
 
-          <mat-form-field fxFlex>
-              <mat-label>SEMESTER</mat-label>
-              <mat-select [(ngModel)]= "selectedLedgerInfo.semester" name = "semester"
-              required = "semesterMarker"
+        <mat-form-field fxFlex>
+          <mat-label>SEMESTER</mat-label>
+          <mat-select [(ngModel)]= "selectedLedgerInfo.semester" name = "semester"
+                      required = "semesterMarker"
 
-              >
-                  <mat-option *ngFor= "let stat of semesterList" [value]= "stat">
-                      {{stat}}
-                  </mat-option>
-              </mat-select>
-              <mat-error>Semester Required!</mat-error>
+          >
+            <mat-option *ngFor= "let stat of semesterList" [value]= "stat">
+              {{stat}}
+            </mat-option>
+          </mat-select>
+          <mat-error>Semester Required!</mat-error>
 
-          </mat-form-field>
+        </mat-form-field>
       </div>
 
 
@@ -61,34 +61,34 @@
 
         <label id="example-radio-group-label">Fee Type</label>
         <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
-          required = true
-          name = "transacType2"
-          [(ngModel)]="transacType2"
-          (change) = "checkFeeType()"
-          >
+                         required = true
+                         name = "transacType2"
+                         [(ngModel)]="transacType2"
+                         (change) = "checkFeeType()"
+        >
           <mat-radio-button class="example-radio-button" value= 1><mat-form-field fxFlex>
             <input  matInput type="number"
-            placeholder="AMOUNT" [(ngModel)]=  "selectedLedgerInfo.amount"
-            name = "amount"
-            required = "paidMarker"
-            [disabled]= "!paidMarker"
+                    placeholder="AMOUNT" [(ngModel)]=  "selectedLedgerInfo.amount"
+                    name = "amount"
+                    required = "paidMarker"
+                    [disabled]= "!paidMarker"
             >
             <span matSuffix>.00</span>
             <mat-error>Amount Required!</mat-error>
 
 
-        </mat-form-field>
-      </mat-radio-button>
+          </mat-form-field>
+          </mat-radio-button>
           <mat-radio-button class="example-radio-button" value= 2>
             <mat-form-field fxFlex >
               <input matInput  type="text" placeholder="PRODUCT"
-              [(ngModel)]=  "selectedProduct"
-              [required]= "productMarker"
-              [appDisable]= "!productMarker"
+                     [(ngModel)]=  "selectedProduct"
+                     [required]= "productMarker"
+                     [appDisable]= "!productMarker"
 
-              [matAutocomplete]="auto11"
-              [formControl]="stateCtrl"
-              name = "product"
+                     [matAutocomplete]="auto11"
+                     [formControl]="stateCtrl"
+                     name = "product"
 
 
               >
@@ -96,44 +96,44 @@
               <mat-error>Insert Product!</mat-error>
 
               <mat-autocomplete #auto11="matAutocomplete"
-              [displayWith]="displayFn" [panelWidth]="800"
-              (optionSelected)= "calcTotal()"
+                                [displayWith]="displayFn" [panelWidth]="800"
+                                (optionSelected)= "calcTotal()"
 
               >
-                  <mat-option
+                <mat-option
                   *ngFor= "let state of filteredStates | async"
                   [value]="state"
 
 
-                  >
+                >
 
                   <span class="make-bold">
 
                     {{state.prodCode}}  </span>
-                    | {{state.description}} |
+                  | {{state.description}} |
 
 
-                    <span class="filter-container">&#8358;{{state.price | number: '1.2-2'}}  </span>
+                  <span class="filter-container">&#8358;{{state.price | number: '1.2-2'}}  </span>
 
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
           </mat-radio-button>
         </mat-radio-group>
-    </div>
+      </div>
 
-    <div class="postingdetail">
+      <div class="postingdetail">
 
 
-      <mat-form-field fxFlex appearance="outline"
-        *ngIf = "paidMarker">
+        <mat-form-field fxFlex appearance="outline"
+                        *ngIf = "paidMarker">
           <mat-label>DETAILS</mat-label>
           <textarea matInput [(ngModel)] = "selectedLedgerInfo.details"
 
-          rows = "5" cols = "60" placeholder="DETAILS"
-          class = "level2-bar" name=details required="paidMarker"></textarea>
+                    rows = "5" cols = "60" placeholder="DETAILS"
+                    class = "level2-bar" name=details required="paidMarker"></textarea>
         </mat-form-field>
-    </div>
+      </div>
 
       <!-- <div class="postingdetail" fxFlex>
 
@@ -220,61 +220,61 @@
       </div> -->
 
       <div class="postingdetail" fxFlex>
-        <mat-checkbox name="departmentMarker"  (change)= "checkStat('department')" class="example-margin" [(ngModel)]= "departmentMarker">
+        <mat-checkbox name="departmentMarker"  (change)= "checkStat('programme')" class="example-margin" [(ngModel)]= "departmentMarker">
 
         </mat-checkbox>
         <mat-form-field fxFlex>
-            <mat-label>DEPARTMENT</mat-label>
-            <mat-select [(ngModel)]= "selectedLedgerInfo.department" name = "department"
-            required = "departmentMarker"
-            [disabled]= "!departmentMarker"
-
-            >
-                <mat-option *ngFor= "let stat of departmentList" [value]= "stat">
-                    {{stat}}
-                </mat-option>
-            </mat-select>
-            <mat-error>Department Required!</mat-error>
-
-        </mat-form-field>
-    </div>
-
-    <div class="postingdetail" fxFlex>
-      <mat-checkbox  name="facultyMarker" (change)= "checkStat('faculty')" class="example-margin" [(ngModel)]= "facultyMarker">
-
-      </mat-checkbox>
-      <mat-form-field fxFlex >
-          <mat-label>FACULTY</mat-label>
-          <mat-select [(ngModel)]= "selectedLedgerInfo.faculty" name = "faculty"
-          required = "facultyMarker"
-          [disabled]= "!facultyMarker"
+          <mat-label>PROGRAMME</mat-label>
+          <mat-select [(ngModel)]= "selectedLedgerInfo.programme" name = "programme"
+                      required = "departmentMarker"
+                      [disabled]= "!departmentMarker"
 
           >
-              <mat-option *ngFor= "let stat of facultyList" [value]= "stat">
-                  {{stat}}
-              </mat-option>
+            <mat-option *ngFor= "let stat of departmentList" [value]= "stat">
+              {{stat}}
+            </mat-option>
+          </mat-select>
+          <mat-error>Programme Required!</mat-error>
+
+        </mat-form-field>
+      </div>
+
+      <div class="postingdetail" fxFlex>
+        <mat-checkbox  name="facultyMarker" (change)= "checkStat('faculty')" class="example-margin" [(ngModel)]= "facultyMarker">
+
+        </mat-checkbox>
+        <mat-form-field fxFlex >
+          <mat-label>FACULTY</mat-label>
+          <mat-select [(ngModel)]= "selectedLedgerInfo.faculty" name = "faculty"
+                      required = "facultyMarker"
+                      [disabled]= "!facultyMarker"
+
+          >
+            <mat-option *ngFor= "let stat of facultyList" [value]= "stat">
+              {{stat}}
+            </mat-option>
           </mat-select>
           <mat-error>Faculty Required!</mat-error>
 
-      </mat-form-field>
-    </div>
+        </mat-form-field>
+      </div>
 
       <div class="postingdetail" fxFlex>
-          <mat-checkbox name="levelMarker" (change)= "checkStat('level')" class="example-margin" [(ngModel)]= "levelMarker">
+        <mat-checkbox name="levelMarker" (change)= "checkStat('level')" class="example-margin" [(ngModel)]= "levelMarker">
 
-          </mat-checkbox>
-          <mat-form-field fxFlex>
-              <mat-label>LEVEL</mat-label>
-              <mat-select [(ngModel)]="selectedLedgerInfo.level"
-              required= "levelMarker"
-              [disabled]= "!levelMarker"
-              name = "level" >
-                  <mat-option *ngFor="let stat of Levels" [value]= "stat">
-                      {{stat}} LEVEL
-                      </mat-option>
-                  </mat-select>
+        </mat-checkbox>
+        <mat-form-field fxFlex>
+          <mat-label>LEVEL</mat-label>
+          <mat-select [(ngModel)]="selectedLedgerInfo.level"
+                      required= "levelMarker"
+                      [disabled]= "!levelMarker"
+                      name = "level" >
+            <mat-option *ngFor="let stat of Levels" [value]= "stat">
+              {{stat}} LEVEL
+            </mat-option>
+          </mat-select>
 
-          </mat-form-field>
+        </mat-form-field>
       </div>
       <div class="postingdetail" fxFlex>
         <mat-checkbox name="genderMarker" (change)= "checkStat('gender')" class="example-margin" [(ngModel)]= "genderMarker">
@@ -284,41 +284,41 @@
 
 
 
-    <mat-form-field fxFlex>
-        <mat-label>GENDER</mat-label>
-        <mat-select [(ngModel)]="selectedLedgerInfo.gender"
+        <mat-form-field fxFlex>
+          <mat-label>GENDER</mat-label>
+          <mat-select [(ngModel)]="selectedLedgerInfo.gender"
 
-        required="genderMarker"
-        [disabled]= "!genderMarker"
-        name = "gender" >
+                      required="genderMarker"
+                      [disabled]= "!genderMarker"
+                      name = "gender" >
             <mat-option *ngFor="let stat of Genders" [value]= "stat">
-                {{stat}}
-                </mat-option>
-            </mat-select>
-            <mat-error>Gender Required!</mat-error>
+              {{stat}}
+            </mat-option>
+          </mat-select>
+          <mat-error>Gender Required!</mat-error>
 
         </mat-form-field>
-    </div>
+      </div>
       <br>
 
 
       <div class="postingdetail" fxFlex>
 
-          <!-- <mat-checkbox  (change)= "checkStat('transacType')" class="example-margin" [(ngModel)]= "transacTypeMarker">
+        <!-- <mat-checkbox  (change)= "checkStat('transacType')" class="example-margin" [(ngModel)]= "transacTypeMarker">
 
-          </mat-checkbox> -->
+        </mat-checkbox> -->
 
-          <label id="example-radio-group-label">Transaction Type</label>
-      <mat-radio-group
-      aria-labelledby="example-radio-group-label"
-      class="example-radio-group"
-      required = true
-      name = "transacType"
+        <label id="example-radio-group-label">Transaction Type</label>
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          required = true
+          name = "transacType"
 
-      [(ngModel)]="selectedLedgerInfo.transacType" (change)="transactChange()">
-      <mat-radio-button class="example-radio-button" value= 1>Charges (Debit)</mat-radio-button>
-      <mat-radio-button class="example-radio-button" value= 2>Payment (Credit)</mat-radio-button>
-      </mat-radio-group>
+          [(ngModel)]="selectedLedgerInfo.transacType">
+          <mat-radio-button class="example-radio-button" value= 1>Charges (Debit)</mat-radio-button>
+          <mat-radio-button class="example-radio-button" value= 2>Payment (Credit)</mat-radio-button>
+        </mat-radio-group>
       </div>
 
 
@@ -357,56 +357,56 @@
             </mat-autocomplete>
           </mat-form-field>
       </div> -->
-  <!-- </div> -->
+      <!-- </div> -->
 
-  </mat-card>
-
-  <div fxFlex fxLayout="row" fxLayoutAlign="center center" >
-    <mat-card fxFlex="50" fxLayout="row" class="mat-elevation-z8" fxLayoutAlign="space-between center">
-      <button fxFlex mat-raised-button
-  (click)= "advancedPost()"
-              class="typicalbutton"
-              [disabled]="!guestForm.form.valid"
-              ><mat-icon class="matIconSpacing" color="primary">view_column</mat-icon>
-              {{advancedCommand}}
-      </button>
-
-
-      <div fxFlex >
-        <div class="container_row" *ngIf= "totalNumberProcessed !==0">
-          <div class="layer1">
-            <button
-                  matTooltip="successful auto debit"
-                  color ="primary"
-
-                  mat-icon-button>
-              <mat-icon>check_circle_outline</mat-icon>
-            </button>
-
-
-
-          </div>
-          <div class="layer2">
-            <!-- <div *ngIf= "totalNumberProcessed !== 0" > -->
-
-            <div>
-              <mat-progress-spinner
-              mode="determinate"
-              [color]="color"
-
-              [value]="value"
-              diameter="45"></mat-progress-spinner>
-          </div>
-          </div>
-
-        </div>
-        <span *ngIf= "totalNumberProcessed !== 0" fxFlex  class="container-shift"> {{totalNumberProcessed}} students posted</span>
-      </div>
     </mat-card>
+
+    <div fxFlex fxLayout="row" fxLayoutAlign="center center" >
+      <mat-card fxFlex="50" fxLayout="row" class="mat-elevation-z8" fxLayoutAlign="space-between center">
+        <button fxFlex mat-raised-button
+                (click)= "advancedPost()"
+                class="typicalbutton"
+                [disabled]="!guestForm.form.valid"
+        ><mat-icon class="matIconSpacing" color="primary">view_column</mat-icon>
+          {{debCred()}}
+        </button>
+
+
+        <div fxFlex >
+          <div class="container_row" *ngIf= "totalNumberProcessed !==0">
+            <div class="layer1">
+              <button
+                matTooltip="successful auto debit"
+                color ="primary"
+
+                mat-icon-button>
+                <mat-icon>check_circle_outline</mat-icon>
+              </button>
+
+
+
+            </div>
+            <div class="layer2">
+              <!-- <div *ngIf= "totalNumberProcessed !== 0" > -->
+
+              <div>
+                <mat-progress-spinner
+                  mode="determinate"
+                  [color]="color"
+
+                  [value]="value"
+                  diameter="45"></mat-progress-spinner>
+              </div>
+            </div>
+
+          </div>
+          <span *ngIf= "totalNumberProcessed !== 0" fxFlex  class="container-shift"> {{totalNumberProcessed}} students posted</span>
+        </div>
+      </mat-card>
+    </div>
+
+
+
   </div>
-
-
-
-</div>
 </form>
 

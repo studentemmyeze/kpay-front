@@ -75,7 +75,11 @@ export class KLoginService {
     return this.http.get<{results: any[], message: any, status: number}>(`${environment.neo4jAPI}/api/db-read`,
       {params: queryParams})
     .pipe(
-      tap(_ => console.log (`fetched the query:: ${query}`)),
+      tap(_ => {
+        console.log (`fetched the query:: ${query}`);
+        // console.log({_});
+
+      }),
       catchError(this.handleError<any>(`Issues with the query::${query}`, undefined)));
     // this.http.get<{results:any[],message:any, status:number}>(`http://localhost:3000/api/db-read`,{params:queryParams})
 
@@ -97,6 +101,7 @@ export class KLoginService {
   }
 
 
+  // tslint:disable-next-line:typedef
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 

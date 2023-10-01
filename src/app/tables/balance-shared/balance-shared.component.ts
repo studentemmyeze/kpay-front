@@ -79,7 +79,7 @@ export class BalanceSharedComponent implements OnInit {
 
       tempObj.push( e.balance ? e.balance.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : '0.00');
 
-      tempObj.push(e.department);
+      tempObj.push(e.programme);
 
       tempObj.push(e.level);
 
@@ -124,7 +124,7 @@ export class BalanceSharedComponent implements OnInit {
 
     autoTable(doc,
       { head: [['STUDENT NO','LASTNAME','FIRSTNAME','MIDDLENAME','BALANCE',
-      'DEPARTMENT','LEVEL']],
+      'PROGRAMME','LEVEL']],
     body: prepare, startY: 48,
     bodyStyles: {lineWidth:0.2, cellWidth:'wrap', cellPadding:2} ,
     columnStyles: {4: {halign: 'right'}},

@@ -1,11 +1,14 @@
+// alert examples to look at
+// https://jasonwatmore.com/post/2020/07/16/angular-10-alert-notifications-example
+
 import { AfterViewInit, Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormControl, NgForm } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable, Subscription } from 'rxjs';
-import { map, startWith, takeUntil, takeWhile } from 'rxjs/operators';
+import { Observable, Observer, Subscription, fromEvent, merge, of } from 'rxjs';
+import { map, mapTo, startWith, takeUntil, takeWhile } from 'rxjs/operators';
 import { NextKin, Applications, SponsorDetails, Student, StudentType, Study, TempStudent } from 'src/app/interfaces/student';
 import { ApplicationService } from 'src/app/services/application.service';
 import { BankService } from 'src/app/services/bank.service';
@@ -22,18 +25,17 @@ import { PaystackService } from 'src/app/services/paystack.service';
 import { StudyPipe } from 'src/app/pipes/study.pipe';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { EmailService } from 'src/app/services/email.service';
-import { Neo4jdatePipe } from 'src/app/pipes/neo4jdate.pipe';
-
+// import 'rxjs/add/observable/fromEvent'
 
 
 @Component({
   selector: 'app-add-student',
   templateUrl: './add-student.component.html',
   styleUrls: ['./add-student.component.css'],
-  providers: [StudyPipe, EmailService, Neo4jdatePipe,
+  providers: [StudyPipe, EmailService,
     {provide: DateAdapter, useClass: AppDateAdapter},
     {provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS}
-]
+  ]
 })
 export class AddStudentComponent implements AfterViewInit {
   subscriptionCreationStatus: Subscription;
@@ -63,29 +65,29 @@ export class AddStudentComponent implements AfterViewInit {
 
 
   relationshipList = ['Father', 'Mother', 'Brother', 'Sister',
-  'Son', 'Daughter', 'Husband', 'Wife',
-  'Uncle', 'Aunt', 'Brother-In-Law', 'Sister-In-Law',
-  'Father-In-Law', 'Mother-In-Law', 'Son-In-Law', 'Daughter-In-Law',
-  'Cousin', 'Neice',
-  'Nephew'];
+    'Son', 'Daughter', 'Husband', 'Wife',
+    'Uncle', 'Aunt', 'Brother-In-Law', 'Sister-In-Law',
+    'Father-In-Law', 'Mother-In-Law', 'Son-In-Law', 'Daughter-In-Law',
+    'Cousin', 'Neice',
+    'Nephew'];
 
   relationshipList2 = ['SELF', 'CORPORATE SPONSOR', 'FATHER',
-  'MOTHER', 'BROTHER', 'SISTER',
-  'SON', 'DAUGHTER', 'HUSBAND', 'WIFE',
-  'UNCLE', 'AUNT', 'BROTHER-IN-LAW', 'SISTER-IN-LAW',
-  'FATHER-IN-LAW', 'MOTHER-IN-LAW', 'SON-IN-LAW', 'DAUGHTER-IN-LAW',
-  'COUSIN', 'NEICE',
-  'NEPHEW'];
+    'MOTHER', 'BROTHER', 'SISTER',
+    'SON', 'DAUGHTER', 'HUSBAND', 'WIFE',
+    'UNCLE', 'AUNT', 'BROTHER-IN-LAW', 'SISTER-IN-LAW',
+    'FATHER-IN-LAW', 'MOTHER-IN-LAW', 'SON-IN-LAW', 'DAUGHTER-IN-LAW',
+    'COUSIN', 'NEICE',
+    'NEPHEW'];
   Genders = [ 'M', 'F' ];
   Titles = ['MR', 'MRS', 'MS', 'DR', 'ALH', 'PAST',
-  'REV', 'ELDER' ];
+    'REV', 'ELDER' ];
   ReligionList = ['CHRISTIANITY', 'ISLAM', 'TRADITIONAL'];
   MaritalStats = ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED' ];
   Levels = [100, 200, 300, 400, 500 ];
   buttonStatus = ['ADD', 'UPDATE', 'RESET', 'CANCEL'];
   displayedColumns2 = ['title', 'fullName',  'relationship', 'phone', 'email', 'action'];
-  displayedColumns = ['studentType', 'jambNo', 'applicationNo' , 'department', 'beginDate',
-   'finishDate', 'certificateDate', 'status', 'action'];
+  displayedColumns = ['studentType', 'jambNo', 'applicationNo' , 'programme', 'beginDate',
+    'finishDate', 'certificateDate', 'status', 'action'];
   statusOfStudy = ['Applicant', 'Ongoing', 'Completed', 'Abandoned', 'Deferred'];
   StatesList: any[] = [];
   NationalityList: any[] = [];
@@ -109,6 +111,15 @@ export class AddStudentComponent implements AfterViewInit {
   value = 50;
   syncedB4 = false;
   errorCount = 0;
+  // onlineStatus$: Observable<boolean>;
+  checkinterent: any = true;
+  onlineEvent: Observable<Event>;
+  offlineEvent: Observable<Event>;
+  subscriptions: Subscription[] = [];
+
+  connectionStatusMessage: string;
+  connectionStatus: string;
+
   searchingMarker = false;
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
@@ -122,7 +133,7 @@ export class AddStudentComponent implements AfterViewInit {
   // @ViewChild(MatSort) sort3: MatSort;
   constructor(
     private studyPipe: StudyPipe,
-    private neo4jDatePipe: Neo4jdatePipe,
+
     private studentService: StudentService,
     private bankService: BankService,
     private utilityService: UtilityService,
@@ -138,48 +149,49 @@ export class AddStudentComponent implements AfterViewInit {
 
     // @Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: string) {
-      this.applicationService.applicationList.subscribe(
-        data => {
-          if (data) {
-            this.appList2 = data;
-            this.getUsedJAMB();
+    this.applicationService.applicationList.subscribe(
+      data => {
+        if (data) {
+          this.appList2 = data;
+          this.getUsedJAMB();
 
 
-          }
-          // console.log("APPLICATION:::", data);
         }
-      );
-      this.selectedStudy.jambNo = (this.selectedStudy.jambNo ? this.selectedStudy.jambNo : '' );
-      this.filteredStates = this.stateCtrl.valueChanges
+        // console.log("APPLICATION:::", data);
+      }
+    );
+    this.selectedStudy.jambNo = (this.selectedStudy.jambNo ? this.selectedStudy.jambNo : '' );
+    this.filteredStates = this.stateCtrl.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.jambNo),
         map(state => (state ? this._filterStates(state) : this.appList.slice()))
       );
 
-      // this.getUsedJAMB();
+    // this.getUsedJAMB();
 
-        // this.emailService.checkStatus();
+    // this.emailService.checkStatus();
 
-    }
+  }
 
-    ngAfterViewInit() {
-      this.loadNextOfKin();
+  ngAfterViewInit() {
+    this.loadNextOfKin();
 
-    }
-    ngOnDestroy(){
-      if (this.emailService.subscriptionCheckStatus) {this.emailService.subscriptionCheckStatus.unsubscribe();
-                                                      if (this.emailService.id) {
-          clearInterval(this.emailService.id);
-        }
-
+  }
+  ngOnDestroy(){
+    if (this.emailService.subscriptionCheckStatus) {this.emailService.subscriptionCheckStatus.unsubscribe();
+                                                    if (this.emailService.id) {
+        clearInterval(this.emailService.id);
       }
-      // this.subscriptionCreateEmail.unsubscribe();
-      // this.subscriptionJoinGroup.unsubscribe();
-   }
-    // ngOnDestroy(){
-    //   this.subscriptionCreationStatus.unsubscribe
-    // }
+
+    }
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    // this.subscriptionCreateEmail.unsubscribe();
+    // this.subscriptionJoinGroup.unsubscribe();
+  }
+  // ngOnDestroy(){
+  //   this.subscriptionCreationStatus.unsubscribe
+  // }
 
   filterListForUsed(avaiableStudy: Study[], fullList: Applications[]): any[] {
     const answer: Applications[] = [];
@@ -201,19 +213,68 @@ export class AddStudentComponent implements AfterViewInit {
     if (group && !this.groupJoined) {answer = true; }
     return answer;
   }
+  checkSuccessofEmailOp(setOfArray: any[]): boolean {
+    let answer = false;
+    try {
+      const stud = this.selectedStudent as Student;
+      answer = setOfArray[0].includes(stud.studentNo) ? true : false;
+    }
+    catch (e) {}
+    return answer;
+  }
+
+
+
+
+// therichpost$() {
+//   return merge<boolean>(
+//     fromEvent(window, 'offline').pipe(map(() => false)),
+//     fromEvent(window, 'online').pipe(map(() => true)),
+//     new Observable((sub: Observer<boolean>) => {
+//       sub.next(navigator.onLine);
+//       sub.complete();
+//     }));
+// }
 
   ngOnInit(): void {
+    this.checkinterent = navigator.onLine ?  true : false;
+    // this.therichpost$().subscribe(isOnline => this.checkinterent = isOnline);
+    // this.onlineStatus$ = merge(
+    //   of(navigator.onLine),
+    //   fromEvent(window, 'online').pipe(mapTo(true)),
+    //   fromEvent(window, 'offline').pipe(mapTo(false))
+    //  );
+
+    this.onlineEvent = fromEvent(window, 'online');
+    this.offlineEvent = fromEvent(window, 'offline');
+
+    this.subscriptions.push(this.onlineEvent.subscribe(e => {
+      this.connectionStatusMessage = 'Back to online';
+      this.checkinterent = true;
+      console.log('Online...');
+    }));
+
+    this.subscriptions.push(this.offlineEvent.subscribe(e => {
+      this.connectionStatusMessage = 'Connection lost! You are not connected to internet';
+      this.checkinterent = false;
+      console.log('Offline...');
+    }));
+
+
     this.subscriptionCreationStatus = this.emailService.responseEmail
-        // .pipe(takeUntil(value => value.emailDone && value.groupDone )
-        .subscribe((data) => {
-          if (data && data.emailSentStatus[0]){
-            this.emailCreated[1] = true;
-            this.groupJoined[0] = true;
+      // .pipe(takeUntil(value => value.emailDone && value.groupDone )
+      .subscribe((data) => {
+        if (data && data.emailSentStatus[0]){
+          // this.emailCreated[1] = true;
+          this.emailCreated[1] = this.checkSuccessofEmailOp(data.emailSentStatus);
+          this.groupJoined[0] = true;
 
-          }
-          if (data && data.emailGroupStatus[0]){this.groupJoined[1] = true; }
+        }
+        if (data && data.emailGroupStatus[0]){
+          this.groupJoined[1] = this.checkSuccessofEmailOp(data.emailGroupStatus);
+        }
 
-        });
+      });
 
     this.loadNextOfKin();
     this.studentService.getStudentType().subscribe(
@@ -235,13 +296,14 @@ export class AddStudentComponent implements AfterViewInit {
     );
     this.StatesList = this.applicationService.getNigeriaStates();
     this.NationalityList = this.applicationService.getNationalities();
+    // this.bankList = this.bankService.getAllBanks();
     this.bankService.getAllBanks().subscribe(
       (data) => {
-        this.bankList = data;
+        if (data && data.length > 0 )
+        {this.bankList = data; }
 
       }
     );
-    // this.bankList = this.bankService.getAllBanks();
     this.sessionList = this.utilityService.generateSessionList();
     this.departmentList = this.applicationService.getProgrammes();
     this.checkIfStudyExists();
@@ -252,8 +314,8 @@ export class AddStudentComponent implements AfterViewInit {
   }
 
   pinDepartment(): void {
-    this.selectedStudent.department =
-    this.selectedStudy.department ? this.selectedStudy.department : this.selectedStudent.department ;
+    this.selectedStudent.programme =
+      this.selectedStudy.programme ? this.selectedStudy.programme : this.selectedStudent.programme ;
   }
 
   closeDialog(){
@@ -274,6 +336,7 @@ export class AddStudentComponent implements AfterViewInit {
 
   doSave(): void {
     // if this is an auto case
+    // this.onlineStatus = navigator.onLine ?  true : false;
     this.doAutoAddStudent();
   }
 
@@ -291,21 +354,21 @@ export class AddStudentComponent implements AfterViewInit {
     this.studentSaved[0] = true;
     this.studentService.setStudent(this.selectedStudent as Student, this.selectedStudy as Study, this.nextOfKinList,
       this.selectedSponsorDetail as SponsorDetails)
-    .subscribe((data: number) => {
-      if (data) {
-        this.studentService.newStudentMarker.next(2);
-        this.studentSaved[1] = true;
-        this.emailCreated[0] = true;
-        // create student email
-        this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); // forward to create
+      .subscribe((data: number) => {
+        if (data) {
+          this.studentService.newStudentMarker.next(2);
+          this.studentSaved[1] = true;
+          this.emailCreated[0] = true;
+          // create student email
+          this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); // forward to create
 
-        this.editingDoneMarker = true;
-        const message = 'SUCCESS: STUDENT RECORD CREATED!';
-        this.progressMarker = false;
-        this.openSnackBar(message, 'close');
+          this.editingDoneMarker = true;
+          const message = 'SUCCESS: STUDENT RECORD CREATED!';
+          this.progressMarker = false;
+          this.openSnackBar(message, 'close');
 
-      }
-    });
+        }
+      });
   }
 
   async doAutoAddStudent2() {
@@ -324,18 +387,18 @@ export class AddStudentComponent implements AfterViewInit {
     //   this.selectedSponsorDetail as SponsorDetails)
     // .subscribe(async (data: number) => {
     const data = await this.studentService.setStudent2(this.selectedStudent as Student, this.selectedStudy as Study, this.nextOfKinList,
-                  this.selectedSponsorDetail as SponsorDetails);
+      this.selectedSponsorDetail as SponsorDetails);
     if (data) {
-        this.studentSaved[1] = true;
-        this.emailCreated[0] = true;
-        // create student email
-        await this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); // forward to create
+      this.studentSaved[1] = true;
+      this.emailCreated[0] = true;
+      // create student email
+      await this.emailService.sendNewStudentData(new Array (this.selectedStudent as Student)); // forward to create
 
-        this.editingDoneMarker = true;
-        const message = 'SUCCESS: STUDENT RECORD CREATED!';
-        this.progressMarker = false;
-        this.openSnackBar(message, 'close');
-      }
+      this.editingDoneMarker = true;
+      const message = 'SUCCESS: STUDENT RECORD CREATED!';
+      this.progressMarker = false;
+      this.openSnackBar(message, 'close');
+    }
     // });
   }
 
@@ -359,10 +422,10 @@ export class AddStudentComponent implements AfterViewInit {
       console.log('IN IF');
 
       this.selectedStudy.applicationNo =
-      this.selectedApplication.applicationNo ? this.selectedApplication.applicationNo : '';
+        this.selectedApplication.applicationNo ? this.selectedApplication.applicationNo : '';
 
-      this.selectedStudy.department =
-      this.selectedApplication.department1 ? this.selectedApplication.department1.toString().toUpperCase() : '';
+      this.selectedStudy.programme =
+        this.selectedApplication.department1 ? this.selectedApplication.department1.toString().toUpperCase() : '';
 
       this.selectedStudy.studentType = 0;
 
@@ -381,9 +444,9 @@ export class AddStudentComponent implements AfterViewInit {
       this.selectedStudent.phone = this.selectedApplication.phone;
       this.selectedStudent.level = 100;
       this.selectedStudent.studentType = this.selectedStudy.studentType;
-      this.selectedStudent.department = this.selectedStudy.department;
+      this.selectedStudent.programme = this.selectedStudy.programme;
       this.selectedStudent.title =
-      this.selectedApplication.gender ? (this.selectedApplication.gender === 'M' ? 'MR' : 'MS') : '';
+        this.selectedApplication.gender ? (this.selectedApplication.gender === 'M' ? 'MR' : 'MS') : '';
       this.selectedStudent.firstName = this.selectedApplication.firstName?.toString().toUpperCase();
       this.selectedStudent.lastName = this.selectedApplication.lastName?.toString().toUpperCase();
       this.selectedStudent.middleName = this.selectedApplication.middleName?.toString().toUpperCase();
@@ -394,13 +457,13 @@ export class AddStudentComponent implements AfterViewInit {
       this.selectedStudent.address = this.selectedApplication.address?.toString().toUpperCase() ;
       this.selectedStudent.activeStatus = true;
       this.korotePayService.getNextSessionResumptionDate()
-      .subscribe((data) => {
-        if (data) {
-          this.selectedStudy.beginDate = data;
+        .subscribe((data) => {
+          if (data) {
+            this.selectedStudy.beginDate = data;
 
-        }
+          }
 
-      });
+        });
 
 
 
@@ -408,10 +471,7 @@ export class AddStudentComponent implements AfterViewInit {
       console.log('STUDY', this.selectedStudy);
       console.log('APPLICATION', this.selectedApplication);
       if (!this.selectedStudent.studentNo || this.selectedStudent.studentNo === undefined || this.selectedStudent.studentNo === '' )
-        {
-          console.log('Inside the aNewStudentRef');
-          this.aNewStudentRef();
-        }
+      { this.aNewStudentRef(); }
 
       // get studentNo
       // set temp Student Node
@@ -424,7 +484,7 @@ export class AddStudentComponent implements AfterViewInit {
 
   setStudyInfoManual(): void {
     if (!this.selectedStudent.studentNo || this.selectedStudent.studentNo === undefined || this.selectedStudent.studentNo === '' )
-        { this.aNewStudentRefManual(); }
+    { this.aNewStudentRefManual(); }
   }
 
   public viewIndex(anIndex: number): void {
@@ -438,8 +498,8 @@ export class AddStudentComponent implements AfterViewInit {
     this.color = 'primary';
     this.syncedB4 = true;
     this.applicationService
-    .loadStudentApplication(1).subscribe(data =>
-     {
+      .loadStudentApplication(1).subscribe(data =>
+    {
       if (data ) {
         this.syncDone = true;
         this.syncClicked = false;
@@ -453,19 +513,19 @@ export class AddStudentComponent implements AfterViewInit {
         this.errorCount++;
         if (this.errorCount < 2) {
           this.applicationService
-          .loadStudentApplication(0).subscribe(data =>
-        {
-          if (data ) {this.color = 'primary'; }
-          else {
-            console.log('ERROR WITH LOCAL GRABBNG APPLICATIONS');
-            this.color = 'accent';
-          }
-          this.mode = 'determinate';
-          this.value = 100;
-          this.syncDone = true;
-          this.syncClicked = false;
+            .loadStudentApplication(0).subscribe(data =>
+          {
+            if (data ) {this.color = 'primary'; }
+            else {
+              console.log('ERROR WITH LOCAL GRABBNG APPLICATIONS');
+              this.color = 'accent';
+            }
+            this.mode = 'determinate';
+            this.value = 100;
+            this.syncDone = true;
+            this.syncClicked = false;
 
-        }); }
+          }); }
 
 
 
@@ -481,21 +541,21 @@ export class AddStudentComponent implements AfterViewInit {
     setTimeout( () => {
       this.studentService.getStudentNumber().subscribe((val) => {
         if (val) {
-        this.selectedStudent.studentNo = this.utilityService.prepareNewID2(val, 9);
-        this.selectedTempStudent.studentNo = this.selectedStudent.studentNo;
-        this.studentService.setTempStudent(this.selectedTempStudent as TempStudent)
-        .subscribe((val: any) => {
-          if (val)
-          {
+          this.selectedStudent.studentNo = this.utilityService.prepareNewID2(val, 9);
+          this.selectedTempStudent.studentNo = this.selectedStudent.studentNo;
+          this.studentService.setTempStudent(this.selectedTempStudent as TempStudent)
+            .subscribe((val: any) => {
+              if (val)
+              {
 
-            this.local_data = this.selectedStudent.studentNo ;
-            console.log('AUTO ADD NEXT OF KIN');
-            // this.autoAddNextOfKin();
-            // this.autoAddStudy();
-            console.log('STUDENT DATA:::', this.selectedStudent);
+                this.local_data = this.selectedStudent.studentNo ;
+                console.log('AUTO ADD NEXT OF KIN');
+                // this.autoAddNextOfKin();
+                // this.autoAddStudy();
+                console.log('STUDENT DATA:::', this.selectedStudent);
 
-          }
-        });
+              }
+            });
 
         }
 
@@ -512,31 +572,29 @@ export class AddStudentComponent implements AfterViewInit {
   // generate new student number
   aNewStudentRef(): void {
     setTimeout( () => {
+      this.studentService.getStudentNumber().subscribe((val) => {
+        if (val) {
+          this.selectedStudent.studentNo = this.utilityService.prepareNewID2(val, 9);
+          this.selectedTempStudent.studentNo = this.selectedStudent.studentNo;
+          this.studentService.setTempStudent(this.selectedTempStudent as TempStudent)
+            .subscribe((val: any) => {
+              if (val)
+              {
+
+                this.local_data = this.selectedStudent.studentNo ;
+                console.log('AUTO ADD NEXT OF KIN');
+                this.autoAddNextOfKin();
+                this.autoAddStudy();
+
+              }
+            });
+
+        }
+
+      });
 
 
     }, 200);
-    this.studentService.getStudentNumber().subscribe((val) => {
-      console.log('inside get student No::', val);
-      if (val) {
-        this.selectedStudent.studentNo = this.utilityService.prepareNewID2(val, 9);
-        this.selectedTempStudent.studentNo = this.selectedStudent.studentNo;
-        this.studentService.setTempStudent(this.selectedTempStudent as TempStudent)
-          .subscribe((val: any) => {
-            if (val)
-            {
-
-              this.local_data = this.selectedStudent.studentNo ;
-              console.log('AUTO ADD NEXT OF KIN');
-              this.autoAddNextOfKin();
-              this.autoAddStudy();
-
-            }
-          });
-
-      }
-
-    });
-
 
 
 
@@ -554,14 +612,14 @@ export class AddStudentComponent implements AfterViewInit {
     const filterValue = value.toLowerCase();
 
     return this.appList.filter(state =>
-      {
-        return state.jambNo.toString().toLowerCase().includes(filterValue)
-      || state.lastName.toLowerCase().includes(filterValue)
-      || state.firstName.toLowerCase().includes(filterValue)
-      || state.department1.toLowerCase().includes(filterValue)
-      || state.middleName.toLowerCase().includes(filterValue);
+    {
+      return state.jambNo.toString().toLowerCase().includes(filterValue)
+        || state.lastName.toLowerCase().includes(filterValue)
+        || state.firstName.toLowerCase().includes(filterValue)
+        || state.department1.toLowerCase().includes(filterValue)
+        || state.middleName.toLowerCase().includes(filterValue);
 
-      });
+    });
   }
 
   checkIfStudyExists(): void {
@@ -597,9 +655,9 @@ export class AddStudentComponent implements AfterViewInit {
   readyUpdates(): void {
     // check to see if the number of next of kin is up to two
 
-      this.selectedApplication = {};
-      this.isUpdates = true;
-      this.clearStudy();
+    this.selectedApplication = {};
+    this.isUpdates = true;
+    this.clearStudy();
 
 
 
@@ -660,7 +718,7 @@ export class AddStudentComponent implements AfterViewInit {
     this.selectedStudy.beginDate = aQualif.beginDate;
     this.selectedStudy.finishDate = aQualif.finishDate;
     this.selectedStudy.studentType = aQualif.studentType;
-    this.selectedStudy.department = aQualif.department;
+    this.selectedStudy.programme = aQualif.programme;
     this.selectedStudy.applicationNo = aQualif.applicationNo;
     this.selectedStudy.status = aQualif.status;
     this.selectedStudy.jambNo = aQualif.jambNo;
@@ -746,7 +804,7 @@ export class AddStudentComponent implements AfterViewInit {
     const randomCharacter3 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
     // format 2 digits- 2 letters-3 digits-1 letter total of 8
     results = dig2 + randomCharacter1.toUpperCase() + randomCharacter2.toUpperCase() +
-               dig3 + randomCharacter3.toUpperCase();
+      dig3 + randomCharacter3.toUpperCase();
     return results;
   }
 
@@ -759,9 +817,25 @@ export class AddStudentComponent implements AfterViewInit {
   }
   checkForFoundation(): boolean {
     let answer = false;
+    const isUnique: boolean[] = [false];
+    let numberOfTime = 0;
     if (this.isFoundation() && (!this.isUpdates || this.selectedFoundationNo === '')) {
       this.selectedFoundationNo = this.generateIUFStudyNo();
-      // console.log("foundation no::", this.selectedFoundationNo)
+      // check to see if this number is unique
+      while (!isUnique[0] && numberOfTime < 5) {
+        numberOfTime++;
+        this.studyService.checkUniqueIDNo(this.selectedFoundationNo).subscribe(
+          (isFound: number) =>
+          {
+
+            if (!isFound) {
+              isUnique[0] = true;
+              console.log('foundation no::');
+
+            }else{this.selectedFoundationNo = this.generateIUFStudyNo(); }
+          });
+      } // end while loop
+      console.log('foundation no::', this.selectedFoundationNo, numberOfTime);
       answer = true; }
     return answer;
   }
@@ -779,21 +853,21 @@ export class AddStudentComponent implements AfterViewInit {
       this.loadStudy();
       this.selectedStudent.level = 100;
       this.selectedStudent.studentType = this.selectedStudy.studentType;
-      this.selectedStudent.department = this.selectedStudy.department;
+      this.selectedStudent.programme = this.selectedStudy.programme;
 
       this.selectedStudent.activeStatus = true;
       this.korotePayService.getNextSessionResumptionDate()
-      .subscribe((data) => {
-        if (data) {
-          this.selectedStudy.beginDate = data;
+        .subscribe((data) => {
+          if (data) {
+            this.selectedStudy.beginDate = data;
 
-        }
+          }
 
-      });
+        });
 
       if (!this.selectedStudent.studentNo || this.selectedStudent.studentNo === '') {
-      this.aNewStudentRefManual();
-    }
+        this.aNewStudentRefManual();
+      }
 
     }
 
@@ -850,7 +924,7 @@ export class AddStudentComponent implements AfterViewInit {
 
   clearStudy(): void {
     this.selectedStudy.studentType = undefined;
-    this.selectedStudy.department = undefined;
+    this.selectedStudy.programme = undefined;
     this.selectedStudy.beginDate = undefined;
     this.selectedStudy.jambNo = undefined;
     this.selectedStudy.status = undefined;

@@ -809,6 +809,7 @@ export class PaymentsService {
           // console.log('AURA_get next session resumption date::', data.results[i][0] , isDate(data.results[i][0]))
           aList.push(data.results[i][0]);
         }
+        console.log('this is the Balance::', aList);
         this.Balance.next(aList);
       });
 

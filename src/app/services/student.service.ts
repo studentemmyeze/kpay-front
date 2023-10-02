@@ -62,7 +62,7 @@ export class StudentService {
           let count = 0;
           for (let i = 0; i < data.results.length; i++) {
             const tempStudent = data.results[i];
-            console.log('studemts::', tempStudent);
+            // console.log('studemts::', tempStudent);
             const dateObject = tempStudent.dOB ? this.getStringDate(tempStudent.dOB) : null;
 
             tempStudent.dOB = dateObject ? (dateObject) : null;

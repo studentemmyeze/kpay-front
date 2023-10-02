@@ -92,9 +92,14 @@ export class SettingsProgrammeComponent implements OnInit {
 
     });
 
-    this.statusList = this.applicationService.getFaculties();
+    // this.applicationService.
+    this.applicationService.getFaculties().subscribe((data) => {
+      this.statusList = data;
+    });
 
   }
+
+
 
   setStatusOfChange(i: number, status: boolean): void {
     this.statusChangeList[i] = status;

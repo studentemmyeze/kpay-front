@@ -132,7 +132,7 @@ export class EditStudentComponent implements AfterViewInit {
     private studyPipe: StudyPipe,
     private studentService: StudentService,
     private bankService: BankService,
-    private departmentService: DepartmentalService
+    private departmentService: DepartmentalService,
     private utilityService: UtilityService,
     public nextofKinService: NextkinService,
     private applicationService: ApplicationService,

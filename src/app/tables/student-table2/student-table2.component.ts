@@ -28,6 +28,7 @@ import { Utils } from 'src/utils';
 import { StorageService } from 'src/app/services/storage.service';
 import { catchError, delay, map, startWith, switchMap } from 'rxjs/operators';
 import {merge, Observable} from 'rxjs';
+import {DepartmentalService} from "../../services/departmental.service";
 declare var Dropbox: any
 // import * as Dropbox from 'dropbox';
 const { DROPBOX_STATUS } = StorageKey3;
@@ -100,6 +101,7 @@ export class StudentTable2Component implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     private studentService: StudentService,
     private applicationService: ApplicationService,
+    private departmentalService: DepartmentalService,
     private studyService: StudyService,
     private utilityService: UtilityService,
     private snackBar: MatSnackBar,
@@ -110,8 +112,21 @@ export class StudentTable2Component implements OnInit {
 
 
     this.columnsToDisplay.push('actions');
-    this.departmentList = this.applicationService.getProgrammes();
-    this.facultyList = this.applicationService.getFaculties();
+    // this.departmentList = this.applicationService.getProgrammes();
+    // this.facultyList = this.applicationService.getFaculties();
+      this.departmentalService.getProgrammes().subscribe(
+          data => {
+              this.departmentList = data;
+              // console.log("APPLICATION:::", data);
+          }
+      );
+      // this.facultyList =  this.applicationService.getFaculties();
+      this.applicationService.getFaculties().subscribe(
+          data => {
+              this.facultyList = data;
+              // console.log("APPLICATION:::", data);
+          }
+      );
     this.resetSearchObject();
     this.isLoadingResults = true;
     // console.log('About to run LOADDATA',this.isLoadingResults)

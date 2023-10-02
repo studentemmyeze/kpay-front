@@ -101,9 +101,27 @@ export class AdvpostingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sessionList = this.utilityService.generateSessionList();
-    this.departmentList =  this.applicationService.getProgrammes();
-    this.facultyList =  this.applicationService.getFaculties();
+    // this.sessionList = this.utilityService.generateSessionList();
+      this.utilityService.generateSessionList().subscribe(
+          data => {
+              this.sessionList = data;
+              // console.log("APPLICATION:::", data);
+          }
+      );
+    // this.departmentList =  this.applicationService.getProgrammes();
+      this.departmentalService.getProgrammes().subscribe(
+          data => {
+              this.departmentList = data;
+              // console.log("APPLICATION:::", data);
+          }
+      );
+    // this.facultyList =  this.applicationService.getFaculties();
+      this.applicationService.getFaculties().subscribe(
+          data => {
+              this.facultyList = data;
+              // console.log("APPLICATION:::", data);
+          }
+      );
     this.paymentsService.getProductList().subscribe(
       data => {
         this.productList = data;

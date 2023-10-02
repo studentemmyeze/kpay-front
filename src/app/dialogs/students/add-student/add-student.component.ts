@@ -296,7 +296,10 @@ export class AddStudentComponent implements AfterViewInit {
 
       }
     );
-    this.StatesList = this.applicationService.getNigeriaStates();
+    this.applicationService.getNigeriaStates().subscribe((states)=> {
+        this.StatesList = states;
+    });
+
     // this.NationalityList = this.applicationService.getNationalities();
     this.applicationService.getNationalities().subscribe(
       (data) => {
@@ -313,7 +316,11 @@ export class AddStudentComponent implements AfterViewInit {
 
       }
     );
-    this.sessionList = this.utilityService.generateSessionList();
+     this.utilityService.generateSessionList().subscribe(
+        (sessions) => {
+            if (sessions && sessions.length > 0 ){
+                this.sessionList = sessions;
+            }});
     //this.departmentList = this.applicationService.getProgrammes();
     this.departmentService.getProgrammes().subscribe(
       (data) => {

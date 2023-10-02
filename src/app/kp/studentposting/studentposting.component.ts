@@ -145,7 +145,11 @@ export class StudentpostingComponent implements OnInit {
       if (data) { this.applicationList = data; }
     });
 
-    this.sessionList = this.utilityService.generateSessionList();
+    this.utilityService.generateSessionList().subscribe(
+        (sessions) => {
+          if (sessions && sessions.length > 0 ){
+            this.sessionList = sessions;
+          }});
 
     this.korotePayService.getCurrentSession().subscribe((data: any) => {
       if (data) {

@@ -596,7 +596,7 @@ export class UtilityService {
 
   generateSessionList(): BehaviorSubject<string[]> {
     const answer = [];
-    const Answer: BehaviorSubject = new BehaviorSubject([]);
+    const Answer: BehaviorSubject <string[]>= new BehaviorSubject([]);
     let seedYear = "2020";
     let seedYearInt = 2020;
     const aDate = new Date();

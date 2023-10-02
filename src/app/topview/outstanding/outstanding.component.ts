@@ -70,8 +70,14 @@ export class OutstandingComponent implements OnInit {
     this.selectedLedgerInfo.paidSign = '<';
     this.DCol.push(this.displayedColumns);
     this.DCol.push(this.OutstandingList);
-    this.departmentList =  this.applicationService.getProgrammes();
-    this.facultyList =  this.applicationService.getFaculties();
+
+    this.applicationService.getProgrammes().subscribe((data)=> {
+      this.departmentList = data
+    });
+    this.applicationService.getFaculties().subscribe((data)=> {
+      this.facultyList = data
+    });;
+
     this.Outcredcolor = this.outOrCred ? 'primary' : 'warn';
   }
 

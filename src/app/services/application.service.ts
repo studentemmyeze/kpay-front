@@ -406,9 +406,9 @@ export class ApplicationService {
 
   }
 
-  getProgrammes(): string[] {
+  getProgrammes(): BehaviorSubject<string[]> {
     // this.angularS1.doConnect();
-
+    const Answer:BehaviorSubject<string[]> = new BehaviorSubject([])
     const myNList: string[] = [] ;
     const query = `MATCH (n:Programme)-[]-(f:Faculty) return n.pName order by n.pName`;
     // this.angularS1.angularS.run(query).then((res: any) => {
@@ -429,7 +429,7 @@ export class ApplicationService {
 
   });
 
-    return myNList;
+    return Answer.next(myNList);
 
   }
 

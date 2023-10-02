@@ -77,7 +77,7 @@ export class SettingsProgrammeComponent implements OnInit {
 
   loadMenu(): void {
     // this.barService.getMenu();
-    this.departmentService.getProgrammes().subscribe((val) => {
+    this.applicationService.getProgrammes().subscribe((val) => {
       // this.dataSource.data =  (val);
       this.dataSource.data =  (val);
       this.dataSource.sort = this.sort;
@@ -116,7 +116,14 @@ export class SettingsProgrammeComponent implements OnInit {
   // }
 
   reset(): void {
-    this.statusList = this.applicationService.getFaculties();
+    // this.statusList = this.applicationService.getFaculties();
+    this.applicationService.getFaculties().subscribe(
+        (data) => {
+          if (data && data.length > 0 )
+          {this.statusList = data; }
+
+        }
+    );
     if (this.newEntry) {
       const tempData = this.dataSource.data;
       tempData.splice(0, 1);

@@ -1,14 +1,14 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AsyncSubject } from 'rxjs/internal/AsyncSubject';
-import {BehaviorSubject} from 'rxjs';
+// import { AsyncSubject, AsyncSubject } from 'rxjs/internal/AsyncSubject';
+import {BehaviorSubject, AsyncSubject, Observable, of} from 'rxjs';
 import { NextKin, Applications } from '../interfaces/student';
 import { KLoginService } from './klogin.service';
 import * as XLSX from 'xlsx';
 // @ts-ignore
 import saveAs from 'save-as';
 import { SettingsService } from './settings.service';
-import { Observable, of } from 'rxjs';
+// import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({

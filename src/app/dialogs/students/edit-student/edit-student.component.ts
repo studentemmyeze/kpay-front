@@ -29,6 +29,7 @@ import { KpClientService } from 'src/app/services/kp-client.service';
 import { UserService } from 'src/app/services/user.service';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { StudyPipe } from 'src/app/pipes/study.pipe';
+import {DepartmentalService} from "../../../services/departmental.service";
 
 
 
@@ -131,6 +132,7 @@ export class EditStudentComponent implements AfterViewInit {
     private studyPipe: StudyPipe,
     private studentService: StudentService,
     private bankService: BankService,
+    private departmentService: DepartmentalService
     private utilityService: UtilityService,
     public nextofKinService: NextkinService,
     private applicationService: ApplicationService,
@@ -196,8 +198,22 @@ export class EditStudentComponent implements AfterViewInit {
 
       }
     );
-    this.StatesList = this.applicationService.getNigeriaStates();
-    this.NationalityList = this.applicationService.getNationalities();
+    // this.StatesList = this.applicationService.getNigeriaStates();
+    this.applicationService.getNigeriaStates().subscribe(
+      (data) => {
+        if (data && data.length > 0 )
+        {this.StatesList = data; }
+
+      }
+    );
+    // this.NationalityList = this.applicationService.getNationalities();
+    this.applicationService.getNationalities().subscribe(
+      (data) => {
+        if (data && data.length > 0 )
+        {this.NationalityList = data; }
+
+      }
+    );
     // this.bankList = this.bankService.getAllBanks();
     this.bankService.getAllBanks().subscribe(
       (data) => {
@@ -207,7 +223,14 @@ export class EditStudentComponent implements AfterViewInit {
       }
     );
     this.sessionList = this.utilityService.generateSessionList();
-    this.departmentList = this.applicationService.getProgrammes();
+    // this.departmentList = this.applicationService.getProgrammes();
+    this.departmentService.getProgrammes().subscribe(
+      (data) => {
+        if (data && data.length > 0 )
+        {this.departmentList = data; }
+
+      }
+    );
     this.studyService.getStudentStudy((this.selectedStudent as Student).studentNo).subscribe(
       (data => {
         if (data) {

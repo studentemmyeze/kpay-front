@@ -25,6 +25,7 @@ import { PaystackService } from 'src/app/services/paystack.service';
 import { StudyPipe } from 'src/app/pipes/study.pipe';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { EmailService } from 'src/app/services/email.service';
+import {DepartmentalService} from "../../../services/departmental.service";
 // import 'rxjs/add/observable/fromEvent'
 
 
@@ -136,6 +137,7 @@ export class AddStudentComponent implements AfterViewInit {
 
     private studentService: StudentService,
     private bankService: BankService,
+    private departmentService: DepartmentalService,
     private utilityService: UtilityService,
     public nextofKinService: NextkinService,
     private applicationService: ApplicationService,
@@ -295,7 +297,14 @@ export class AddStudentComponent implements AfterViewInit {
       }
     );
     this.StatesList = this.applicationService.getNigeriaStates();
-    this.NationalityList = this.applicationService.getNationalities();
+    // this.NationalityList = this.applicationService.getNationalities();
+    this.applicationService.getNationalities().subscribe(
+      (data) => {
+        if (data && data.length > 0 )
+        {this.NationalityList = data; }
+
+      }
+    );
     // this.bankList = this.bankService.getAllBanks();
     this.bankService.getAllBanks().subscribe(
       (data) => {
@@ -305,7 +314,14 @@ export class AddStudentComponent implements AfterViewInit {
       }
     );
     this.sessionList = this.utilityService.generateSessionList();
-    this.departmentList = this.applicationService.getProgrammes();
+    //this.departmentList = this.applicationService.getProgrammes();
+    this.departmentService.getProgrammes().subscribe(
+      (data) => {
+        if (data && data.length > 0 )
+        {this.departmentList = data; }
+
+      }
+    );
     this.checkIfStudyExists();
     // this.nextofKinService.loadStudentNextOfKin2();
 

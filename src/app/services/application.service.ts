@@ -377,7 +377,7 @@ export class ApplicationService {
     return Answer;
   }
 
-  getNigeriaStates(): string[] {
+  getNigeriaStates(): BehaviorSubject<string[]> {
     // this.angularS1.doConnect();
     const Answer: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     const myNList: string[] = [] ;
@@ -433,7 +433,7 @@ export class ApplicationService {
 
   }
 
-  getFaculties(): string[] {
+  getFaculties(): BehaviorSubject<string[]> {
     // this.angularS1.doConnect();
     const Answer: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     const myNList: string[] = [] ;

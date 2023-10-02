@@ -1,6 +1,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AsyncSubject } from 'rxjs/internal/AsyncSubject';
+import {BehaviorSubject} from 'rxjs';
 import { NextKin, Applications } from '../interfaces/student';
 import { KLoginService } from './klogin.service';
 import * as XLSX from 'xlsx';
@@ -352,9 +353,9 @@ export class ApplicationService {
   }
 
 
-  getNationalities(): string[] {
+  getNationalities(): BehaviorSubject<string[]> {
     //this.angularS1.doConnect();
-
+    const Answer: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     const myNList: string[] = [] ;
     const query = `MATCH (n:Nationality) return n.dName order by n.dName`;
       this.angularS1.queryDB(query, '0')
@@ -363,8 +364,8 @@ export class ApplicationService {
         for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
           myNList.push(data.results[i][0]);
-
         }
+        Answer.next(myNList);
       }
 
   });
@@ -373,12 +374,12 @@ export class ApplicationService {
 
 
 
-    return myNList;
+    return Answer;
   }
 
   getNigeriaStates(): string[] {
     // this.angularS1.doConnect();
-
+    const Answer: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     const myNList: string[] = [] ;
     const query = `MATCH (n:NigeriaStates) return n.dName order by n.dName`;
     // this.angularS1.angularS.run(query).then((res: any) => {
@@ -396,11 +397,12 @@ export class ApplicationService {
           myNList.push(data.results[i][0]);
 
         }
+        Answer.next(myNList);
       }
 
   });
 
-    return myNList;
+    return Answer;
 
   }
 
@@ -433,7 +435,7 @@ export class ApplicationService {
 
   getFaculties(): string[] {
     // this.angularS1.doConnect();
-
+    const Answer: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     const myNList: string[] = [] ;
     const query = `MATCH (n:Faculty) return n.dCode order by n.dCode`;
     // this.angularS1.angularS.run(query).then((res: any) => {
@@ -450,10 +452,11 @@ export class ApplicationService {
           myNList.push(data.results[i][0]);
 
         }
+        Answer.next(myNList)
       }
 
   });
-    return myNList;
+    return Answer;
 
   }
 }

@@ -77,6 +77,7 @@ export class PaystackService {
      this.angularS1.queryDB(query, '0')
        .subscribe((data) => {
          for (let i = 0; i < data.results.length; i++) {
+             console.log('paystackservice::',data.results[i][0]);
            aD.push(new Date(this.utils.getStringDate(data.results[i][0])));
            console.log('AD::', aD[0], data.results, data.results[i], data.results[i][0]);
          }

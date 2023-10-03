@@ -228,7 +228,7 @@ export class EditStudentComponent implements AfterViewInit {
                   this.sessionList = sessions;
               }});
     // this.departmentList = this.applicationService.getProgrammes();
-    this.departmentService.getProgrammes().subscribe(
+    this.applicationService.getProgrammes().subscribe(
       (data) => {
         if (data && data.length > 0 )
         {this.departmentList = data; }

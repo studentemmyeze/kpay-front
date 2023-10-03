@@ -450,8 +450,8 @@ export class ApplicationService {
     .subscribe((data) => {
       if (data) {
         for (let i = 0; i < data.results.length; i++) {
-          // console.log("Nationalities::", (data.results[i]))
-          myNList.push(data.results[i][0]);
+          console.log("Nationalities::", (data.results[i]))
+          myNList.push(data.results[i]);
 
         }
         Answer.next(myNList)

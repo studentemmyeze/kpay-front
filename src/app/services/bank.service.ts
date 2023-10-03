@@ -15,7 +15,7 @@ export class BankService {
 
   constructor(public angularS1: KLoginService) { }
 
-  getAllBanks(): AsyncSubject<string[]> {
+  getAllBanks(): AsyncSubject<any[]> {
     // this.angularS1.doConnect();
     const Answer: AsyncSubject<any[]> = new AsyncSubject<any[]>();
 
@@ -26,6 +26,7 @@ export class BankService {
     this.angularS1.queryDB(query, '1')
     .subscribe((data) => {
       if (data) {
+        console.log('BANK::', data);
         myBankList = data.results;
         Answer.next(myBankList);
         Answer.complete();

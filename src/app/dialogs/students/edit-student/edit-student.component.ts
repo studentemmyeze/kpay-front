@@ -180,6 +180,7 @@ export class EditStudentComponent implements AfterViewInit {
     // const b = new Date(this.data.row.dOB).toLocaleDateString('en-GB', {timeZone: 'Africa/Lagos'}).split('/');
     // console.log('second try::', b,this.data.row.dOB as Date )
     this.selectedStudent = this.data.row; // load student to be edited
+    console.log('brought on student::',this.selectedStudent );
     // date.getTime() + Math.abs(date.getTimezoneOffset()*60000)
     // const tempDate = this.selectedStudent.dOB  ? new Date(this.selectedStudent.dOB ) : null;
     // this.selectedStudent.dOB = tempDate  ? tempDate.getTime() + Math.abs(tempDate.getTimezoneOffset()*60000) : undefined;

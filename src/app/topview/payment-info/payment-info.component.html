@@ -27,10 +27,10 @@
                     name = "bank" >
                     <mat-select-trigger>{{selectedLedgerInfo.bank}}</mat-select-trigger>
 
-                        <mat-option *ngFor="let stat of bankList" [value]= "stat.properties.shortName">
-                            <span class="make-bold">{{stat.properties.shortName}}</span>
+                        <mat-option *ngFor="let stat of bankList" [value]= "stat.shortName">
+                            <span class="make-bold">{{stat.shortName}}</span>
                             |
-                            <span class="filter-container">{{stat.properties.longName}}</span>
+                            <span class="filter-container">{{stat.longName}}</span>
                             </mat-option>
                         </mat-select>
                         <mat-error>Bank Required!</mat-error>

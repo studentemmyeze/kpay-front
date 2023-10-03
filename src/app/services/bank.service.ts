@@ -23,7 +23,7 @@ export class BankService {
     // const query = 'MATCH (n:Bank) RETURN n.shortName';
     const query = 'MATCH (n:Bank) RETURN n order by n.longName ';
 
-    this.angularS1.queryDB(query, '1')
+    this.angularS1.queryDB(query, '2')
     .subscribe((data) => {
       if (data) {
         console.log('BANK::', data);

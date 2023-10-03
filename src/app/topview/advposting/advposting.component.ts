@@ -109,7 +109,7 @@ export class AdvpostingComponent implements OnInit {
           }
       );
     // this.departmentList =  this.applicationService.getProgrammes();
-      this.departmentalService.getProgrammes().subscribe(
+      this.applicationService.getProgrammes().subscribe(
           data => {
               this.departmentList = data;
               // console.log("APPLICATION:::", data);

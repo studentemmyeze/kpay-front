@@ -113,7 +113,13 @@ export class PaymentInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sessionList = this.utilityService.generateSessionList();
+    // this.sessionList = this.utilityService.generateSessionList();
+    this.utilityService.generateSessionList().subscribe(
+        data => {
+          this.sessionList = data;
+          // console.log("APPLICATION:::", data);
+        }
+    );
     this.paymentsService.getProductList().subscribe(
       data => {
         this.productList = data;

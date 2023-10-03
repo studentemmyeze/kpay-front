@@ -970,10 +970,10 @@
                                 #accountName="ngModel"
                                 name = "sponsorBank"
                                 >
-                                    <mat-option *ngFor="let stat of bankList" [value]= "stat.properties.shortName">
-                                        <span class="make-bold">{{stat.properties.shortName}}</span>
+                                    <mat-option *ngFor="let stat of bankList" [value]= "stat.shortName">
+                                        <span class="make-bold">{{stat.shortName}}</span>
                                         |
-                                        <small>{{stat.properties.longName}}</small>
+                                        <small>{{stat.longName}}</small>
                                         </mat-option>
                                     </mat-select>
 

@@ -77,7 +77,7 @@ export class SettingsProgrammeComponent implements OnInit {
 
   loadMenu(): void {
     // this.barService.getMenu();
-    this.applicationService.getProgrammes().subscribe((val) => {
+    this.departmentService.getProgrammes().subscribe((val) => {
       // this.dataSource.data =  (val);
       this.dataSource.data =  (val);
       this.dataSource.sort = this.sort;

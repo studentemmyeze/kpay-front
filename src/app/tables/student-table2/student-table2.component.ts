@@ -114,8 +114,8 @@ export class StudentTable2Component implements OnInit {
     this.columnsToDisplay.push('actions');
     // this.departmentList = this.applicationService.getProgrammes();
     // this.facultyList = this.applicationService.getFaculties();
-      this.departmentalService.getProgrammes().subscribe(
-          data => {
+      this.applicationService.getProgrammes().subscribe(
+          (data) => {
               this.departmentList = data;
               // console.log("APPLICATION:::", data);
           }

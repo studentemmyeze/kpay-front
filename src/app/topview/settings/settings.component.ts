@@ -45,7 +45,13 @@ export class SettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.sessionList = this.utilityService.generateSessionList();
+    // this.sessionList = this.utilityService.generateSessionList();
+    this.utilityService.generateSessionList().subscribe(
+        data => {
+          this.sessionList = data;
+          // console.log("APPLICATION:::", data);
+        }
+    );
     this.kpClient.getCurrentSession().subscribe((data)=> {
       if (data) {
         this.currentSession = data;

@@ -151,9 +151,31 @@ export class BillsComponent implements OnInit {
   ngOnInit(): void {
     this.DCol.push(this.displayedColumns);
     this.DCol.push(this.OutstandingList);
-    this.departmentList =  this.applicationService.getProgrammes();
-    this.sessionList = this.utilityService.generateSessionList();
-    this.facultyList = this.applicationService.getFaculties();
+
+    // this.departmentList =  this.applicationService.getProgrammes();
+    // this.sessionList = this.utilityService.generateSessionList();
+    // this.facultyList = this.applicationService.getFaculties();
+
+    this.applicationService.getProgrammes().subscribe(
+        (data) => {
+          this.departmentList = data;
+          // console.log("APPLICATION:::", data);
+        }
+    );
+    // this.facultyList =  this.applicationService.getFaculties();
+    this.applicationService.getFaculties().subscribe(
+        data => {
+          this.facultyList = data;
+          // console.log("APPLICATION:::", data);
+        }
+    );
+
+    this.utilityService.generateSessionList().subscribe(
+        data => {
+          this.sessionList = data;
+          // console.log("APPLICATION:::", data);
+        }
+    );
 
 
   }

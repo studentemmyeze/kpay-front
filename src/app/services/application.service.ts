@@ -408,7 +408,7 @@ export class ApplicationService {
 
   getProgrammes(): BehaviorSubject<string[]> {
     // this.angularS1.doConnect();
-    const Answer:BehaviorSubject<string[]> = new BehaviorSubject([])
+    const Answer:BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
     const myNList: string[] = [] ;
     const query = `MATCH (n:Programme)-[]-(f:Faculty) return n.pName order by n.pName`;
     // this.angularS1.angularS.run(query).then((res: any) => {

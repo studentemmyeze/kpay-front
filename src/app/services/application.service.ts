@@ -363,7 +363,7 @@ export class ApplicationService {
       if (data) {
         for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
-          myNList.push(data.results[i][0]);
+          myNList.push(data.results[i]);
         }
         Answer.next(myNList);
       }
@@ -394,7 +394,7 @@ export class ApplicationService {
       if (data) {
         for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
-          myNList.push(data.results[i][0]);
+          myNList.push(data.results[i]);
 
         }
         Answer.next(myNList);
@@ -422,7 +422,7 @@ export class ApplicationService {
       if (data) {
         for (let i = 0; i < data.results.length; i++) {
           // console.log("Nationalities::", (data.results[i]))
-          myNList.push(data.results[i][0]);
+          myNList.push(data.results[i]);
 
         }
         Answer.next(myNList)
@@ -450,7 +450,7 @@ export class ApplicationService {
     .subscribe((data) => {
       if (data) {
         for (let i = 0; i < data.results.length; i++) {
-          console.log("Nationalities::", (data.results[i]))
+          // console.log("Nationalities::", (data.results[i]))
           myNList.push(data.results[i]);
 
         }

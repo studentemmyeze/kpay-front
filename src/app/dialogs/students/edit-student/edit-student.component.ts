@@ -29,7 +29,6 @@ import { KpClientService } from 'src/app/services/kp-client.service';
 import { UserService } from 'src/app/services/user.service';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { StudyPipe } from 'src/app/pipes/study.pipe';
-import {DepartmentalService} from "../../../services/departmental.service";
 
 
 
@@ -129,28 +128,27 @@ export class EditStudentComponent implements AfterViewInit {
   // @ViewChild(MatPaginator) paginator3: MatPaginator;
   // @ViewChild(MatSort) sort3: MatSort;
   constructor(
-    private studyPipe: StudyPipe,
-    private studentService: StudentService,
-    private bankService: BankService,
-    private departmentService: DepartmentalService,
-    private utilityService: UtilityService,
-    public nextofKinService: NextkinService,
-    private applicationService: ApplicationService,
-    private studyService: StudyService,
-    private snackBar: MatSnackBar,
-    public dialogRef: MatDialogRef<EditStudentComponent>,
-    private korotePayService: KpClientService,
-    private userService: UserService,
-    //@Optional() is used to prevent error if no data is passed
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: any
+      private studyPipe: StudyPipe,
+      private studentService: StudentService,
+      private bankService: BankService,
+      private utilityService: UtilityService,
+      public nextofKinService: NextkinService,
+      private applicationService: ApplicationService,
+      private studyService: StudyService,
+      private snackBar: MatSnackBar,
+      public dialogRef: MatDialogRef<EditStudentComponent>,
+      private korotePayService: KpClientService,
+      private userService: UserService,
+      //@Optional() is used to prevent error if no data is passed
+      @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.selectedStudy.jambNo = (this.selectedStudy.jambNo ? this.selectedStudy.jambNo : "" );
     this.filteredStates = this.stateCtrl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => typeof value === 'string' ? value : value.jambNo),
-        map(state => state ? this._filterStates(state) : this.appList.slice())
-      );
+        .pipe(
+            startWith(''),
+            map(value => typeof value === 'string' ? value : value.jambNo),
+            map(state => state ? this._filterStates(state) : this.appList.slice())
+        );
 
     // console.log("VIEW PASSED DATA:::", data);
 
@@ -167,20 +165,19 @@ export class EditStudentComponent implements AfterViewInit {
 
     this.loadNextOfKin();
     this.studentService.getStudentType().subscribe(
-      (data) => {
-        if (data){
+        (data) => {
+          if (data){
 
-          // console.log('THIS IS THE SUB::', data);
-          this.studentTypeList = data;
+            // console.log('THIS IS THE SUB::', data);
+            this.studentTypeList = data;
 
+          }
         }
-      }
     )
     // console.log("VIEW PASSED DATA2:::", this.data);
     // const b = new Date(this.data.row.dOB).toLocaleDateString('en-GB', {timeZone: 'Africa/Lagos'}).split('/');
     // console.log('second try::', b,this.data.row.dOB as Date )
     this.selectedStudent = this.data.row; // load student to be edited
-    console.log('brought on student::',this.selectedStudent );
     // date.getTime() + Math.abs(date.getTimezoneOffset()*60000)
     // const tempDate = this.selectedStudent.dOB  ? new Date(this.selectedStudent.dOB ) : null;
     // this.selectedStudent.dOB = tempDate  ? tempDate.getTime() + Math.abs(tempDate.getTimezoneOffset()*60000) : undefined;
@@ -193,80 +190,50 @@ export class EditStudentComponent implements AfterViewInit {
     // console.log("VIEW PASSED DATA SELECTEDDATA:::", this.selectedStudent);
 
     this.dialogRef.beforeClosed().subscribe(
-      () => {
-        this.studentService.deleteTempStudent(this.selectedTempStudent as TempStudent);
-        this.closeDialog();
+        () => {
+          this.studentService.deleteTempStudent(this.selectedTempStudent as TempStudent);
+          this.closeDialog();
 
-      }
-    );
-    // this.StatesList = this.applicationService.getNigeriaStates();
-    this.applicationService.getNigeriaStates().subscribe(
-      (data) => {
-        if (data && data.length > 0 )
-        {this.StatesList = data; }
-
-      }
-    );
-    // this.NationalityList = this.applicationService.getNationalities();
-    this.applicationService.getNationalities().subscribe(
-      (data) => {
-        if (data && data.length > 0 )
-        {this.NationalityList = data; }
-
-      }
-    );
-    // this.bankList = this.bankService.getAllBanks();
-    this.bankService.getAllBanks().subscribe(
-      (data) => {
-        if (data && data.length > 0 )
-        {this.bankList = data; }
-
-      }
-    );
-      this.utilityService.generateSessionList().subscribe(
-          (sessions) => {
-              if (sessions && sessions.length > 0 ){
-                  this.sessionList = sessions;
-              }});
-    // this.departmentList = this.applicationService.getProgrammes();
-    this.applicationService.getProgrammes().subscribe(
-      (data) => {
-        if (data && data.length > 0 )
-        {this.departmentList = data; }
-
-      }
-    );
-    this.studyService.getStudentStudy((this.selectedStudent as Student).studentNo).subscribe(
-      (data => {
-        if (data) {
-          this.studyList = data;
-          this.loadStudy();
         }
-      })
+    );
+    this.StatesList = this.applicationService.getNigeriaStates();
+    this.NationalityList = this.applicationService.getNationalities();
+    this.bankList = this.bankService.getAllBanks();
+    this.sessionList = this.utilityService.generateSessionList();
+    this.departmentList = this.applicationService.getProgrammes();
+
+
+    this.studyService.getStudentStudy((this.selectedStudent as Student).studentNo).subscribe(
+        (data => {
+          if (data) {
+            this.studyList = data;
+            this.loadStudy();
+          }
+        })
     );
     this.nextofKinService.getStudentNextOfKin(this.selectedStudent.studentNo as string)
-      .subscribe((data) => {
-        if (data)
-        {this.nextOfKinList = data;
-          // console.log("NEXT OF KIN LIST::", data)
-        }
-      });
+        .subscribe((data) => {
+          if (data)
+          {this.nextOfKinList = data;
+            // console.log("NEXT OF KIN LIST::", data)
+          }
+        });
 
     this.studentService.getSponsor(this.selectedStudent.studentNo as string)
-      .subscribe( (data: SponsorDetails) => {
-        if (data) {
-          this.selectedSponsorBank = data;
-        }
-      });
+        .subscribe( (data: SponsorDetails) => {
+          if (data) {
+            this.selectedSponsorBank = data;
+          }
+        });
 
     this.checkIfStudyExists();
     this.studyService.checkIfAStudyExists("1111111");
     // this.nextofKinService.loadStudentNextOfKin2();
     this.applicationService.applicationList.subscribe(
-      data => {
-        this.appList = data;
-        console.log("APPLICATION:::", data);
-      }
+        data => {
+          this.appList = data;
+          console.log("APPLICATION:::", data);
+        }
     );
 
     this.setStudentInfo();
@@ -289,7 +256,7 @@ export class EditStudentComponent implements AfterViewInit {
 
   pinDepartment(): void {
     this.selectedStudent.programme =
-      this.selectedStudy.programme ? this.selectedStudy.programme : this.selectedStudent.programme ;
+        this.selectedStudy.programme ? this.selectedStudy.programme : this.selectedStudent.programme ;
   }
 
   generateIUFStudyNo(): string {
@@ -302,7 +269,7 @@ export class EditStudentComponent implements AfterViewInit {
     const randomCharacter3 = this.alphabet[Math.floor(Math.random() * this.alphabet.length)]
     // format 2 digits- 2 letters-3 digits-1 letter total of 8
     results = dig2 + randomCharacter1.toUpperCase() + randomCharacter2.toUpperCase()+
-      dig3 + randomCharacter3.toUpperCase();
+        dig3 + randomCharacter3.toUpperCase();
     return results;
   }
 
@@ -325,15 +292,15 @@ export class EditStudentComponent implements AfterViewInit {
       while (!isUnique[0] && numberOfTime < 5) {
         numberOfTime++
         this.studyService.checkUniqueIDNo(this.selectedFoundationNo).subscribe(
-          (isFound: number) =>
-          {
+            (isFound: number) =>
+            {
 
-            if (!isFound) {
-              isUnique[0] = true;
-              console.log("foundation no::")
+              if (!isFound) {
+                isUnique[0] = true;
+                console.log("foundation no::")
 
-            }else{this.selectedFoundationNo = this.generateIUFStudyNo();}
-          });
+              }else{this.selectedFoundationNo = this.generateIUFStudyNo();}
+            });
       } // end while loop
       console.log("foundation no::", this.selectedFoundationNo,numberOfTime)
       answer = true}
@@ -363,17 +330,17 @@ export class EditStudentComponent implements AfterViewInit {
     let newStudS = ""
     // if (this.selectedStudent.dOB && new Date(this.selectedStudent.dOB) === new Date(this.selectedApplication2.dOB)) {}
     const existingStud = this.selectedStudent.dOB ?
-      new Date(this.selectedStudent.dOB).toLocaleDateString('en-GB').split('/') :
-      null;
+        new Date(this.selectedStudent.dOB).toLocaleDateString('en-GB').split('/') :
+        null;
     const existingStud2 = this.selectedStudent.dOB ?
-      new Date(this.selectedStudent.dOB).toLocaleDateString('en-GB', { timeZone: 'UTC' }).split('/') :
-      null;
+        new Date(this.selectedStudent.dOB).toLocaleDateString('en-GB', { timeZone: 'UTC' }).split('/') :
+        null;
     const newStud = this.selectedApplication2.dOB ?
-      new Date(this.selectedApplication2.dOB).toLocaleDateString('en-GB').split('/') :
-      null;
+        new Date(this.selectedApplication2.dOB).toLocaleDateString('en-GB').split('/') :
+        null;
     const newStud2 = this.selectedApplication2.dOB ?
-      new Date(this.selectedApplication2.dOB).toLocaleDateString('en-GB', { timeZone: 'UTC' }).split('/') :
-      null;
+        new Date(this.selectedApplication2.dOB).toLocaleDateString('en-GB', { timeZone: 'UTC' }).split('/') :
+        null;
     existingS = existingStud ? `${existingStud[0]}/${existingStud[1]}/${existingStud[2]}` : '';
     newStudS = newStud ? `${newStud[0]}/${newStud[1]}/${newStud[2]}` : '';
     const existingS2 = existingStud2 ? `${existingStud2[0]}/${existingStud2[1]}/${existingStud2[2]}` : '';
@@ -400,10 +367,10 @@ export class EditStudentComponent implements AfterViewInit {
     {
       console.log("SAME STUDENT")
       this.selectedStudy.applicationNo =
-        this.selectedApplication2.applicationNo ? this.selectedApplication2.applicationNo : '';
+          this.selectedApplication2.applicationNo ? this.selectedApplication2.applicationNo : '';
 
       this.selectedStudy.programme =
-        this.selectedApplication2.department1 ? this.selectedApplication2.department1.toString().toUpperCase() : '';
+          this.selectedApplication2.department1 ? this.selectedApplication2.department1.toString().toUpperCase() : '';
 
       this.selectedStudy.studentType = 0;
 
@@ -412,18 +379,18 @@ export class EditStudentComponent implements AfterViewInit {
       this.selectedStudy.finishSession = '';
       this.selectedStudy.jambNo = this.selectedApplication2.jambNo;
       this.korotePayService.getNextSessionResumptionDate()
-        .subscribe((data)=> {
-          if(data) {
-            this.selectedStudy.beginDate = data;
+          .subscribe((data)=> {
+            if(data) {
+              this.selectedStudy.beginDate = data;
 
-          }
+            }
 
-        });
+          });
     }
 
     else {
       this.openSnackBar('ADD STUDY ERROR: The [Date of Birth] or [Last name] is not the same for this new study!', 'close',
-        {horizontalPosition:'center', verticalPosition: 'top'})
+          {horizontalPosition:'center', verticalPosition: 'top'})
     }
     // if ((existingStud && newStud && existingStud === newStud)){
     //   console.log("SAME STUDENT1")
@@ -443,10 +410,10 @@ export class EditStudentComponent implements AfterViewInit {
       // console.log('IN IF');
       this.selectedStudent.dOB = this.selectedApplication.dOB;
       this.selectedStudy.applicationNo =
-        this.selectedApplication.applicationNo ? this.selectedApplication.applicationNo : '';
+          this.selectedApplication.applicationNo ? this.selectedApplication.applicationNo : '';
 
       this.selectedStudy.programme =
-        this.selectedApplication.department1 ? this.selectedApplication.department1.toString().toUpperCase() : '';
+          this.selectedApplication.department1 ? this.selectedApplication.department1.toString().toUpperCase() : '';
 
       this.selectedStudy.studentType = 0;
 
@@ -479,13 +446,13 @@ export class EditStudentComponent implements AfterViewInit {
       // this.selectedStudy.beginDate = this.korotePayService.getNextSessionResumptionDate();
 
       this.korotePayService.getNextSessionResumptionDate()
-        .subscribe((data)=> {
-          if(data) {
-            this.selectedStudy.beginDate = data;
+          .subscribe((data)=> {
+            if(data) {
+              this.selectedStudy.beginDate = data;
 
-          }
+            }
 
-        });
+          });
 
       // console.log("STUDY", this.selectedStudy);
       // console.log("APPLICATION", this.selectedApplication);
@@ -510,15 +477,15 @@ export class EditStudentComponent implements AfterViewInit {
       await this.studentService.updateStudy(this.studyList[i], this.selectedStudent.studentNo as string)
     }
     this.studentService.updateStudent(this.selectedStudent as Student, this.selectedSponsorBank as SponsorDetails)
-      .subscribe((data) => {
-        if (data)
-        {
-          this.editingDoneMarker = true;
-          this.progressMarker = false;
-          this.openSnackBar("SUCCESS! Student Updated", 'close' );
+        .subscribe((data) => {
+          if (data)
+          {
+            this.editingDoneMarker = true;
+            this.progressMarker = false;
+            this.openSnackBar("SUCCESS! Student Updated", 'close' );
 
-        }
-      });
+          }
+        });
   }
 
   clearFilter(): void {this.selectedApplication = {};}
@@ -549,7 +516,7 @@ export class EditStudentComponent implements AfterViewInit {
       // console.log({state})
 
       return state.jambNo.toString().toLocaleLowerCase().includes(filterValue) || state.lastName.toLocaleLowerCase().includes(filterValue)
-        || state.department1.toLowerCase().includes(filterValue) ;
+          || state.department1.toLowerCase().includes(filterValue) ;
       // state.jambNo.toLowerCase().includes(filterValue)
       // || state.lastName.toLowerCase().includes(filterValue);
 
@@ -726,15 +693,15 @@ export class EditStudentComponent implements AfterViewInit {
     else{
 
       this.nextofKinService.setStudentNextOfKin(this.selectedStudent.studentNo as string,
-        this.selectedNextOfKin as NextKin).subscribe(
-        (data) => {
-          if (data !== undefined && data !== null) {
-            setTimeout( () => {
-              this.loadNextOfKin();
-            }, 200);
+          this.selectedNextOfKin as NextKin).subscribe(
+          (data) => {
+            if (data !== undefined && data !== null) {
+              setTimeout( () => {
+                this.loadNextOfKin();
+              }, 200);
 
+            }
           }
-        }
       );
     }
   }
@@ -757,7 +724,7 @@ export class EditStudentComponent implements AfterViewInit {
     this.color = 'primary';
     this.syncedB4 = true;
     this.applicationService
-      .loadStudentApplication(1).subscribe(data =>
+        .loadStudentApplication(1).subscribe(data =>
     {
       if (data ) {
         this.syncDone = true;
@@ -772,7 +739,7 @@ export class EditStudentComponent implements AfterViewInit {
         this.errorCount++;
         if (this.errorCount < 2) {
           this.applicationService
-            .loadStudentApplication(0).subscribe(data =>
+              .loadStudentApplication(0).subscribe(data =>
           {
             if (data ) {this.color = 'primary'; }
             else {
@@ -799,14 +766,14 @@ export class EditStudentComponent implements AfterViewInit {
 
 
     this.nextofKinService.updateStudentNextOfKin(this.selectedStudent.studentNo as string,
-      this.selectedNextOfKin as NextKin).subscribe(
-      (data) => {
-        if (data !== undefined && data !== null && data) {
-          this.loadNextOfKin();
-          this.toggleUpdate22();
-          // this.clearQualification();
+        this.selectedNextOfKin as NextKin).subscribe(
+        (data) => {
+          if (data !== undefined && data !== null && data) {
+            this.loadNextOfKin();
+            this.toggleUpdate22();
+            // this.clearQualification();
+          }
         }
-      }
     );
   }
   isOngoingJustOne(): boolean {
@@ -818,10 +785,10 @@ export class EditStudentComponent implements AfterViewInit {
     if (count > 1) {
       answer = false;
       this.openSnackBar("WARNING! There exist a programme that is ongoing", 'close',
-        {
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-        }
+          {
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          }
       );
 
     }
@@ -846,17 +813,17 @@ export class EditStudentComponent implements AfterViewInit {
     // }
 
     this.studyService.updateStudentStudy(this.selectedStudent.studentNo!,
-      this.selectedStudy as Study).subscribe(
-      (data) => {
-        if (data) {
-          if (this.studyList) {
-            this.studyList[this.globalIndex] = this.selectedStudy as Study;
-          }
-          this.loadStudy();
-          this.toggleUpdate();
+        this.selectedStudy as Study).subscribe(
+        (data) => {
+          if (data) {
+            if (this.studyList) {
+              this.studyList[this.globalIndex] = this.selectedStudy as Study;
+            }
+            this.loadStudy();
+            this.toggleUpdate();
 
+          }
         }
-      }
     );
 
 

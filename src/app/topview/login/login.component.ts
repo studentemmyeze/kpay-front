@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
     // console.log('AT LOGIN5::', this.email, this.password);
     this.userService.signIn(username, password)
       .subscribe(data => {
-        // console.log('THIS IS LOGIN RESULT', data);
+        console.log('THIS IS LOGIN RESULT', data);
         if (data) {
           this.navigateTo();
         }

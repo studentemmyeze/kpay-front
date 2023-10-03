@@ -337,13 +337,13 @@ export class UserService {
       if (data && data.results.length > 0) {
         for (let i = 0; i < data.results.length; i++) {
           console.log((data.results[i]));
-          answer = data.results[0];
-          answer2 = data.results[1];
-          answer3 = data.results[2];
-          answer4 = data.results[3];
+          answer = data.results[i][0];
+          answer2 = data.results[i][1];
+          answer3 = data.results[i][2];
+          answer4 = data.results[i][3];
 
         }
-        console.log('answer, password::', answer, password);
+        // console.log('answer, password::', answer, password);
 
         if (answer === password)
         {

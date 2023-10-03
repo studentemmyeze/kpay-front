@@ -353,9 +353,9 @@ export class ApplicationService {
   }
 
 
-  getNationalities(): BehaviorSubject<string[]> {
+  getNationalities(): AsyncSubject<string[]> {
     //this.angularS1.doConnect();
-    const Answer: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+    const Answer: AsyncSubject<any[]> = new AsyncSubject<any[]>();
     const myNList: string[] = [] ;
     const query = `MATCH (n:Nationality) return n.dName order by n.dName`;
       this.angularS1.queryDB(query, '0')
@@ -366,6 +366,7 @@ export class ApplicationService {
           myNList.push(data.results[i]);
         }
         Answer.next(myNList);
+        Answer.complete();
       }
 
   });

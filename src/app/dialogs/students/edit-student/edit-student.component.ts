@@ -178,6 +178,7 @@ export class EditStudentComponent implements AfterViewInit {
     // const b = new Date(this.data.row.dOB).toLocaleDateString('en-GB', {timeZone: 'Africa/Lagos'}).split('/');
     // console.log('second try::', b,this.data.row.dOB as Date )
     this.selectedStudent = this.data.row; // load student to be edited
+    console.log('gotten from row::',this.selectedStudent )
     // date.getTime() + Math.abs(date.getTimezoneOffset()*60000)
     // const tempDate = this.selectedStudent.dOB  ? new Date(this.selectedStudent.dOB ) : null;
     // this.selectedStudent.dOB = tempDate  ? tempDate.getTime() + Math.abs(tempDate.getTimezoneOffset()*60000) : undefined;
@@ -206,7 +207,7 @@ export class EditStudentComponent implements AfterViewInit {
     // this.NationalityList = this.applicationService.getNationalities();
     this.applicationService.getNationalities().subscribe(
         (data) => {
-          if (data && data.length > 0 )
+          //if (data && data.length > 0 )
           {this.NationalityList = data; }
 
         }
@@ -227,7 +228,7 @@ export class EditStudentComponent implements AfterViewInit {
     // this.departmentList = this.applicationService.getProgrammes();
     this.applicationService.getProgrammes().subscribe(
         (data) => {
-          if (data && data.length > 0 )
+          // if (data && data.length > 0 )
           {this.departmentList = data; }
 
         }

@@ -425,11 +425,13 @@ export class ApplicationService {
           myNList.push(data.results[i][0]);
 
         }
+        Answer.next(myNList)
       }
 
   });
 
-    return Answer.next(myNList);
+
+    return Answer;
 
   }
 

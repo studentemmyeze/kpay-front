@@ -596,7 +596,7 @@ export class UtilityService {
 
   generateSessionList(): BehaviorSubject<string[]> {
     const answer = [];
-    const Answer: BehaviorSubject <string[]>= new BehaviorSubject([]);
+    const Answer2: BehaviorSubject <string[]> = new BehaviorSubject([]);
     let seedYear = "2020";
     let seedYearInt = 2020;
     const aDate = new Date();
@@ -610,8 +610,8 @@ export class UtilityService {
       seedYear = (seedYearInt).toString();
 
     }
-    Answer.next(answer);
-    return Answer;
+    Answer2.next(answer);
+    return Answer2;
   }
   getMyPositionOnTable(myIndex: number, paginator: MatPaginator): number {
     const startIndex = paginator.pageIndex * paginator.pageSize;

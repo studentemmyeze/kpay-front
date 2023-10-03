@@ -117,9 +117,9 @@ export class AdvpostingComponent implements OnInit {
       );
     // this.facultyList =  this.applicationService.getFaculties();
       this.applicationService.getFaculties().subscribe(
-          data => {
+          (data:string[]) => {
               this.facultyList = data;
-              // console.log("APPLICATION:::", data);
+              console.log("faculty:::", data);
           }
       );
     this.paymentsService.getProductList().subscribe(
